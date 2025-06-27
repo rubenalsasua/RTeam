@@ -1,1 +1,76 @@
 # RTeam
+
+- Gestión de equipos, jugadores
+- Resultados de partidos
+- Planificación de entrenamientos
+- Generador de PDF con la convocatoria
+- SSO con Google Auth 2
+
+# BDD
+- Equipo
+    - 
+    - Nombre
+    - Foto
+        - Entrenador
+        - Liga
+        - Temporada
+- Jugador
+    -
+    - Nombre
+    - Goles
+    - Asistencias
+    - Tarjetas amarillas
+    - Tarjetas rojas
+    - Foto
+    - Dorsal
+    - Posición {Portero, Cierre, Ala, Pívot}
+        - Equipo
+- Partido
+    -
+    - Fecha
+    - Estado {Sin jugar, Finalizado}
+    - Goles Local
+    - Goles Visitante
+        - Equipo (Local)
+        - Equipo (Visitante)
+        - Campo
+        - Liga
+        - Convocatoria
+        - Temporada
+- Disponibilidad partido
+    - 
+    - .
+        - Jugador
+        - Partido
+- Convocatoria partido
+    - 
+    - .
+        - Jugador
+        - Partido
+- Liga
+    -
+    - Nombre
+    - Temporada
+    - Foto
+- Entrenador
+    -
+    - Nombre
+    - Tipo {Entrenador, Delegado, Entrenador en prácticas}
+    - Foto
+- Campo
+    -
+    - Nombre
+- Usuario
+    -
+    - ...
+    - Rol {Admin, Jugador}
+- Entrenamiento
+    -
+    - Fecha
+    - Plan
+    - Asistencia ????
+- Temporada
+    -
+    - Año
+    - Activa (bool)
+## [Funcionalidad de entrenamientos por definir]
