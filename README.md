@@ -6,6 +6,47 @@
 - Generador de PDF con la convocatoria
 - SSO con Google Auth 2
 
+- Un jugador puede pertenecer a diferentes equipos en distintas temporadas
+- Un equipo puede tener diferentes jugadores en cada temporada
+- Crear ligas asociadas a temporadas específicas
+- Asignar equipos a ligas
+- Un equipo puede participar en varias ligas en la misma temporada (si es necesario)
+- Mantener un historial de participación en ligas por temporada
+
+# Modelo de Datos
+## Temporada
+- Atributos: periodo (formato YYYY/YYYY), activa (booleano)
+- Validación especial: El periodo debe seguir el formato YYYY/YYYY con años consecutivos
+## Equipo
+- Atributos: nombre, foto
+- Relaciones: Asociado a jugadores y entrenadores a través de tablas intermedias
+## Jugador
+- Atributos: nombre, estadísticas (goles, asistencias, tarjetas), foto, dorsal, posición
+- Relación: Puede pertenecer a diferentes equipos en distintas temporadas
+## Entrenador
+- Atributos: nombre, foto, tipo (Entrenador, Delegado, Entrenador en Prácticas)
+- Relación: Puede dirigir diferentes equipos en distintas temporadas
+## Liga
+- Atributos: nombre, temporada
+- Relación: Contiene múltiples equipos en una temporada específica
+# Relaciones
+## JugadorEquipoTemporada
+- Conecta: Jugador ↔ Equipo ↔ Temporada
+- Atributos adicionales: dorsal_en_temporada, fecha_incorporacion
+- Restricción: Un jugador no puede estar en el mismo equipo más de una vez por temporada
+## EntrenadorEquipoTemporada
+- Conecta: Entrenador ↔ Equipo ↔ Temporada
+- Atributos adicionales: fecha_incorporacion
+- Restricción: Un entrenador no puede estar en el mismo equipo más de una vez por temporada
+## EquipoLigaTemporada
+- Conecta: Equipo ↔ Liga
+- Atributos adicionales: fecha_incorporacion
+- Restricción: Un equipo no puede estar en la misma liga más de una vez
+# Características del Diseño
+- Sistema completo para gestionar equipos deportivos a lo largo de diferentes temporadas
+- Los jugadores y entrenadores pueden cambiar de equipo entre temporadas
+- Las ligas están asociadas a temporadas específicas
+- Se mantiene registro histórico de todas las relaciones con fechas de incorporación
 # BDD
 - Equipo
     - 
