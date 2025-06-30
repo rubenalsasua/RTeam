@@ -23,6 +23,9 @@ class Temporada(models.Model):
     periodo = TemporadaField(help_text='Formato: YYYY/YYYY (ej: 2024/2025)')
     activa = models.BooleanField(default=False, help_text='Indica si es la temporada actual')
 
+    class Meta:
+        verbose_name_plural = "Temporadas"
+
     def __str__(self):
         return self.periodo
 
@@ -35,18 +38,16 @@ class Equipo(models.Model):
     jugadores = models.ManyToManyField('Jugador', through='JugadorEquipoTemporada', related_name='equipos')
     entrenadores = models.ManyToManyField('Entrenador', through='EntrenadorEquipoTemporada', related_name='equipos')
 
+    class Meta:
+        verbose_name_plural = "Equipos"
+
     def __str__(self):
         return self.nombre
 
 
 class Jugador(models.Model):
     nombre = models.CharField(max_length=100)
-    goles = models.PositiveIntegerField(default=0)
-    asistencias = models.PositiveIntegerField(default=0)
-    tarjetas_amarillas = models.PositiveIntegerField(default=0)
-    tarjetas_rojas = models.PositiveIntegerField(default=0)
     foto = models.ImageField(upload_to='jugadores/', null=True, blank=True)
-    dorsal = models.PositiveIntegerField(default=0)
     POSICIONES = [
         ('PORTERO', 'Portero'),
         ('CIERRE', 'Cierre'),
@@ -57,7 +58,8 @@ class Jugador(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
-    # equipo
+    class Meta:
+        verbose_name_plural = "Jugadores"
 
     def __str__(self):
         return self.nombre
@@ -67,11 +69,17 @@ class JugadorEquipoTemporada(models.Model):
     jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE)
-    dorsal_en_temporada = models.PositiveIntegerField(default=0)
+    dorsal = models.PositiveIntegerField(default=0)
     fecha_incorporacion = models.DateField(auto_now_add=True)
+    goles = models.PositiveIntegerField(default=0)
+    asistencias = models.PositiveIntegerField(default=0)
+    tarjetas_amarillas = models.PositiveIntegerField(default=0)
+    tarjetas_rojas = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('jugador', 'equipo', 'temporada')
+        verbose_name = "Jugador en Equipo por Temporada"
+        verbose_name_plural = "Jugadores en Equipos por Temporada"
 
     def __str__(self):
         return f"{self.jugador} - {self.equipo} ({self.temporada})"
@@ -89,6 +97,9 @@ class Entrenador(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name_plural = "Entrenadores"
+
     def __str__(self):
         return self.nombre
 
@@ -101,6 +112,8 @@ class EntrenadorEquipoTemporada(models.Model):
 
     class Meta:
         unique_together = ('entrenador', 'equipo', 'temporada')
+        verbose_name = "Entrenador en Equipo por Temporada"
+        verbose_name_plural = "Entrenadores en Equipos por Temporada"
 
     def __str__(self):
         return f"{self.entrenador} - {self.equipo} ({self.temporada})"
@@ -115,6 +128,7 @@ class Liga(models.Model):
 
     class Meta:
         unique_together = ('nombre', 'temporada')
+        verbose_name_plural = "Ligas"
 
     def __str__(self):
         return f"{self.nombre} ({self.temporada})"
@@ -127,6 +141,8 @@ class EquipoLigaTemporada(models.Model):
 
     class Meta:
         unique_together = ('equipo', 'liga')
+        verbose_name = "Equipo en Liga"
+        verbose_name_plural = "Equipos en Ligas"
 
     def __str__(self):
         return f"{self.equipo} - {self.liga}"
