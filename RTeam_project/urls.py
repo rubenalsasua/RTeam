@@ -19,10 +19,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('pwa.urls')),
+    path('pwa/', include('pwa.urls')),
+    path('', include('RTeam_app.urls')),
     path('accounts/', include('allauth.urls')),  # Importante
 ]
 

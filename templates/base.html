@@ -1,13 +1,14 @@
 {% load static %}
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RTeam</title>
+    <link rel="manifest" href="{% url 'manifest' %}">
+    <link rel="icon" href="{% static 'icons/RTeam.png' %}" type="image/x-icon">
 </head>
-<link rel="manifest" href="{% url 'manifest' %}">
-<link rel="icon" href="{% static 'icons/RTeam.png' %}" type="image/x-icon">
+
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register("{% url 'serviceworker' %}")
