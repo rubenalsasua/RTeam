@@ -136,15 +136,10 @@ PWA_APP_THEME_COLOR = '#000000'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'
 PWA_APP_ICONS = [
     {
-        'src': 'static/images/icon-192x192.png',
-        'sizes': '192x192',
-        'type': 'image/png',
-    },
-    {
-        'src': 'static/images/icon-512x512.png',
-        'sizes': '512x512',
-        'type': 'image/png',
-    },
+        'src': 'static/images/RTeam.png',
+        'sizes': '500x500',
+        'type': 'png',
+    }
 ]
 PWA_APP_SCOPE = '/'
 PWA_APP_START_URL = '/'
