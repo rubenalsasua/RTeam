@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Ligas</h1>
+    <ul>
+        {% for liga in ligas %}
+            <li>
+                <h2>{{ liga.nombre }}</h2>
+                <p>Temporada: {{ liga.temporada.periodo }}</p>
+                <p>Equipos: {{ liga.equipos.count }}</p>
+            </li>
+        {% empty %}
+            <li>No hay ligas disponibles.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -88,12 +88,6 @@ class JugadorEquipoTemporada(models.Model):
 class Entrenador(models.Model):
     nombre = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='entrenadores/', null=True, blank=True)
-    TIPO = [
-        ('ENTRENADOR', 'Entrenador'),
-        ('DELEGADO', 'Delegado'),
-        ('ENTRENADOR_PRACTICAS', 'Entrenador en Prácticas'),
-    ]
-    tipo = models.CharField(max_length=20, choices=TIPO, default='PRINCIPAL')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
@@ -108,6 +102,12 @@ class EntrenadorEquipoTemporada(models.Model):
     entrenador = models.ForeignKey(Entrenador, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE)
+    TIPO = [
+        ('ENTRENADOR', 'Entrenador'),
+        ('DELEGADO', 'Delegado'),
+        ('ENTRENADOR_PRACTICAS', 'Entrenador en Prácticas'),
+    ]
+    tipo = models.CharField(max_length=20, choices=TIPO, default='PRINCIPAL')
     fecha_incorporacion = models.DateField(auto_now_add=True)
 
     class Meta:

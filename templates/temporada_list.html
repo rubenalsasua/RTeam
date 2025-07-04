@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Temporadas</h1>
+    <ul>
+        {% for temporada in temporadas %}
+            <li>
+                <h2>{{ temporada.periodo }}</h2>
+                {% if temporada.activa %}
+                    <span>(Activa)</span>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No hay temporadas disponibles.</li>
+        {% endfor %}
+    </ul>
+    <!-- <a href="{ url 'temporada_create' %}">Crear nueva temporada</a> --
+{% endblock %}

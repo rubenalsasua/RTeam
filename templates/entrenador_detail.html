@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>{{ entrenador.nombre }}</h1>
+
+    {% if entrenador.foto %}
+        <img src="{{ entrenador.foto.url }}" alt="Foto de {{ entrenador.nombre }}"
+             style="max-width: 200px; max-height: 200px;">
+    {% else %}
+        <p>Sin foto</p>
+    {% endif %}
+
+
+    <h2>Historial por temporadas</h2>
+
+    {% if temporadas_info %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Temporada</th>
+                <th>Equipo</th>
+                <th>Tipo</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for info in temporadas_info %}
+                <tr>
+                    <td>{{ info.temporada }}</td>
+                    <td>
+                        {% if info.equipo.foto %}
+                            <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}"
+                                 style="max-width: 30px; max-height: 30px;">
+                        {% endif %}
+                        {{ info.equipo.nombre }}
+                    </td>
+                    <td>{{ info.tipo }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    {% else %}
+        <p>Este entrenador no ha participado en ninguna temporada.</p>
+    {% endif %}
+
+    <a href="{% url 'entrenador_list' %}" class="btn btn-secondary">Volver a la lista de entrenadores</a>
+{% endblock %}

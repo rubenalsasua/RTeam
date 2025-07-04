@@ -21,6 +21,16 @@
 
 <h1>RTeam</h1>
 <div>
+    <nav>
+        <ul>
+            <li><a href="{% url 'index' %}">Inicio</a></li>
+            <li><a href="{% url 'temporada_list' %}">Temporadas</a></li>
+            <li><a href="{% url 'liga_list' %}">Ligas</a></li>
+            <li><a href="{% url 'equipo_list' %}">Equipos</a></li>
+            <li><a href="{% url 'jugador_list' %}">Jugadores</a></li>
+            <li><a href="{% url 'entrenador_list' %}">Entrenadores</a></li>
+        </ul>
+    </nav>
     {% block contenido %}
     {% endblock %}
 </div>

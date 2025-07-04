@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Equipos</h1>
+    <ul>
+        {% for equipo in equipos %}
+            <li>
+                <h2>{{ equipo.nombre }}</h2>
+                <img src="{{ equipo.foto.url }}" alt="Imagen de {{ equipo.nombre }}"
+                     style="max-width: 200px; max-height: 200px;">
+                <p>Temporadas:
+                    {% for temporada in equipo.temporadas_lista %}
+                        {{ temporada }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        No asignado
+                    {% endfor %}
+                </p>
+
+                <p>Ligas:
+                    {% for liga in equipo.ligas_lista %}
+                        {{ liga.nombre }} ({{ liga.temporada }}){% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        No asignado
+                    {% endfor %}
+                </p>
+                <p>Jugadores: {{ equipo.jugadores.count }}</p>
+            </li>
+        {% empty %}
+            <li>No hay equipos disponibles.</li>
+        {% endfor %}
+    </ul>
+    <!-- <a href="{ url 'equipo_create' %}">Crear nuevo equipo</a> -->
+{% endblock %}

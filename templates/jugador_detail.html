@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>{{ jugador.nombre }}</h1>
+
+    {% if jugador.foto %}
+        <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}"
+             style="max-width: 200px; max-height: 200px;">
+    {% else %}
+        <p>Sin foto</p>
+    {% endif %}
+
+    <p><strong>Posición:</strong> {{ jugador.get_posicion_display }}</p>
+
+    <h2>Historial por temporadas</h2>
+
+    {% if temporadas_info %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Temporada</th>
+                <th>Equipo</th>
+                <th>Dorsal</th>
+                <th>Goles</th>
+                <th>Asistencias</th>
+                <th>Tarjetas Amarillas</th>
+                <th>Tarjetas Rojas</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for info in temporadas_info %}
+                <tr>
+                    <td>{{ info.temporada }}</td>
+                    <td>
+                        {% if info.equipo.foto %}
+                            <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}"
+                                 style="max-width: 30px; max-height: 30px;">
+                        {% endif %}
+                        {{ info.equipo.nombre }}
+                    </td>
+                    <td>{{ info.dorsal }}</td>
+                    <td>{{ info.goles }}</td>
+                    <td>{{ info.asistencias }}</td>
+                    <td>{{ info.tarjetas_amarillas }}</td>
+                    <td>{{ info.tarjetas_rojas }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Estadísticas totales</h3>
+        <ul>
+            <li><strong>Total de goles:</strong> {{ total_goles }}</li>
+            <li><strong>Total de asistencias:</strong> {{ total_asistencias }}</li>
+            <li><strong>Total de tarjetas amarillas:</strong> {{ total_amarillas }}</li>
+            <li><strong>Total de tarjetas rojas:</strong> {{ total_rojas }}</li>
+        </ul>
+    {% else %}
+        <p>Este jugador no ha participado en ninguna temporada.</p>
+    {% endif %}
+
+    <a href="{% url 'jugador_list' %}" class="btn btn-secondary">Volver a la lista de jugadores</a>
+{% endblock %}
