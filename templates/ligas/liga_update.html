@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h2>Editar liga</h2>
+    <form action="{% url 'liga_update' liga.id %}" method="post">
+        {% csrf_token %}
+        {{ formulario.errors }}
+        {{ formulario.as_p }}
+        <input type="submit" value="Editar liga">
+    </form>
+{% endblock %}

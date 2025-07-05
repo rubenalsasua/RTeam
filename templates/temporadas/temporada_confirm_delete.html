@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h2>¿Seguro que quieres borrar la temporada {{ temporada.periodo }}?</h2>
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Confirmar"/>
+    </form>
+    <a href="{% url 'temporada_list'%}">Cancelar</a>
+{% endblock %}

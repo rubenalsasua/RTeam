@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h2>¿Seguro que quieres borrar el jugador {{ jugador.nombre }}?</h2>
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Confirmar"/>
+    </form>
+    <a href="{% url 'jugador_list'%}">Cancelar</a>
+{% endblock %}

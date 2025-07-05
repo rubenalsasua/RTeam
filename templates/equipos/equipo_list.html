@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Equipos</h1>
+    <a href="{% url 'equipo_create' %}">Crear nuevo equipo</a>
     <ul>
         {% for equipo in equipos %}
             <li>
                 <h2>{{ equipo.nombre }}</h2>
-                <img src="{{ equipo.foto.url }}" alt="Imagen de {{ equipo.nombre }}"
-                     style="max-width: 200px; max-height: 200px;">
+                {% if equipo.foto %}
+                    <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}"
+                         style="max-width: 200px; max-height: 200px;">
+                {% else %}
+                    <p>No hay logo disponible</p>
+                {% endif %}
                 <p>Temporadas:
                     {% for temporada in equipo.temporadas_lista %}
                         {{ temporada }}{% if not forloop.last %}, {% endif %}
@@ -23,10 +28,11 @@
                     {% endfor %}
                 </p>
                 <p>Jugadores: {{ equipo.jugadores.count }}</p>
+                <a href="{% url 'equipo_update' equipo.id %}">Actualizar</a>
+                <a href="{% url 'equipo_delete' equipo.id %}">Borrar</a>
             </li>
         {% empty %}
             <li>No hay equipos disponibles.</li>
         {% endfor %}
     </ul>
-    <!-- <a href="{ url 'equipo_create' %}">Crear nuevo equipo</a> -->
 {% endblock %}
