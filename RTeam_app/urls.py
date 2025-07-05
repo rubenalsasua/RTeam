@@ -27,5 +27,5 @@ urlpatterns = [
     path('entrenadores/crear/', views.EntrenadorCreateView.as_view(), name='entrenador_create'),
     path('entrenadores/<int:pk>/editar/', views.EntrenadorUpdateView.as_view(), name='entrenador_update'),
     path('entrenadores/<int:pk>/eliminar/', views.EntrenadorDeleteView.as_view(), name='entrenador_delete'),
-
+    path('serviceworker.js', views.service_worker, name='serviceworker'),
 ]

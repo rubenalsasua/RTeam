@@ -1,6 +1,11 @@
+import os
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from RTeam_project import settings
 from .forms import TemporadaForm, LigaForm, EquipoForm, JugadorForm, EntrenadorForm
 from .models import Temporada, Liga, Equipo, Jugador, JugadorEquipoTemporada, Entrenador, EntrenadorEquipoTemporada
 
@@ -274,3 +279,10 @@ class EntrenadorDeleteView(DeleteView):
     template_name = 'entrenadores/entrenador_confirm_delete.html'
     context_object_name = 'entrenador'
     success_url = reverse_lazy('entrenador_list')
+
+
+def service_worker(request):
+    sw_path = os.path.join(settings.BASE_DIR, 'static', 'js', 'serviceworker.js')
+    with open(sw_path, 'r') as file:
+        content = file.read()
+    return HttpResponse(content, content_type='application/javascript')
