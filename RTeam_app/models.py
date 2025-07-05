@@ -21,7 +21,6 @@ class TemporadaField(models.CharField):
 
 class Temporada(models.Model):
     periodo = TemporadaField(help_text='Formato: YYYY/YYYY (ej: 2024/2025)')
-    activa = models.BooleanField(default=False, help_text='Indica si es la temporada actual')
 
     class Meta:
         verbose_name_plural = "Temporadas"

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h2>Nuevo equipo</h2>
+    <form action="{% url 'equipo_create' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ formulario.errors }}
+        {{ formulario.as_p }}
+        <input type="submit" value="Nuevo equipo">
+    </form>
+{% endblock %}

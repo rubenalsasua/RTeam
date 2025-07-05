@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h2>Editar jugador</h2>
+    <form action="{% url 'jugador_update' jugador.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ formulario.errors }}
+        {{ formulario.as_p }}
+        <input type="submit" value="Editar jugador">
+    </form>
+{% endblock %}

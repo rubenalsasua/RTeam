@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Entrenadores</h1>
+    <a href="{% url 'entrenador_create' %}">Crear nuevo entrenador</a>
+    <ul>
+        {% for entrenador in entrenadores %}
+            <li>
+                <h2>{{ entrenador.nombre }}</h2>
+                <div>
+                    {% if entrenador.foto %}
+                        <img src="{{ entrenador.foto.url }}" alt="Imagen de {{ entrenador.nombre }}"
+                             style="max-width: 200px; max-height: 200px;">
+                    {% else %}
+                        <p>No hay imagen disponible</p>
+                    {% endif %}
+                </div>
+                <a href="{% url 'entrenador_detail' entrenador.id %}">Ver detalles</a>
+                <a href="{% url 'entrenador_update' entrenador.id %}">Actualizar</a>
+                <a href="{% url 'entrenador_delete' entrenador.id %}">Borrar</a>
+            </li>
+        {% empty %}
+            <li>No hay entrenadores disponibles.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
