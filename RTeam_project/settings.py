@@ -27,9 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'rteam.onrender.com',
+    'rubenalsasua.pythonanywhere.com',
     'localhost',
     '127.0.0.1',
-    'rubenalsasua.pythonanywhere.com',
 ]
 
 # Application definition
