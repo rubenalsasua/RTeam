@@ -6,6 +6,7 @@
         {% for temporada in temporadas %}
             <li>
                 <h2>{{ temporada.periodo }}</h2>
+                <a href="{% url 'temporada_detail' temporada.id %}">Detalles</a>
                 <a href="{% url 'temporada_update' temporada.id %}">Actualizar</a>
                 <a href="{% url 'temporada_delete' temporada.id %}">Borrar</a>
             </li>

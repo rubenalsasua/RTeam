@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h2>Nuevo equipo en {{ liga.nombre }}</h2>
+    <form action="{% url 'equipo_liga_create' liga.id %}" method="post">
+        {% csrf_token %}
+        {{ formulario.errors }}
+        {{ formulario.as_p }}
+        <input type="submit" value="Nuevo equipo en {{ liga.nombre }}">
+    </form>
+{% endblock %}

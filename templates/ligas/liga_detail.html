@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>{{ liga.nombre }}</h1>
+    <a href="{% url 'equipo_liga_create' liga.id %}" class="btn btn-primary">Añadir equipo a esta liga</a>
+    {% if equipos %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Foto</th>
+                <th>Jugadores</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for equipo in equipos %}
+                <tr>
+                    <td>{{ equipo.nombre }}</td>
+                    <td>
+                        {% if equipo.foto %}
+                            <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}"
+                                 style="max-width: 30px; max-height: 30px;">
+                        {% endif %}
+                    </td>
+                    <td>{{ equipo.jugadores.count }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    {% else %}
+        <p>Esta liga no tiene equipos todavía.</p>
+    {% endif %}
+
+    <a href="{% url 'liga_list' %}" class="btn btn-secondary">Volver a la lista de ligas</a>
+{% endblock %}

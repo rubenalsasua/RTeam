@@ -1,5 +1,6 @@
 from django import forms
-from .models import Temporada, Liga, Equipo, Jugador, Entrenador
+from .models import Temporada, Liga, Equipo, Jugador, Entrenador, EquipoLigaTemporada, JugadorEquipoTemporada, \
+    EntrenadorEquipoTemporada
 
 
 class TemporadaForm(forms.ModelForm):
@@ -16,6 +17,7 @@ class TemporadaForm(forms.ModelForm):
             'periodo': 'Formato: YYYY/YYYY (ej: 2024/2025)',
         }
 
+
 class LigaForm(forms.ModelForm):
     class Meta:
         model = Liga
@@ -28,6 +30,7 @@ class LigaForm(forms.ModelForm):
             'nombre': 'Nombre de la Liga',
             'temporada': 'Temporada',
         }
+
 
 class EquipoForm(forms.ModelForm):
     class Meta:
@@ -71,3 +74,44 @@ class EntrenadorForm(forms.ModelForm):
             'nombre': 'Nombre del Entrenador',
             'foto': 'Foto del Entrenador',
         }
+
+
+class EquipoLigaTemporadaForm(forms.ModelForm):
+    equipo = forms.ModelChoiceField(
+        queryset=Equipo.objects.all(),
+        label="Equipo"
+    )
+
+    class Meta:
+        model = EquipoLigaTemporada
+        fields = ['equipo']
+
+
+class JugadorEquipoTemporadaForm(forms.ModelForm):
+    jugador = forms.ModelChoiceField(
+        queryset=Jugador.objects.all(),
+        label="Jugador"
+    )
+    temporada = forms.ModelChoiceField(
+        queryset=Temporada.objects.all(),
+        label="Temporada"
+    )
+
+    class Meta:
+        model = JugadorEquipoTemporada
+        fields = ['jugador', 'temporada']
+
+
+class EntrenadorEquipoTemporadaForm(forms.ModelForm):
+    entrenador = forms.ModelChoiceField(
+        queryset=Entrenador.objects.all(),
+        label="Entrenador"
+    )
+    temporada = forms.ModelChoiceField(
+        queryset=Temporada.objects.all(),
+        label="Temporada"
+    )
+
+    class Meta:
+        model = EntrenadorEquipoTemporada
+        fields = ['entrenador', 'temporada', 'tipo']

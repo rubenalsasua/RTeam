@@ -28,6 +28,8 @@
                     {% endfor %}
                 </p>
                 <p>Jugadores: {{ equipo.jugadores.count }}</p>
+                <p>Entrenadores: {{ equipo.entrenadores.count }}</p>
+                <a href="{% url 'equipo_detail' equipo.id %}">Detalles</a>
                 <a href="{% url 'equipo_update' equipo.id %}">Actualizar</a>
                 <a href="{% url 'equipo_delete' equipo.id %}">Borrar</a>
             </li>

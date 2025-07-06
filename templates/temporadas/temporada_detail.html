@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Temporada {{ temporada.periodo }}</h1>
+
+    {% if ligas %}
+        {% for liga in ligas %}
+            <ul>
+                <li>{{ liga.nombre }}</li>
+            </ul>
+        {% endfor %}
+
+    {% else %}
+        <p>Esta temporada no tiene ligas agregadas.</p>
+    {% endif %}
+
+    <a href="{% url 'temporada_list' %}" class="btn btn-secondary">Volver a la lista de temporadas</a>
+{% endblock %}

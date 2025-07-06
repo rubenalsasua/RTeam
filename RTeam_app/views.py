@@ -6,8 +6,10 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from RTeam_project import settings
-from .forms import TemporadaForm, LigaForm, EquipoForm, JugadorForm, EntrenadorForm
-from .models import Temporada, Liga, Equipo, Jugador, JugadorEquipoTemporada, Entrenador, EntrenadorEquipoTemporada
+from .forms import TemporadaForm, LigaForm, EquipoForm, JugadorForm, EntrenadorForm, EquipoLigaTemporadaForm, \
+    JugadorEquipoTemporadaForm, EntrenadorEquipoTemporadaForm
+from .models import Temporada, Liga, Equipo, Jugador, JugadorEquipoTemporada, Entrenador, EntrenadorEquipoTemporada, \
+    EquipoLigaTemporada
 
 
 # Create your views here.
@@ -19,6 +21,19 @@ class TemporadaListView(ListView):
     model = Temporada
     template_name = 'temporadas/temporada_list.html'
     context_object_name = 'temporadas'
+
+
+class TemporadaDetailView(DetailView):
+    model = Temporada
+    template_name = 'temporadas/temporada_detail.html'
+    context_object_name = 'temporada'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ligas'] = Liga.objects.filter(
+            temporada=self.object
+        ).distinct()
+        return context
 
 
 class TemporadaCreateView(CreateView):
@@ -65,6 +80,19 @@ class LigaListView(ListView):
     model = Liga
     template_name = 'ligas/liga_list.html'
     context_object_name = 'ligas'
+
+
+class LigaDetailView(DetailView):
+    model = Liga
+    template_name = 'ligas/liga_detail.html'
+    context_object_name = 'liga'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['equipos'] = Equipo.objects.filter(
+            equipoligatemporada__liga=self.object
+        ).distinct()
+        return context
 
 
 class LigaCreateView(CreateView):
@@ -119,6 +147,25 @@ class EquipoListView(ListView):
                 equipoligatemporada__equipo=equipo
             ).distinct()
         return equipos
+
+
+class EquipoDetailView(DetailView):
+    model = Equipo
+    template_name = 'equipos/equipo_detail.html'
+    context_object_name = 'equipo'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['jugadores'] = Jugador.objects.filter(
+            jugadorequipotemporada__equipo=self.object
+        ).distinct()
+        context['entrenadores_info'] = EntrenadorEquipoTemporada.objects.filter(
+            equipo=self.object
+        ).select_related('entrenador')
+        context['temporadas_ligas'] = EquipoLigaTemporada.objects.filter(
+            equipo=self.object
+        ).select_related('liga__temporada')
+        return context
 
 
 class EquipoCreateView(CreateView):
@@ -279,6 +326,125 @@ class EntrenadorDeleteView(DeleteView):
     template_name = 'entrenadores/entrenador_confirm_delete.html'
     context_object_name = 'entrenador'
     success_url = reverse_lazy('entrenador_list')
+
+
+class EquipoLigaCreateView(CreateView):
+    def get(self, request, liga_id):
+        liga = Liga.objects.get(id=liga_id)
+        equipos_existentes = liga.equipos.all()
+        formulario = EquipoLigaTemporadaForm()
+        formulario.fields['equipo'].queryset = Equipo.objects.exclude(id__in=equipos_existentes)
+
+        context = {
+            'formulario': formulario,
+            'liga': liga
+        }
+        return render(request, "ligas/equipo_en_liga_create.html", context)
+
+    def post(self, request, liga_id):
+        liga = Liga.objects.get(id=liga_id)
+        formulario = EquipoLigaTemporadaForm(data=request.POST)
+
+        if formulario.is_valid():
+            equipo_liga = formulario.save(commit=False)
+            equipo_liga.liga = liga
+            equipo_liga.save()
+            return redirect("liga_detail", pk=liga_id)
+
+        # Si hay errores, volver a mostrar el formulario
+        equipos_existentes = liga.equipos.all()
+        formulario.fields['equipo'].queryset = Equipo.objects.exclude(id__in=equipos_existentes)
+        context = {
+            'formulario': formulario,
+            'liga': liga
+        }
+        return render(request, "ligas/equipo_en_liga_create.html", context)
+
+
+class JugadorEquipoTemporadaCreateView(CreateView):
+    def get(self, request, equipo_id):
+        equipo = Equipo.objects.get(id=equipo_id)
+        # Obtener jugadores que no están en este equipo en la temporada actual
+        temporada_actual = Temporada.objects.order_by('-periodo').first()
+        jugadores_existentes = equipo.jugadores.filter(
+            jugadorequipotemporada__temporada=temporada_actual
+        )
+
+        formulario = JugadorEquipoTemporadaForm()
+        formulario.fields['jugador'].queryset = Jugador.objects.exclude(id__in=jugadores_existentes)
+        formulario.fields['temporada'].initial = temporada_actual
+
+        context = {
+            'formulario': formulario,
+            'equipo': equipo
+        }
+        return render(request, "jugadores/jugador_en_equipo_create.html", context)
+
+    def post(self, request, equipo_id):
+        equipo = Equipo.objects.get(id=equipo_id)
+        formulario = JugadorEquipoTemporadaForm(data=request.POST)
+
+        if formulario.is_valid():
+            jugador_equipo = formulario.save(commit=False)
+            jugador_equipo.equipo = equipo
+            jugador_equipo.save()
+            return redirect("equipo_detail", pk=equipo_id)
+
+        # Si hay errores, volver a mostrar el formulario
+        temporada_actual = Temporada.objects.order_by('-periodo').first()
+        jugadores_existentes = equipo.jugadores.filter(
+            jugadorequipotemporada__temporada=temporada_actual
+        )
+        formulario.fields['jugador'].queryset = Jugador.objects.exclude(id__in=jugadores_existentes)
+
+        context = {
+            'formulario': formulario,
+            'equipo': equipo
+        }
+        return render(request, "jugadores/jugador_en_equipo_create.html", context)
+
+
+class EntrenadorEquipoTemporadaCreateView(CreateView):
+    def get(self, request, equipo_id):
+        equipo = Equipo.objects.get(id=equipo_id)
+        # Obtener entrenadores que no están en este equipo en la temporada actual
+        temporada_actual = Temporada.objects.order_by('-periodo').first()
+        entrenadores_existentes = equipo.entrenadores.filter(
+            entrenadorequipotemporada__temporada=temporada_actual
+        )
+
+        formulario = EntrenadorEquipoTemporadaForm()
+        formulario.fields['entrenador'].queryset = Entrenador.objects.exclude(id__in=entrenadores_existentes)
+        formulario.fields['temporada'].initial = temporada_actual
+
+        context = {
+            'formulario': formulario,
+            'equipo': equipo
+        }
+        return render(request, "entrenadores/entrenador_en_equipo_create.html", context)
+
+    def post(self, request, equipo_id):
+        equipo = Equipo.objects.get(id=equipo_id)
+        formulario = EntrenadorEquipoTemporadaForm(data=request.POST)
+
+        if formulario.is_valid():
+            entrenador_equipo = formulario.save(commit=False)
+            entrenador_equipo.equipo = equipo
+            entrenador_equipo.save()
+            return redirect("equipo_detail", pk=equipo_id)
+
+        # Si hay errores, volver a mostrar el formulario
+        temporada_actual = Temporada.objects.order_by('-periodo').first()
+        entrenadores_existentes = equipo.entrenadores.filter(
+            entrenadorequipotemporada__temporada=temporada_actual
+        )
+        formulario.fields['entrenador'].queryset = Entrenador.objects.exclude(id__in=entrenadores_existentes)
+
+        context = {
+            'formulario': formulario,
+            'equipo': equipo
+        }
+        return render(request, "entrenadores/entrenador_en_equipo_create.html", context)
 
 
 def service_worker(request):

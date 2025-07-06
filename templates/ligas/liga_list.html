@@ -8,6 +8,7 @@
                 <h2>{{ liga.nombre }}</h2>
                 <p>Temporada: {{ liga.temporada.periodo }}</p>
                 <p>Equipos: {{ liga.equipos.count }}</p>
+                <a href="{% url 'liga_detail' liga.id %}">Detalles</a>
                 <a href="{% url 'liga_update' liga.id %}">Actualizar</a>
                 <a href="{% url 'liga_delete' liga.id %}">Borrar</a>
             </li>
