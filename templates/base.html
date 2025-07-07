@@ -5,8 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RTeam</title>
+
+    <!-- PWA manifest -->
     <link rel="manifest" href="{% url 'manifest' %}">
+
+    <!-- Favicon -->
     <link rel="icon" href="{% static 'icons/RTeam.png' %}" type="image/x-icon">
+
+    <!-- Apple PWA support -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-icon.png' %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="RTeam">
+
+    <!-- Estilos -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
