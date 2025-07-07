@@ -2,26 +2,28 @@
 {% block contenido %}
     <h1>{{ liga.nombre }}</h1>
     <a href="{% url 'equipo_liga_create' liga.id %}" class="btn btn-primary">Añadir equipo a esta liga</a>
-    {% if equipos %}
+    {% if equipos_liga %}
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Foto</th>
                 <th>Jugadores</th>
+                <th>Eliminar de esta liga</th>
             </tr>
             </thead>
             <tbody>
-            {% for equipo in equipos %}
+            {% for equipo_liga in equipos_liga %}
                 <tr>
-                    <td>{{ equipo.nombre }}</td>
+                    <td>{{ equipo_liga.equipo.nombre }}</td>
                     <td>
-                        {% if equipo.foto %}
-                            <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}"
+                        {% if equipo_liga.equipo.foto %}
+                            <img src="{{ equipo_liga.equipo.foto.url }}" alt="Logo de {{ equipo_liga.equipo.nombre }}"
                                  style="max-width: 30px; max-height: 30px;">
                         {% endif %}
                     </td>
-                    <td>{{ equipo.jugadores.count }}</td>
+                    <td>{{ equipo_liga.equipo.jugadores.count }}</td>
+                    <td><a href="{% url 'equipo_en_liga_delete' equipo_liga.id %}">Borrar</a></td>
                 </tr>
             {% endfor %}
             </tbody>

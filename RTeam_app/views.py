@@ -89,9 +89,9 @@ class LigaDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['equipos'] = Equipo.objects.filter(
-            equipoligatemporada__liga=self.object
-        ).distinct()
+        context['equipos_liga'] = EquipoLigaTemporada.objects.filter(
+            liga=self.object
+        ).select_related('equipo')
         return context
 
 
@@ -361,6 +361,20 @@ class EquipoLigaCreateView(CreateView):
         return render(request, "ligas/equipo_en_liga_create.html", context)
 
 
+class EquipoLigaDeleteView(DeleteView):
+    model = EquipoLigaTemporada
+    template_name = 'ligas/equipo_en_liga_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['equipo'] = self.object.equipo
+        context['liga'] = self.object.liga
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('liga_detail', kwargs={'pk': self.object.liga.id})
+
+
 class JugadorEquipoTemporadaCreateView(CreateView):
     def get(self, request, equipo_id):
         equipo = Equipo.objects.get(id=equipo_id)
@@ -404,6 +418,28 @@ class JugadorEquipoTemporadaCreateView(CreateView):
         return render(request, "jugadores/jugador_en_equipo_create.html", context)
 
 
+class JugadorEquipoTemporadaDeleteView(DeleteView):
+    model = JugadorEquipoTemporada
+    template_name = 'jugadores/jugador_en_equipo_confirm_delete.html'
+
+    def get_object(self, queryset=None):
+        jugador_id = self.kwargs.get('jugador_id')
+        equipo_id = self.kwargs.get('equipo_id')
+        return JugadorEquipoTemporada.objects.filter(
+            jugador_id=jugador_id,
+            equipo_id=equipo_id
+        ).first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['jugador'] = self.object.jugador
+        context['equipo'] = self.object.equipo
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('equipo_detail', kwargs={'pk': self.object.equipo.id})
+
+
 class EntrenadorEquipoTemporadaCreateView(CreateView):
     def get(self, request, equipo_id):
         equipo = Equipo.objects.get(id=equipo_id)
@@ -445,6 +481,28 @@ class EntrenadorEquipoTemporadaCreateView(CreateView):
             'equipo': equipo
         }
         return render(request, "entrenadores/entrenador_en_equipo_create.html", context)
+
+
+class EntrenadorEquipoTemporadaDeleteView(DeleteView):
+    model = EntrenadorEquipoTemporada
+    template_name = 'entrenadores/entrenador_en_equipo_confirm_delete.html'
+
+    def get_object(self, queryset=None):
+        entrenador_id = self.kwargs.get('entrenador_id')
+        equipo_id = self.kwargs.get('equipo_id')
+        return EntrenadorEquipoTemporada.objects.filter(
+            entrenador_id=entrenador_id,
+            equipo_id=equipo_id
+        ).first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['entrenador'] = self.object.entrenador
+        context['equipo'] = self.object.equipo
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('equipo_detail', kwargs={'pk': self.object.equipo.id})
 
 
 def service_worker(request):

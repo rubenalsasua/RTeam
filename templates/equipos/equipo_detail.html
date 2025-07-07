@@ -11,6 +11,7 @@
                 <th>Foto</th>
                 <th>Posición</th>
                 <th>Detalles</th>
+                <th>Eliminar de este equipo</th>
             </tr>
             </thead>
             <tbody>
@@ -27,6 +28,7 @@
                     <td>
                         <a href="{% url 'jugador_detail' jugador.id %}">Detalles</a>
                     </td>
+                    <td><a href="{% url 'jugador_en_equipo_delete' equipo.id jugador.id %}">Borrar</a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -45,6 +47,7 @@
                 <th>Foto</th>
                 <th>Tipo</th>
                 <th>Detalles</th>
+                <th>Eliminar de este equipo</th>
             </tr>
             </thead>
             <tbody>
@@ -61,6 +64,7 @@
                     <td>
                         <a href="{% url 'entrenador_detail' item.entrenador.id %}">Detalles</a>
                     </td>
+                    <td><a href="{% url 'entrenador_en_equipo_delete' equipo.id item.entrenador.id %}">Borrar</a></td>
                 </tr>
             {% endfor %}
             </tbody>
