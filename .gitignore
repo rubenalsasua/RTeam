@@ -1,8 +1,38 @@
+# Entorno virtual
 .venv/
+venv/
+env/
+
+# Configuración del IDE
 .idea/
+.vscode/
+
+# Cachés de Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Base de datos
 db.sqlite3
+db.sqlite3-journal
+
+# Media
 media/*
 !media/.gitkeep
+
+# Variables de entorno
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de distribución
+dist/
+build/
+*.egg-info/
