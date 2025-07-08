@@ -1,5 +1,5 @@
 # RTeam
-https://github.com/rubenalsasua/RTeam/blob/main/static/icons/RTeam.png
+<div align="center"><img src="https://github.com/rubenalsasua/RTeam/blob/main/static/icons/RTeam.png"></div>
 ## Gestión de equipos de Fútbol Sala
 - Gestión de equipos, jugadores
 - Resultados de partidos
