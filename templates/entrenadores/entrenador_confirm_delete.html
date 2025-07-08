@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h2>¿Seguro que quieres borrar el entrenador {{ entrenador.nombre }}?</h2>
+    <h1>¿Seguro que quieres borrar el entrenador {{ entrenador.nombre }}?</h1>
     <form method="post">{% csrf_token %}
         <input type="submit" value="Confirmar"/>
     </form>

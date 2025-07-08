@@ -1,19 +1,25 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Ligas</h1>
-    <a href="{% url 'liga_create' %}">Crear nueva liga</a>
-    <ul>
+    <a href="{% url 'liga_create' %}" class="btn btn-primary">Crear nueva liga</a>
+    <div class="list-group">
         {% for liga in ligas %}
-            <li>
-                <h2>{{ liga.nombre }}</h2>
-                <p>Temporada: {{ liga.temporada.periodo }}</p>
-                <p>Equipos: {{ liga.equipos.count }}</p>
-                <a href="{% url 'liga_detail' liga.id %}">Detalles</a>
-                <a href="{% url 'liga_update' liga.id %}">Actualizar</a>
-                <a href="{% url 'liga_delete' liga.id %}">Borrar</a>
-            </li>
+            <div class="list-item clickable">
+                <a href="{% url 'liga_detail' liga.id %}">
+                    <h2>{{ liga.nombre }}</h2>
+                    <p>Temporada: {{ liga.temporada.periodo }}</p>
+                    <p>Equipos: {{ liga.equipos.count }}</p>
+                    <div class="item-actions">
+                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+                    </div>
+                </a>
+                <div class="item-controls">
+                    <a href="{% url 'liga_update' liga.id %}" class="btn btn-light">Editar</a>
+                    <a href="{% url 'liga_delete' liga.id %}" class="btn btn-light">Borrar</a>
+                </div>
+            </div>
         {% empty %}
-            <li>No hay ligas disponibles.</li>
+            <div class="list-item">No hay ligas disponibles.</div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

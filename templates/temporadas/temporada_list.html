@@ -1,17 +1,23 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Temporadas</h1>
-    <a href="{% url 'temporada_create' %}">Crear nueva temporada</a>
-    <ul>
+    <a href="{% url 'temporada_create' %}" class="btn btn-primary">Crear nueva temporada</a>
+    <div class="list-group">
         {% for temporada in temporadas %}
-            <li>
-                <h2>{{ temporada.periodo }}</h2>
-                <a href="{% url 'temporada_detail' temporada.id %}">Detalles</a>
-                <a href="{% url 'temporada_update' temporada.id %}">Actualizar</a>
-                <a href="{% url 'temporada_delete' temporada.id %}">Borrar</a>
-            </li>
+            <div class="list-item clickable">
+                <a href="{% url 'temporada_detail' temporada.id %}">
+                    <h2>{{ temporada.periodo }}</h2>
+                    <div class="item-actions">
+                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+                    </div>
+                </a>
+                <div class="item-controls">
+                    <a href="{% url 'temporada_update' temporada.id %}" class="btn btn-light">Editar</a>
+                    <a href="{% url 'temporada_delete' temporada.id %}" class="btn btn-light">Borrar</a>
+                </div>
+            </div>
         {% empty %}
-            <li>No hay temporadas disponibles.</li>
+            <div class="list-item">No hay temporadas disponibles.</div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

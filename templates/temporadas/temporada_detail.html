@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Temporada {{ temporada.periodo }}</h1>
+    <div class="page-header">
+        <h1>Temporada {{ temporada.periodo }}</h1>
+    </div>
 
-    {% if ligas %}
-        {% for liga in ligas %}
-            <ul>
-                <li>{{ liga.nombre }}</li>
-            </ul>
-        {% endfor %}
+    <section class="section-container">
+        <div class="section-header">
+            <h2>Ligas</h2>
+            <a href="{% url 'liga_create' %}" class="btn btn-primary">Añadir liga</a>
+        </div>
 
-    {% else %}
-        <p>Esta temporada no tiene ligas agregadas.</p>
-    {% endif %}
+        {% if ligas %}
+            <div class="data-cards">
+                {% for liga in ligas %}
+                    <div class="data-card">
+                        <div class="card-info">
+                            <h3>{{ liga.nombre }}</h3>
+                            <p><strong>Equipos:</strong> {{ liga.equipos.count }}</p>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'liga_detail' liga.id %}" class="btn btn-secondary btn-small">Detalles</a>
+                            <a href="{% url 'liga_update' liga.id %}" class="btn btn-light btn-small">Editar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">Esta temporada no tiene ligas agregadas.</p>
+        {% endif %}
+    </section>
 
-    <a href="{% url 'temporada_list' %}" class="btn btn-secondary">Volver a la lista de temporadas</a>
+    <div class="page-actions">
+        <a href="{% url 'temporada_list' %}" class="btn btn-secondary">Volver a la lista de temporadas</a>
+    </div>
 {% endblock %}

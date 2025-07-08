@@ -1,25 +1,28 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Entrenadores</h1>
-    <a href="{% url 'entrenador_create' %}">Crear nuevo entrenador</a>
-    <ul>
+    <a href="{% url 'entrenador_create' %}" class="btn btn-primary">Crear nuevo entrenador</a>
+    <div class="list-group">
         {% for entrenador in entrenadores %}
-            <li>
-                <h2>{{ entrenador.nombre }}</h2>
-                <div>
+            <div class="list-item clickable">
+                <a href="{% url 'entrenador_detail' entrenador.id %}">
+                    <h2>{{ entrenador.nombre }}</h2>
                     {% if entrenador.foto %}
-                        <img src="{{ entrenador.foto.url }}" alt="Imagen de {{ entrenador.nombre }}"
-                             style="max-width: 200px; max-height: 200px;">
+                        <img src="{{ entrenador.foto.url }}" alt="Imagen de {{ entrenador.nombre }}" class="img-thumbnail">
                     {% else %}
                         <p>No hay imagen disponible</p>
                     {% endif %}
+                    <div class="item-actions">
+                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+                    </div>
+                </a>
+                <div class="item-controls">
+                    <a href="{% url 'entrenador_update' entrenador.id %}" class="btn btn-light">Editar</a>
+                    <a href="{% url 'entrenador_delete' entrenador.id %}" class="btn btn-light">Borrar</a>
                 </div>
-                <a href="{% url 'entrenador_detail' entrenador.id %}">Ver detalles</a>
-                <a href="{% url 'entrenador_update' entrenador.id %}">Actualizar</a>
-                <a href="{% url 'entrenador_delete' entrenador.id %}">Borrar</a>
-            </li>
+            </div>
         {% empty %}
-            <li>No hay entrenadores disponibles.</li>
+            <div class="list-item">No hay entrenadores disponibles.</div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

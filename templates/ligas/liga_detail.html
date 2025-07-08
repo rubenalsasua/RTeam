@@ -1,38 +1,46 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>{{ liga.nombre }}</h1>
-    <a href="{% url 'equipo_liga_create' liga.id %}" class="btn btn-primary">Añadir equipo a esta liga</a>
-    {% if equipos_liga %}
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Foto</th>
-                <th>Jugadores</th>
-                <th>Eliminar de esta liga</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for equipo_liga in equipos_liga %}
-                <tr>
-                    <td>{{ equipo_liga.equipo.nombre }}</td>
-                    <td>
-                        {% if equipo_liga.equipo.foto %}
-                            <img src="{{ equipo_liga.equipo.foto.url }}" alt="Logo de {{ equipo_liga.equipo.nombre }}"
-                                 style="max-width: 30px; max-height: 30px;">
-                        {% endif %}
-                    </td>
-                    <td>{{ equipo_liga.equipo.jugadores.count }}</td>
-                    <td><a href="{% url 'equipo_en_liga_delete' equipo_liga.id %}">Borrar</a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="page-header">
+        <h1>{{ liga.nombre }}</h1>
+        <p><strong>Temporada:</strong> {{ liga.temporada.periodo }}</p>
+    </div>
 
+    <section class="section-container">
+        <div class="section-header">
+            <h2>Equipos</h2>
+            <a href="{% url 'equipo_liga_create' liga.id %}" class="btn btn-primary">Añadir equipo</a>
+        </div>
 
-    {% else %}
-        <p>Esta liga no tiene equipos todavía.</p>
-    {% endif %}
+        {% if equipos_liga %}
+            <div class="data-cards">
+                {% for equipo_liga in equipos_liga %}
+                    <div class="data-card">
+                        <div class="card-main">
+                            {% if equipo_liga.equipo.foto %}
+                                <div class="card-thumb">
+                                    <img src="{{ equipo_liga.equipo.foto.url }}"
+                                         alt="Logo de {{ equipo_liga.equipo.nombre }}">
+                                </div>
+                            {% endif %}
+                            <div class="card-info">
+                                <h3>{{ equipo_liga.equipo.nombre }}</h3>
+                                <p><strong>Jugadores:</strong> {{ equipo_liga.equipo.jugadores.count }}</p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'equipo_detail' equipo_liga.equipo.id %}"
+                               class="btn btn-secondary btn-small">Detalles</a>
+                            <a href="{% url 'equipo_en_liga_delete' equipo_liga.id %}" class="btn btn-light btn-small">Eliminar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">Esta liga no tiene equipos todavía.</p>
+        {% endif %}
+    </section>
 
-    <a href="{% url 'liga_list' %}" class="btn btn-secondary">Volver a la lista de ligas</a>
+    <div class="page-actions">
+        <a href="{% url 'liga_list' %}" class="btn btn-secondary">Volver a la lista de ligas</a>
+    </div>
 {% endblock %}

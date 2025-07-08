@@ -1,97 +1,102 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>{{ equipo.nombre }}</h1>
-    <h2>Jugadores</h2>
-    <a href="{% url 'jugador_equipo_create' equipo.id %}" class="btn btn-primary">Añadir jugador</a>
-    {% if jugadores %}
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Foto</th>
-                <th>Posición</th>
-                <th>Detalles</th>
-                <th>Eliminar de este equipo</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for jugador in jugadores %}
-                <tr>
-                    <td>{{ jugador.nombre }}</td>
-                    <td>
-                        {% if jugador.foto %}
-                            <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}"
-                                 style="max-width: 30px; max-height: 30px;">
-                        {% endif %}
-                    </td>
-                    <td>{{ jugador.posicion }}</td>
-                    <td>
-                        <a href="{% url 'jugador_detail' jugador.id %}">Detalles</a>
-                    </td>
-                    <td><a href="{% url 'jugador_en_equipo_delete' equipo.id jugador.id %}">Borrar</a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Este equipo no tiene jugadores todavía.</p>
-    {% endif %}
-    <h2>Entrenadores</h2>
+    <div class="page-header">
+        <h1>{{ equipo.nombre }}</h1>
+    </div>
 
-    <a href="{% url 'entrenador_equipo_create' equipo.id %}" class="btn btn-primary">Añadir entrenador</a>
-    {% if entrenadores_info %}
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Foto</th>
-                <th>Tipo</th>
-                <th>Detalles</th>
-                <th>Eliminar de este equipo</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in entrenadores_info %}
-                <tr>
-                    <td>{{ item.entrenador.nombre }}</td>
-                    <td>
-                        {% if item.entrenador.foto %}
-                            <img src="{{ item.entrenador.foto.url }}" alt="Foto de {{ item.entrenador.nombre }}"
-                                 style="max-width: 30px; max-height: 30px;">
-                        {% endif %}
-                    </td>
-                    <td>{{ item.get_tipo_display }}</td>
-                    <td>
-                        <a href="{% url 'entrenador_detail' item.entrenador.id %}">Detalles</a>
-                    </td>
-                    <td><a href="{% url 'entrenador_en_equipo_delete' equipo.id item.entrenador.id %}">Borrar</a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Este equipo no tiene entrenadores todavía.</p>
-    {% endif %}
-    <h2>Temporadas</h2>
-    {% if temporadas_ligas %}
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Temporada</th>
-                <th>Liga</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in temporadas_ligas %}
-                <tr>
-                    <td>{{ item.liga.temporada.periodo }}</td>
-                    <td>{{ item.liga.nombre }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Este equipo no ha participado en ninguna liga todavía.</p>
-    {% endif %}
-    <a href="{% url 'liga_list' %}" class="btn btn-secondary">Volver a la lista de ligas</a>
+    <section class="section-container">
+        <div class="section-header">
+            <h2>Jugadores</h2>
+            <a href="{% url 'jugador_equipo_create' equipo.id %}" class="btn btn-primary">Añadir jugador</a>
+        </div>
+
+        {% if jugadores %}
+            <div class="data-cards">
+                {% for jugador in jugadores %}
+                    <div class="data-card">
+                        <div class="card-main">
+                            {% if jugador.foto %}
+                                <div class="card-thumb">
+                                    <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}">
+                                </div>
+                            {% endif %}
+                            <div class="card-info">
+                                <h3>{{ jugador.nombre }}</h3>
+                                <p><strong>Posición:</strong> {{ jugador.posicion }}</p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'jugador_detail' jugador.id %}"
+                               class="btn btn-secondary btn-small">Detalles</a>
+                            <a href="{% url 'jugador_en_equipo_delete' equipo.id jugador.id %}"
+                               class="btn btn-light btn-small">Eliminar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">Este equipo no tiene jugadores todavía.</p>
+        {% endif %}
+    </section>
+
+    <section class="section-container">
+        <div class="section-header">
+            <h2>Entrenadores</h2>
+            <a href="{% url 'entrenador_equipo_create' equipo.id %}" class="btn btn-primary">Añadir entrenador</a>
+        </div>
+
+        {% if entrenadores_info %}
+            <div class="data-cards">
+                {% for item in entrenadores_info %}
+                    <div class="data-card">
+                        <div class="card-main">
+                            {% if item.entrenador.foto %}
+                                <div class="card-thumb">
+                                    <img src="{{ item.entrenador.foto.url }}"
+                                         alt="Foto de {{ item.entrenador.nombre }}">
+                                </div>
+                            {% endif %}
+                            <div class="card-info">
+                                <h3>{{ item.entrenador.nombre }}</h3>
+                                <p><strong>Tipo:</strong> {{ item.get_tipo_display }}</p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'entrenador_detail' item.entrenador.id %}"
+                               class="btn btn-secondary btn-small">Detalles</a>
+                            <a href="{% url 'entrenador_en_equipo_delete' equipo.id item.entrenador.id %}"
+                               class="btn btn-light btn-small">Eliminar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">Este equipo no tiene entrenadores todavía.</p>
+        {% endif %}
+    </section>
+
+    <section class="section-container">
+        <div class="section-header">
+            <h2>Temporadas</h2>
+        </div>
+
+        {% if temporadas_ligas %}
+            <div class="data-cards">
+                {% for item in temporadas_ligas %}
+                    <div class="data-card">
+                        <div class="card-info">
+                            <h3>{{ item.liga.temporada.periodo }}</h3>
+                            <p><strong>Liga:</strong> {{ item.liga.nombre }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">Este equipo no ha participado en ninguna liga todavía.</p>
+        {% endif %}
+    </section>
+
+    <div class="page-actions">
+        <a href="{% url 'liga_list' %}" class="btn btn-secondary">Volver a la lista de ligas</a>
+    </div>
 {% endblock %}

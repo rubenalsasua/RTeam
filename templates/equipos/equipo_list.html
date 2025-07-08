@@ -1,40 +1,44 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Equipos</h1>
-    <a href="{% url 'equipo_create' %}">Crear nuevo equipo</a>
-    <ul>
+    <a href="{% url 'equipo_create' %}" class="btn btn-primary">Crear nuevo equipo</a>
+    <div class="list-group">
         {% for equipo in equipos %}
-            <li>
-                <h2>{{ equipo.nombre }}</h2>
-                {% if equipo.foto %}
-                    <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}"
-                         style="max-width: 200px; max-height: 200px;">
-                {% else %}
-                    <p>No hay logo disponible</p>
-                {% endif %}
-                <p>Temporadas:
-                    {% for temporada in equipo.temporadas_lista %}
-                        {{ temporada }}{% if not forloop.last %}, {% endif %}
-                    {% empty %}
-                        No asignado
-                    {% endfor %}
-                </p>
-
-                <p>Ligas:
-                    {% for liga in equipo.ligas_lista %}
-                        {{ liga.nombre }} ({{ liga.temporada }}){% if not forloop.last %}, {% endif %}
-                    {% empty %}
-                        No asignado
-                    {% endfor %}
-                </p>
-                <p>Jugadores: {{ equipo.jugadores.count }}</p>
-                <p>Entrenadores: {{ equipo.entrenadores.count }}</p>
-                <a href="{% url 'equipo_detail' equipo.id %}">Detalles</a>
-                <a href="{% url 'equipo_update' equipo.id %}">Actualizar</a>
-                <a href="{% url 'equipo_delete' equipo.id %}">Borrar</a>
-            </li>
+            <div class="list-item clickable">
+                <a href="{% url 'equipo_detail' equipo.id %}">
+                    <h2>{{ equipo.nombre }}</h2>
+                    {% if equipo.foto %}
+                        <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}" class="img-thumbnail">
+                    {% else %}
+                        <p>No hay logo disponible</p>
+                    {% endif %}
+                    <p>Temporadas:
+                        {% for temporada in equipo.temporadas_lista %}
+                            {{ temporada }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            No asignado
+                        {% endfor %}
+                    </p>
+                    <p>Ligas:
+                        {% for liga in equipo.ligas_lista %}
+                            {{ liga.nombre }} ({{ liga.temporada }}){% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            No asignado
+                        {% endfor %}
+                    </p>
+                    <p>Jugadores: {{ equipo.jugadores.count }}</p>
+                    <p>Entrenadores: {{ equipo.entrenadores.count }}</p>
+                    <div class="item-actions">
+                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+                    </div>
+                </a>
+                <div class="item-controls">
+                    <a href="{% url 'equipo_update' equipo.id %}" class="btn btn-light">Editar</a>
+                    <a href="{% url 'equipo_delete' equipo.id %}" class="btn btn-light">Borrar</a>
+                </div>
+            </div>
         {% empty %}
-            <li>No hay equipos disponibles.</li>
+            <div class="list-item">No hay equipos disponibles.</div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

@@ -1,24 +1,29 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Jugadores</h1>
-    <a href="{% url 'jugador_create' %}">Crear nuevo jugador</a>
-    <ul>
+    <a href="{% url 'jugador_create' %}" class="btn btn-primary">Crear nuevo jugador</a>
+    <div class="list-group">
         {% for jugador in jugadores %}
-            <li>
-                <h2>{{ jugador.nombre }}</h2>
-                {% if jugador.foto %}
-                    <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}"
-                         style="max-width: 200px; max-height: 200px;">
-                {% else %}
-                    <p>No hay foto disponible</p>
-                {% endif %}
-                <p>Posición: {{ jugador.posicion }}</p>
-                <a href="{% url 'jugador_detail' jugador.id %}">Ver detalles</a>
-                <a href="{% url 'jugador_update' jugador.id %}">Actualizar</a>
-                <a href="{% url 'jugador_delete' jugador.id %}">Borrar</a>
-            </li>
+            <div class="list-item clickable">
+                <a href="{% url 'jugador_detail' jugador.id %}">
+                    <h2>{{ jugador.nombre }}</h2>
+                    {% if jugador.foto %}
+                        <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}" class="img-thumbnail">
+                    {% else %}
+                        <p>No hay foto disponible</p>
+                    {% endif %}
+                    <p>Posición: {{ jugador.posicion }}</p>
+                    <div class="item-actions">
+                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+                    </div>
+                </a>
+                <div class="item-controls">
+                    <a href="{% url 'jugador_update' jugador.id %}" class="btn btn-light">Editar</a>
+                    <a href="{% url 'jugador_delete' jugador.id %}" class="btn btn-light">Borrar</a>
+                </div>
+            </div>
         {% empty %}
-            <li>No hay jugadores disponibles.</li>
+            <div class="list-item">No hay jugadores disponibles.</div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

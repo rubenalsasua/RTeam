@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h2>Asignar entrenador al {{ equipo.nombre }}</h2>
+    <h1>Asignar entrenador al {{ equipo.nombre }}</h1>
     <form action="{% url 'entrenador_equipo_create' equipo.id %}" method="post">
         {% csrf_token %}
         {{ formulario.errors }}

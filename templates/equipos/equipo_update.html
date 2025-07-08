@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h2>Editar equipo</h2>
+    <h1>Editar equipo</h1>
     <form action="{% url 'equipo_update' equipo.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ formulario.errors }}

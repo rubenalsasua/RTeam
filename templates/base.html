@@ -21,6 +21,9 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <script>
@@ -32,21 +35,50 @@
     }
 </script>
 <body>
-
-<h1>RTeam</h1>
+<div class="app-logo">
+    <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo">
+</div>
 <div>
-    <nav>
-        <ul>
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-            <li><a href="{% url 'temporada_list' %}">Temporadas</a></li>
-            <li><a href="{% url 'liga_list' %}">Ligas</a></li>
-            <li><a href="{% url 'equipo_list' %}">Equipos</a></li>
-            <li><a href="{% url 'jugador_list' %}">Jugadores</a></li>
-            <li><a href="{% url 'entrenador_list' %}">Entrenadores</a></li>
-        </ul>
-    </nav>
     {% block contenido %}
     {% endblock %}
+    <footer class="mobile-nav-footer">
+        <div class="tab-item {% if request.path == '/' %}active{% endif %}">
+            <a href="{% url 'index' %}">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+        </div>
+        <div class="tab-item {% if 'liga' in request.path %}active{% endif %}">
+            <a href="{% url 'liga_list' %}">
+                <i class="fas fa-trophy"></i>
+                <span>Ligas</span>
+            </a>
+        </div>
+        <div class="tab-item {% if 'temporada' in request.path %}active{% endif %}">
+            <a href="{% url 'temporada_list' %}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Temporadas</span>
+            </a>
+        </div>
+        <div class="tab-item {% if 'equipo' in request.path %}active{% endif %}">
+            <a href="{% url 'equipo_list' %}">
+                <i class="fas fa-users"></i>
+                <span>Equipos</span>
+            </a>
+        </div>
+        <div class="tab-item {% if 'jugador' in request.path %}active{% endif %}">
+            <a href="{% url 'jugador_list' %}">
+                <i class="fas fa-running"></i>
+                <span>Jugadores</span>
+            </a>
+        </div>
+        <div class="tab-item {% if 'entrenador' in request.path %}active{% endif %}">
+            <a href="{% url 'entrenador_list' %}">
+                <i class="fas fa-user"></i>
+                <span>Entrenadores</span>
+            </a>
+        </div>
+    </footer>
 </div>
 </body>
 </html>

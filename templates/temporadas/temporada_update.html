@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h2>Editar temporada</h2>
+    <h1>Editar temporada</h1>
     <form action="{% url 'temporada_update' temporada.id %}" method="post">
         {% csrf_token %}
         {{ formulario.errors }}

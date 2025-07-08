@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h2>Nuevo entrenador</h2>
+    <h1>Nuevo entrenador</h1>
     <form action="{% url 'entrenador_create' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ formulario.errors }}

@@ -1,47 +1,45 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>{{ entrenador.nombre }}</h1>
+    <div class="page-header">
+        <h1>{{ entrenador.nombre }}</h1>
 
-    {% if entrenador.foto %}
-        <img src="{{ entrenador.foto.url }}" alt="Foto de {{ entrenador.nombre }}"
-             style="max-width: 200px; max-height: 200px;">
-    {% else %}
-        <p>Sin foto</p>
-    {% endif %}
+        {% if entrenador.foto %}
+            <div class="profile-photo">
+                <img src="{{ entrenador.foto.url }}" alt="Foto de {{ entrenador.nombre }}">
+            </div>
+        {% endif %}
+    </div>
 
+    <section class="section-container">
+        <div class="section-header">
+            <h2>Historial por temporadas</h2>
+        </div>
 
-    <h2>Historial por temporadas</h2>
+        {% if temporadas_info %}
+            <div class="data-cards">
+                {% for info in temporadas_info %}
+                    <div class="data-card">
+                        <div class="card-main">
+                            {% if info.equipo.foto %}
+                                <div class="card-thumb">
+                                    <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}">
+                                </div>
+                            {% endif %}
+                            <div class="card-info">
+                                <h3>{{ info.temporada }}</h3>
+                                <p><strong>Equipo:</strong> {{ info.equipo.nombre }}</p>
+                                <p><strong>Tipo:</strong> {{ info.tipo }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">Este entrenador no ha participado en ninguna temporada.</p>
+        {% endif %}
+    </section>
 
-    {% if temporadas_info %}
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Temporada</th>
-                <th>Equipo</th>
-                <th>Tipo</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for info in temporadas_info %}
-                <tr>
-                    <td>{{ info.temporada }}</td>
-                    <td>
-                        {% if info.equipo.foto %}
-                            <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}"
-                                 style="max-width: 30px; max-height: 30px;">
-                        {% endif %}
-                        {{ info.equipo.nombre }}
-                    </td>
-                    <td>{{ info.tipo }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-
-    {% else %}
-        <p>Este entrenador no ha participado en ninguna temporada.</p>
-    {% endif %}
-
-    <a href="{% url 'entrenador_list' %}" class="btn btn-secondary">Volver a la lista de entrenadores</a>
+    <div class="page-actions">
+        <a href="{% url 'entrenador_list' %}" class="btn btn-secondary">Volver a la lista de entrenadores</a>
+    </div>
 {% endblock %}
