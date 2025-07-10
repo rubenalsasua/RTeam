@@ -1,20 +1,28 @@
 import os
 
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpRequest
+from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
+from django.views import View
 from RTeam_project import settings
 from .forms import TemporadaForm, LigaForm, EquipoForm, JugadorForm, EntrenadorForm, EquipoLigaTemporadaForm, \
     JugadorEquipoTemporadaForm, EntrenadorEquipoTemporadaForm
 from .models import Temporada, Liga, Equipo, Jugador, JugadorEquipoTemporada, Entrenador, EntrenadorEquipoTemporada, \
-    EquipoLigaTemporada
+    EquipoLigaTemporada, User
+
+from django.views.decorators.csrf import csrf_exempt
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from rest_framework.views import APIView
 
 
 # Create your views here.
+@login_required
 def index(request):
-    return render(request, 'base.html')
+    return render(request, 'index.html')
 
 
 class TemporadaListView(ListView):
@@ -510,3 +518,82 @@ def service_worker(request):
     with open(sw_path, 'r') as file:
         content = file.read()
     return HttpResponse(content, content_type='application/javascript')
+
+
+@csrf_exempt
+def sign_in(request):
+    return render(request, 'sign_in.html')
+
+
+@csrf_exempt
+def auth_receiver(request):
+    """
+    Google calls this URL after the user has signed in with their Google account.
+    """
+    print('Inside')
+    token = request.POST['credential']
+
+    try:
+        # Cambia esta línea para usar config() en lugar de os.environ
+        from decouple import config
+        user_data = id_token.verify_oauth2_token(
+            token, requests.Request(), config('GOOGLE_OAUTH_CLIENT_ID')
+        )
+    except ValueError:
+        return HttpResponse(status=403)
+
+    # In a real app, I'd also save any new user here to the database.
+    # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
+    request.session['user_data'] = user_data
+
+    return redirect('sign_in')
+
+
+def sign_out(request):
+    del request.session['user_data']
+    return redirect('sign_in')
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AuthGoogle(View):  # Cambia de APIView a View
+    """
+    Google calls this URL after the user has signed in with their Google account.
+    """
+
+    def get_google_user_data(self, request):
+        token = request.POST['credential']
+        from decouple import config
+        return id_token.verify_oauth2_token(
+            token, requests.Request(), config('GOOGLE_OAUTH_CLIENT_ID')
+        )
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user_data = self.get_google_user_data(request)
+        except ValueError:
+            return HttpResponse("Invalid Google token", status=403)
+
+        email = user_data["email"]
+        user, created = User.objects.get_or_create(
+            email=email, defaults={
+                "username": email,
+                "first_name": user_data.get("given_name"),
+            }
+        )
+
+        # Crear o actualizar el perfil
+        from RTeam_app.models import Profile
+        Profile.objects.get_or_create(user=user, defaults={'sign_up_method': 'google'})
+
+        # Guarda los datos del usuario en la sesión
+        request.session['user_data'] = user_data
+
+        # Autenticar al usuario en Django especificando el backend
+        from django.contrib.auth import login
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        # Redireccionar según el host
+        if 'pythonanywhere' in request.get_host():
+            return redirect('https://rubenalsasua.pythonanywhere.com/inicio/')
+        else:
+            return redirect('index')

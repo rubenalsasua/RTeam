@@ -14,6 +14,12 @@ from pathlib import Path
 import os
 from decouple import config, Csv
 
+# URL a la que se redirige si se requiere login
+LOGIN_URL = 'sign_in'
+
+# URL a la que se redirige después de un login exitoso
+LOGIN_REDIRECT_URL = 'index'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -209,3 +215,13 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'access_type': 'online'}
     }
 }
+
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID', default='')
+if not GOOGLE_OAUTH_CLIENT_ID:
+    raise ValueError(
+        'GOOGLE_OAUTH_CLIENT_ID is missing.'
+        'Have you put it in a file at core/.env ?'
+    )

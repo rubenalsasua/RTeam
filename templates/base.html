@@ -35,9 +35,22 @@
     }
 </script>
 <body>
+<div class="user-info">
+    {% if user.is_authenticated %}
+        <span class="username">{{ user.first_name|default:user.username }}</span>
+        <a href="{% url 'sign_out' %}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </a>
+    {% else %}
+        <a href="{% url 'sign_in' %}" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+        </a>
+    {% endif %}
+</div>
 <div class="app-logo">
     <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo">
 </div>
+
 <div>
     {% block contenido %}
     {% endblock %}

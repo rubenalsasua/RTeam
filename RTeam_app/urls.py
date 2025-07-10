@@ -2,7 +2,12 @@ from django.urls import path
 from RTeam_app import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.sign_in, name='sign_in'),
+    path('sign-out/', views.sign_out, name='sign_out'),
+    path('auth-receiver/', views.auth_receiver, name='auth_receiver'),
+    path('google-auth/', views.AuthGoogle.as_view(), name='google_auth'),
+
+    path('inicio/', views.index, name='index'),
     path('temporadas/', views.TemporadaListView.as_view(), name='temporada_list'),
     path('temporadas/crear/', views.TemporadaCreateView.as_view(), name='temporada_create'),
     path('temporadas/<int:pk>/', views.TemporadaDetailView.as_view(), name='temporada_detail'),

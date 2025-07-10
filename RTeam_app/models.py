@@ -4,6 +4,14 @@ from django.contrib.auth.models import User
 import re
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    sign_up_method = models.CharField(max_length=20, default='google')
+
+    def __str__(self):
+        return self.user.username
+
+
 class TemporadaField(models.CharField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 9
