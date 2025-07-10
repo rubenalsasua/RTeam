@@ -70,7 +70,7 @@
                  data-client_id="150027763554-iqaoi51vf7v5ok0u0ule3bsp90fktgip.apps.googleusercontent.com"
                  data-context="signin"
                  data-ux_mode="popup"
-                 data-login_uri="http://localhost:8000/google-auth/"
+                 data-login_uri="{% if 'pythonanywhere' in request.get_host %}https://rubenalsasua.pythonanywhere.com{% else %}http://localhost:8000{% endif %}/google-auth/"
                  data-itp_support="true">
             </div>
             <div class="g_id_signin"
