@@ -17,6 +17,23 @@ from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from rest_framework.views import APIView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+def admin_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not hasattr(request.user, 'profile') or request.user.profile.role != 'ADMIN':
+            return redirect('index')
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+
+class AdminRequiredMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'profile') or request.user.profile.role != 'ADMIN':
+            return redirect('index')
+        return super().dispatch(request, *args, **kwargs)
 
 
 # Create your views here.
@@ -25,13 +42,13 @@ def index(request):
     return render(request, 'index.html')
 
 
-class TemporadaListView(ListView):
+class TemporadaListView(LoginRequiredMixin, ListView):
     model = Temporada
     template_name = 'temporadas/temporada_list.html'
     context_object_name = 'temporadas'
 
 
-class TemporadaDetailView(DetailView):
+class TemporadaDetailView(LoginRequiredMixin, DetailView):
     model = Temporada
     template_name = 'temporadas/temporada_detail.html'
     context_object_name = 'temporada'
@@ -44,7 +61,7 @@ class TemporadaDetailView(DetailView):
         return context
 
 
-class TemporadaCreateView(CreateView):
+class TemporadaCreateView(LoginRequiredMixin, CreateView):
 
     def get(self, request):
         formulario = TemporadaForm()
@@ -59,7 +76,7 @@ class TemporadaCreateView(CreateView):
         return render(request, "temporadas/temporada_create.html", {"formulario": formulario})
 
 
-class TemporadaUpdateView(UpdateView):
+class TemporadaUpdateView(LoginRequiredMixin, UpdateView):
     model = Temporada
 
     def get(self, request, pk):
@@ -77,20 +94,20 @@ class TemporadaUpdateView(UpdateView):
         return render(request, "temporadas/temporada_update.html", {"formulario": formulario, 'temporada': temporada})
 
 
-class TemporadaDeleteView(DeleteView):
+class TemporadaDeleteView(LoginRequiredMixin, DeleteView):
     model = Temporada
     template_name = 'temporadas/temporada_confirm_delete.html'
     context_object_name = 'temporada'
     success_url = reverse_lazy('temporada_list')
 
 
-class LigaListView(ListView):
+class LigaListView(LoginRequiredMixin, ListView):
     model = Liga
     template_name = 'ligas/liga_list.html'
     context_object_name = 'ligas'
 
 
-class LigaDetailView(DetailView):
+class LigaDetailView(LoginRequiredMixin, DetailView):
     model = Liga
     template_name = 'ligas/liga_detail.html'
     context_object_name = 'liga'
@@ -103,7 +120,7 @@ class LigaDetailView(DetailView):
         return context
 
 
-class LigaCreateView(CreateView):
+class LigaCreateView(LoginRequiredMixin, CreateView):
     def get(self, request):
         formulario = LigaForm()
         context = {'formulario': formulario}
@@ -117,7 +134,7 @@ class LigaCreateView(CreateView):
         return render(request, "ligas/liga_create.html", {"formulario": formulario})
 
 
-class LigaUpdateView(UpdateView):
+class LigaUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, pk):
         liga = Liga.objects.get(id=pk)
         formulario = LigaForm(instance=liga)
@@ -133,14 +150,14 @@ class LigaUpdateView(UpdateView):
         return render(request, "ligas/liga_update.html", {"formulario": formulario, 'liga': liga})
 
 
-class LigaDeleteView(DeleteView):
+class LigaDeleteView(LoginRequiredMixin, DeleteView):
     model = Liga
     template_name = 'ligas/liga_confirm_delete.html'
     context_object_name = 'liga'
     success_url = reverse_lazy('liga_list')
 
 
-class EquipoListView(ListView):
+class EquipoListView(LoginRequiredMixin, ListView):
     model = Equipo
     template_name = 'equipos/equipo_list.html'
     context_object_name = 'equipos'
@@ -157,7 +174,7 @@ class EquipoListView(ListView):
         return equipos
 
 
-class EquipoDetailView(DetailView):
+class EquipoDetailView(LoginRequiredMixin, DetailView):
     model = Equipo
     template_name = 'equipos/equipo_detail.html'
     context_object_name = 'equipo'
@@ -176,7 +193,7 @@ class EquipoDetailView(DetailView):
         return context
 
 
-class EquipoCreateView(CreateView):
+class EquipoCreateView(LoginRequiredMixin, CreateView):
     def get(self, request):
         formulario = EquipoForm()
         context = {'formulario': formulario}
@@ -190,7 +207,7 @@ class EquipoCreateView(CreateView):
         return render(request, "equipos/equipo_create.html", {"formulario": formulario})
 
 
-class EquipoUpdateView(UpdateView):
+class EquipoUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, pk):
         equipo = Equipo.objects.get(id=pk)
         formulario = EquipoForm(instance=equipo)
@@ -206,20 +223,20 @@ class EquipoUpdateView(UpdateView):
         return render(request, "equipos/equipo_update.html", {"formulario": formulario, 'equipo': equipo})
 
 
-class EquipoDeleteView(DeleteView):
+class EquipoDeleteView(LoginRequiredMixin, DeleteView):
     model = Equipo
     template_name = 'equipos/equipo_confirm_delete.html'
     context_object_name = 'equipo'
     success_url = reverse_lazy('equipo_list')
 
 
-class JugadorListView(ListView):
+class JugadorListView(LoginRequiredMixin, ListView):
     model = Jugador
     template_name = 'jugadores/jugador_list.html'
     context_object_name = 'jugadores'
 
 
-class JugadorDetailView(DetailView):
+class JugadorDetailView(LoginRequiredMixin, DetailView):
     model = Jugador
     template_name = 'jugadores/jugador_detail.html'
     context_object_name = 'jugador'
@@ -241,7 +258,7 @@ class JugadorDetailView(DetailView):
         return context
 
 
-class JugadorCreateView(CreateView):
+class JugadorCreateView(LoginRequiredMixin, CreateView):
     def get(self, request):
         formulario = JugadorForm()
         context = {'formulario': formulario}
@@ -255,7 +272,7 @@ class JugadorCreateView(CreateView):
         return render(request, "jugadores/jugador_create.html", {"formulario": formulario})
 
 
-class JugadorUpdateView(UpdateView):
+class JugadorUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, pk):
         jugador = Jugador.objects.get(id=pk)
         formulario = JugadorForm(instance=jugador)
@@ -271,20 +288,20 @@ class JugadorUpdateView(UpdateView):
         return render(request, "jugadores/jugador_update.html", {"formulario": formulario, 'jugador': jugador})
 
 
-class JugadorDeleteView(DeleteView):
+class JugadorDeleteView(LoginRequiredMixin, DeleteView):
     model = Jugador
     template_name = 'jugadores/jugador_confirm_delete.html'
     context_object_name = 'jugador'
     success_url = reverse_lazy('jugador_list')
 
 
-class EntrenadorListView(ListView):
+class EntrenadorListView(LoginRequiredMixin, ListView):
     model = Entrenador
     template_name = 'entrenadores/entrenador_list.html'
     context_object_name = 'entrenadores'
 
 
-class EntrenadorDetailView(DetailView):
+class EntrenadorDetailView(LoginRequiredMixin, DetailView):
     model = Entrenador
     template_name = 'entrenadores/entrenador_detail.html'
     context_object_name = 'entrenador'
@@ -298,7 +315,7 @@ class EntrenadorDetailView(DetailView):
         return context
 
 
-class EntrenadorCreateView(CreateView):
+class EntrenadorCreateView(LoginRequiredMixin, CreateView):
     def get(self, request):
         formulario = EntrenadorForm()
         context = {'formulario': formulario}
@@ -312,7 +329,7 @@ class EntrenadorCreateView(CreateView):
         return render(request, "entrenadores/entrenador_create.html", {"formulario": formulario})
 
 
-class EntrenadorUpdateView(UpdateView):
+class EntrenadorUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, pk):
         entrenador = Entrenador.objects.get(id=pk)
         formulario = EntrenadorForm(instance=entrenador)
@@ -329,14 +346,14 @@ class EntrenadorUpdateView(UpdateView):
                       {"formulario": formulario, 'entrenador': entrenador})
 
 
-class EntrenadorDeleteView(DeleteView):
+class EntrenadorDeleteView(LoginRequiredMixin, DeleteView):
     model = Entrenador
     template_name = 'entrenadores/entrenador_confirm_delete.html'
     context_object_name = 'entrenador'
     success_url = reverse_lazy('entrenador_list')
 
 
-class EquipoLigaCreateView(CreateView):
+class EquipoLigaCreateView(LoginRequiredMixin, CreateView):
     def get(self, request, liga_id):
         liga = Liga.objects.get(id=liga_id)
         equipos_existentes = liga.equipos.all()
@@ -369,7 +386,7 @@ class EquipoLigaCreateView(CreateView):
         return render(request, "ligas/equipo_en_liga_create.html", context)
 
 
-class EquipoLigaDeleteView(DeleteView):
+class EquipoLigaDeleteView(LoginRequiredMixin, DeleteView):
     model = EquipoLigaTemporada
     template_name = 'ligas/equipo_en_liga_confirm_delete.html'
 
@@ -383,7 +400,7 @@ class EquipoLigaDeleteView(DeleteView):
         return reverse_lazy('liga_detail', kwargs={'pk': self.object.liga.id})
 
 
-class JugadorEquipoTemporadaCreateView(CreateView):
+class JugadorEquipoTemporadaCreateView(LoginRequiredMixin, CreateView):
     def get(self, request, equipo_id):
         equipo = Equipo.objects.get(id=equipo_id)
         # Obtener jugadores que no están en este equipo en la temporada actual
@@ -426,7 +443,7 @@ class JugadorEquipoTemporadaCreateView(CreateView):
         return render(request, "jugadores/jugador_en_equipo_create.html", context)
 
 
-class JugadorEquipoTemporadaDeleteView(DeleteView):
+class JugadorEquipoTemporadaDeleteView(LoginRequiredMixin, DeleteView):
     model = JugadorEquipoTemporada
     template_name = 'jugadores/jugador_en_equipo_confirm_delete.html'
 
@@ -448,7 +465,7 @@ class JugadorEquipoTemporadaDeleteView(DeleteView):
         return reverse_lazy('equipo_detail', kwargs={'pk': self.object.equipo.id})
 
 
-class EntrenadorEquipoTemporadaCreateView(CreateView):
+class EntrenadorEquipoTemporadaCreateView(LoginRequiredMixin, CreateView):
     def get(self, request, equipo_id):
         equipo = Equipo.objects.get(id=equipo_id)
         # Obtener entrenadores que no están en este equipo en la temporada actual
@@ -491,7 +508,7 @@ class EntrenadorEquipoTemporadaCreateView(CreateView):
         return render(request, "entrenadores/entrenador_en_equipo_create.html", context)
 
 
-class EntrenadorEquipoTemporadaDeleteView(DeleteView):
+class EntrenadorEquipoTemporadaDeleteView(LoginRequiredMixin, DeleteView):
     model = EntrenadorEquipoTemporada
     template_name = 'entrenadores/entrenador_en_equipo_confirm_delete.html'
 
@@ -549,8 +566,17 @@ def auth_receiver(request):
     return redirect('sign_in')
 
 
+from django.contrib.auth import logout
+
+
 def sign_out(request):
-    del request.session['user_data']
+    # Eliminar datos de sesión personalizados
+    if 'user_data' in request.session:
+        del request.session['user_data']
+
+    # Cerrar sesión de Django correctamente
+    logout(request)
+
     return redirect('sign_in')
 
 
@@ -574,25 +600,65 @@ class AuthGoogle(View):  # Cambia de APIView a View
             return HttpResponse("Invalid Google token", status=403)
 
         email = user_data["email"]
+
+        # Obtener nombre completo de Google
+        first_name = user_data.get("given_name", "")
+        last_name = user_data.get("family_name", "")
+        full_name = user_data.get("name", "")  # Nombre completo proporcionado por Google
+
+        # Crear o actualizar usuario
         user, created = User.objects.get_or_create(
-            email=email, defaults={
+            email=email,
+            defaults={
                 "username": email,
-                "first_name": user_data.get("given_name"),
+                "first_name": first_name,
+                "last_name": last_name,  # Guardar apellidos
             }
         )
 
+        # Si el usuario ya existía, actualizamos sus datos por si han cambiado en Google
+        if not created:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+        # Determinar el rol basado en el correo electrónico
+        from decouple import config
+        admin_email = config('ADMIN_EMAIL', default='')
+        role = 'ADMIN' if email.lower() == admin_email.lower() else 'INVITADO'
+
+        # Configurar is_staff si es administrador
+        if role == 'ADMIN' and not user.is_staff:
+            user.is_staff = True
+            user.save()
+
         # Crear o actualizar el perfil
         from RTeam_app.models import Profile
-        Profile.objects.get_or_create(user=user, defaults={'sign_up_method': 'google'})
+        profile, profile_created = Profile.objects.get_or_create(
+            user=user,
+            defaults={
+                'sign_up_method': 'google',
+                'role': role,
+                'full_name': full_name,  # Guardar nombre completo en el perfil
+            }
+        )
 
-        # Guarda los datos del usuario en la sesión
+        # Si el usuario ya existía pero es el administrador, asegúrate de que tenga el rol correcto
+        if not profile_created:
+            if email.lower() == admin_email.lower() and profile.role != 'ADMIN':
+                profile.role = 'ADMIN'
+                profile.save()
+            # Actualizar el nombre completo por si ha cambiado
+            if profile.full_name != full_name:
+                profile.full_name = full_name
+                profile.save()
+
+        # Guardar datos en sesión y autenticar
         request.session['user_data'] = user_data
-
-        # Autenticar al usuario en Django especificando el backend
         from django.contrib.auth import login
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-        # Redireccionar según el host
+        # Redireccionar
         if 'pythonanywhere' in request.get_host():
             return redirect('https://rubenalsasua.pythonanywhere.com/inicio/')
         else:

@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block contenido %}
     <h1>Inicio</h1>
-
+    {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
+        <div class="admin-link">
+            <a href="{% url 'admin:index' %}">
+                <i class="fas fa-cog"></i> Panel de Administración
+            </a>
+        </div>
+    {% endif %}
 {% endblock %}

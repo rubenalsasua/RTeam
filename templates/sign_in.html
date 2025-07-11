@@ -1,7 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login Page</title>
     <script src="https://accounts.google.com/gsi/client" async></script>
     <style>
@@ -13,41 +14,69 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 15px;
         }
 
         .container {
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
+            width: 100%;
+            max-width: 350px;
         }
 
         img {
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
-            margin-top: 10px;
+            margin: 15px auto;
+            display: block;
         }
 
         p {
             color: #333;
-            margin: 10px 0;
+            margin: 15px 0;
+            font-size: 20px;
+            line-height: 1.4;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.3;
         }
 
         a {
             color: #007bff;
             text-decoration: none;
             font-weight: bold;
+            display: inline-block;
+            padding: 6px 0;
         }
 
-        a:hover {
+        a:hover, a:active {
             text-decoration: underline;
         }
 
         .g_id_signin {
-            margin-top: 20px;
+            margin: 20px auto 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Añadir espacio de toque para elementos interactivos */
+        .g_id_signin > div {
+            touch-action: manipulation;
+        }
+
+        /* Evitar el zoom en los inputs en iOS */
+        input {
+            font-size: 16px;
         }
     </style>
 </head>
@@ -56,16 +85,16 @@
 <div class="container">
     {% if request.session.user_data %}
         <div>
-            <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
-            <p>Your email is {{ request.session.user_data.email }}</p>
-            <img src="{{ request.session.user_data.picture }}" alt="User picture"/>
+            <h1>Hola {{ request.session.user_data.given_name }} 🙂</h1>
+            <p>Tu email es {{ request.session.user_data.email }}</p>
+            <img src="{{ request.session.user_data.picture }}" alt="Foto de perfil"/>
             <p><a href="{% url 'index' %}">Inicio</a></p>
-            <p>Click here to <a href="/sign-out/">Sign out</a></p>
+            <p><a href="/sign-out/">Cerrar sesión</a></p>
         </div>
     {% else %}
         <div>
-            <p>Hi there 🙂</p>
-            <p>Click below to sign in with Google</p>
+            <h1>¡Hola! 🙂</h1>
+            <p>Inicia sesión con Google en RTeam</p>
             <div id="g_id_onload"
                  data-client_id="150027763554-iqaoi51vf7v5ok0u0ule3bsp90fktgip.apps.googleusercontent.com"
                  data-context="signin"

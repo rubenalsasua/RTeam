@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RTeam</title>
 
     <!-- PWA manifest -->
@@ -35,17 +35,18 @@
     }
 </script>
 <body>
-<div class="user-info">
-    {% if user.is_authenticated %}
-        <span class="username">{{ user.first_name|default:user.username }}</span>
+<div class="user-header">
+    <div class="user-info">
+        <span class="username">{{ user.first_name|default:user.username|upper }}</span>
+        {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
+        <a href="{% url 'admin:index' %}" class="admin-btn">
+            <i class="fas fa-cog"></i> Admin
+        </a>
+        {% endif %}
         <a href="{% url 'sign_out' %}" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Cerrar sesión
         </a>
-    {% else %}
-        <a href="{% url 'sign_in' %}" class="login-btn">
-            <i class="fas fa-sign-in-alt"></i> Iniciar sesión
-        </a>
-    {% endif %}
+    </div>
 </div>
 <div class="app-logo">
     <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo">
@@ -55,7 +56,7 @@
     {% block contenido %}
     {% endblock %}
     <footer class="mobile-nav-footer">
-        <div class="tab-item {% if request.path == '/' %}active{% endif %}">
+        <div class="tab-item {% if request.path == '/' or request.resolver_match.url_name == 'index' %}active{% endif %}">
             <a href="{% url 'index' %}">
                 <i class="fas fa-home"></i>
                 <span>Inicio</span>

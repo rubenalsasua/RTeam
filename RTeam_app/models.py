@@ -7,9 +7,16 @@ import re
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sign_up_method = models.CharField(max_length=20, default='google')
+    full_name = models.CharField(max_length=255, blank=True)  # Campo para nombre completo
+    ROLES = [
+        ('ADMIN', 'Administrador'),
+        ('JUGADOR', 'Jugador'),
+        ('INVITADO', 'Invitado'),
+    ]
+    role = models.CharField(max_length=20, choices=ROLES, default='INVITADO')
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} - {self.get_role_display()}"
 
 
 class TemporadaField(models.CharField):

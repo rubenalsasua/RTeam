@@ -1,8 +1,33 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 from .models import (
-    Temporada, Equipo, Jugador, JugadorEquipoTemporada,
+    Profile, Temporada, Equipo, Jugador, JugadorEquipoTemporada,
     Entrenador, EntrenadorEquipoTemporada, Liga, EquipoLigaTemporada
 )
+
+
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (ProfileInline,)
+    list_display = ('username', 'email', 'first_name', 'get_role')
+
+    def get_role(self, obj):
+        try:
+            return obj.profile.get_role_display()
+        except Profile.DoesNotExist:
+            return '-'
+
+    get_role.short_description = 'Rol'
+
+
+# Reemplaza el UserAdmin predeterminado
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
 
 # Register your models here.
 admin.site.register(Temporada)
