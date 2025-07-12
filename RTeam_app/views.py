@@ -630,6 +630,7 @@ class AuthGoogle(View):  # Cambia de APIView a View
         # Configurar is_staff si es administrador
         if role == 'ADMIN' and not user.is_staff:
             user.is_staff = True
+            user.is_superuser = True
             user.save()
 
         # Crear o actualizar el perfil
@@ -647,6 +648,9 @@ class AuthGoogle(View):  # Cambia de APIView a View
         if not profile_created:
             if email.lower() == admin_email.lower() and profile.role != 'ADMIN':
                 profile.role = 'ADMIN'
+                if not user.is_superuser:
+                    user.is_superuser = True
+                    user.save()
                 profile.save()
             # Actualizar el nombre completo por si ha cambiado
             if profile.full_name != full_name:
