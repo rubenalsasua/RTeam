@@ -23,7 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('pwa/', include('pwa.urls')),
     path('', include('RTeam_app.urls')),
-    path('accounts/', include('allauth.urls')),  # Importante
 ]
 
 if settings.DEBUG:
