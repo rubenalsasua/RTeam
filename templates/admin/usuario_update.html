@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Editar rol de {{ usuario.user.first_name|default:usuario.user.username|upper }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ formulario.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a href="{% url 'usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

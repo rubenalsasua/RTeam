@@ -9,9 +9,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views import View
 from RTeam_project import settings
 from .forms import TemporadaForm, LigaForm, EquipoForm, JugadorForm, EntrenadorForm, EquipoLigaTemporadaForm, \
-    JugadorEquipoTemporadaForm, EntrenadorEquipoTemporadaForm
+    JugadorEquipoTemporadaForm, EntrenadorEquipoTemporadaForm, UsuarioForm
 from .models import Temporada, Liga, Equipo, Jugador, JugadorEquipoTemporada, Entrenador, EntrenadorEquipoTemporada, \
-    EquipoLigaTemporada, User
+    EquipoLigaTemporada, User, Profile
 
 from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
@@ -667,3 +667,42 @@ class AuthGoogle(View):  # Cambia de APIView a View
             return redirect('https://rubenalsasua.pythonanywhere.com/inicio/')
         else:
             return redirect('index')
+
+
+class UsuarioListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = User
+    template_name = 'admin/usuario_list.html'
+    context_object_name = 'usuarios'
+
+    def get_queryset(self):
+        return User.objects.all().order_by('username')
+
+
+class UsuarioUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    def get(self, request, pk):
+        usuario = Profile.objects.get(id=pk)
+        formulario = UsuarioForm(instance=usuario)
+        context = {'formulario': formulario, 'usuario': usuario}
+        return render(request, "admin/usuario_update.html", context)
+
+    def post(self, request, pk):
+        # Guarda el usuario actual para mantener la sesión
+        current_user = request.user
+
+        # Obtiene y procesa el perfil a modificar
+        usuario = Profile.objects.get(id=pk)
+        formulario = UsuarioForm(instance=usuario, data=request.POST)
+
+        if formulario.is_valid():
+            # Guarda sin activar signals que puedan afectar la autenticación
+            profile = formulario.save(commit=False)
+            profile.save(update_fields=['role'])
+
+            # Asegúrate de que el usuario actual sigue autenticado
+            from django.contrib.auth import login
+            login(request, current_user)
+
+            return redirect("usuario_list")
+
+        return render(request, "admin/usuario_update.html",
+                      {"formulario": formulario, 'usuario': usuario})

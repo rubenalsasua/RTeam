@@ -37,11 +37,14 @@
 <body>
 <div class="user-header">
     <div class="user-info">
-        <span class="username">{{ user.first_name|default:user.username|upper }}</span>
+        <span class="username">{{ user.first_name|default:user.username|upper }}
+            {% if user.is_authenticated %}
+                <small>{{ user.profile.get_role_display }}</small>
+            {% endif %}</span>
         {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
-        <a href="{% url 'admin:index' %}" class="admin-btn">
-            <i class="fas fa-cog"></i> Admin
-        </a>
+            <a href="{% url 'admin:index' %}" class="admin-btn">
+                <i class="fas fa-cog"></i> Admin
+            </a>
         {% endif %}
         <a href="{% url 'sign_out' %}" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Cerrar sesión

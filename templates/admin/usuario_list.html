@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>Usuarios de RTeam</h1>
+    <div class="list-group">
+        {% for usuario in usuarios %}
+            <div class="list-item clickable">
+                <a href="{% url 'usuario_update' usuario.profile.id %}">
+                    <h2>{{ usuario.first_name|default:usuario.username|upper }}</h2>
+                    <div class="item-actions">
+                        <span class="btn btn-secondary btn-small">Editar rol</span>
+                    </div>
+                    <p>Email: {{ usuario.email }}</p>
+                    <p>Rol: {{ usuario.profile.get_role_display }}</p>
+                    <p>Fecha de creación: {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+                    <p>Último inicio de sesión: {{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</p>
+                </a>
+            </div>
+        {% empty %}
+            <div class="list-item">No hay usuarios todavía.</div>
+        {% endfor %}
+    </div>
+{% endblock %}

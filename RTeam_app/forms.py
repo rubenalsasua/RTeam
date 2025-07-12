@@ -1,6 +1,6 @@
 from django import forms
 from .models import Temporada, Liga, Equipo, Jugador, Entrenador, EquipoLigaTemporada, JugadorEquipoTemporada, \
-    EntrenadorEquipoTemporada
+    EntrenadorEquipoTemporada, Profile
 
 
 class TemporadaForm(forms.ModelForm):
@@ -115,3 +115,12 @@ class EntrenadorEquipoTemporadaForm(forms.ModelForm):
     class Meta:
         model = EntrenadorEquipoTemporada
         fields = ['entrenador', 'temporada', 'tipo']
+
+
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['role']
+        widgets = {
+            'role': forms.Select(attrs={'class': 'form-control'})
+        }
