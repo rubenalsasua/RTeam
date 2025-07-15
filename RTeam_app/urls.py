@@ -8,6 +8,7 @@ urlpatterns = [
     path('google-auth/', views.AuthGoogle.as_view(), name='google_auth'),
 
     path('inicio/', views.index, name='index'),
+    path('equipos_menu/', views.equipos_menu, name='equipos_menu'),
     path('temporadas/', views.TemporadaListView.as_view(), name='temporada_list'),
     path('temporadas/crear/', views.TemporadaCreateView.as_view(), name='temporada_create'),
     path('temporadas/<int:pk>/', views.TemporadaDetailView.as_view(), name='temporada_detail'),

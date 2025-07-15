@@ -1,22 +1,29 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Usuarios de RTeam</h1>
+    <h1 class="mb-4">Usuarios de RTeam</h1>
     <div class="list-group">
         {% for usuario in usuarios %}
-            <div class="list-item clickable">
-                <a href="{% url 'usuario_update' usuario.profile.id %}">
-                    <h2>{{ usuario.first_name|default:usuario.username|upper }}</h2>
-                    <div class="item-actions">
-                        <span class="btn btn-secondary btn-small">Editar rol</span>
+            <div class="list-group-item list-group-item-action p-3">
+                <a href="{% url 'usuario_update' usuario.profile.id %}" class="text-decoration-none text-dark">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0 text-primary">{{ usuario.first_name|default:usuario.username|upper }}</h5>
+                        <span class="badge bg-secondary">{{ usuario.profile.get_role_display }}</span>
                     </div>
-                    <p>Email: {{ usuario.email }}</p>
-                    <p>Rol: {{ usuario.profile.get_role_display }}</p>
-                    <p>Fecha de creación: {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
-                    <p>Último inicio de sesión: {{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ usuario.email }}</p>
+                    <p class="mb-1"><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0">
+                            <strong>Último login:</strong> {{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}
+                        </p>
+                        <p class="mb-0 text-success">
+                            <strong>Último
+                                acceso:</strong> {{ usuario.profile.last_visit|date:"d/m/Y H:i"|default:"Nunca" }}
+                        </p>
+                    </div>
                 </a>
             </div>
         {% empty %}
-            <div class="list-item">No hay usuarios todavía.</div>
+            <div class="list-group-item text-center py-3">No hay usuarios todavía.</div>
         {% endfor %}
     </div>
 {% endblock %}

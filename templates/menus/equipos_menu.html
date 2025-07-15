@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <a href="{% url 'temporada_list' %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm border-0 menu-card">
+                    <div class="card-body text-center py-4">
+                        <i class="fas fa-calendar-alt text-primary fa-3x mb-3"></i>
+                        <h3 class="card-title">Temporadas</h3>
+                        <p class="card-text text-muted">Gestionar periodos competitivos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="{% url 'liga_list' %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm border-0 menu-card">
+                    <div class="card-body text-center py-4">
+                        <i class="fas fa-trophy text-success fa-3x mb-3"></i>
+                        <h3 class="card-title">Ligas</h3>
+                        <p class="card-text text-muted">Administrar competiciones</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="{% url 'equipo_list' %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm border-0 menu-card">
+                    <div class="card-body text-center py-4">
+                        <i class="fas fa-shield-alt text-danger fa-3x mb-3"></i>
+                        <h3 class="card-title">Equipos</h3>
+                        <p class="card-text text-muted">Ver y editar equipos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="{% url 'jugador_list' %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm border-0 menu-card">
+                    <div class="card-body text-center py-4">
+                        <i class="fas fa-running text-warning fa-3x mb-3"></i>
+                        <h3 class="card-title">Jugadores</h3>
+                        <p class="card-text text-muted">Gestionar plantillas</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="{% url 'entrenador_list' %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm border-0 menu-card">
+                    <div class="card-body text-center py-4">
+                        <i class="fas fa-chalkboard-teacher text-info fa-3x mb-3"></i>
+                        <h3 class="card-title">Entrenadores</h3>
+                        <p class="card-text text-muted">Administrar staff técnico</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+{% endblock %}

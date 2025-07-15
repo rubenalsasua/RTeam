@@ -706,3 +706,7 @@ class UsuarioUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
 
         return render(request, "admin/usuario_update.html",
                       {"formulario": formulario, 'usuario': usuario})
+
+@login_required
+def equipos_menu(request):
+    return render(request, 'menus/equipos_menu.html')

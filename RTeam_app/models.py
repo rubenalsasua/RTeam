@@ -7,7 +7,9 @@ import re
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sign_up_method = models.CharField(max_length=20, default='google')
-    full_name = models.CharField(max_length=255, blank=True)  # Campo para nombre completo
+    full_name = models.CharField(max_length=255, blank=True)
+    last_visit = models.DateTimeField(null=True, blank=True)
+
     ROLES = [
         ('ADMIN', 'Administrador'),
         ('JUGADOR', 'Jugador'),

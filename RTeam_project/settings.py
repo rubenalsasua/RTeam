@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'RTeam_app.middleware.AdminAccessMiddleware',  # Añadir aquí
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'RTeam_app.middleware.LastVisitMiddleware',
 ]
 
 ROOT_URLCONF = 'RTeam_project.urls'

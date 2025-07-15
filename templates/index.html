@@ -1,14 +1,23 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Inicio</h1>
+    <h1 class="mb-4">Inicio</h1>
     {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
-        <div class="admin-link">
-            <a href="{% url 'admin:index' %}">
-                <i class="fas fa-cog"></i> Panel de Administración
-            </a>
-            <a href="{% url 'usuario_list' %}">
-                <i class="fas fa-cog"></i> Usuarios
-            </a>
+        <div class="mb-4">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <a href="{% url 'admin:index' %}"
+                   class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
+                   style="min-width: 200px;">
+                    <i class="fas fa-cog me-2"></i> Panel de Administración
+                </a>
+                <a href="{% url 'usuario_list' %}"
+                   class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
+                   style="min-width: 200px;">
+                    <i class="fas fa-users me-2"></i> Usuarios
+                </a>
+            </div>
+            <hr class="my-3">
         </div>
     {% endif %}
+    <h3>Próximos eventos...</h3>
+
 {% endblock %}
