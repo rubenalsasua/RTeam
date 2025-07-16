@@ -39,14 +39,17 @@
 </script>
 
 <!-- Barra de usuario -->
-<div class="bg-dark text-white shadow-sm w-100 px-3 py-2 position-relative" style="z-index: 100;">
+<div class="bg-dark text-white shadow-sm w-100 px-3 py-2 position-fixed top-0 start-0" style="z-index: 1030;">
     <div class="d-flex align-items-center justify-content-between gap-2 small">
-        <span class="fw-bold text-warning text-uppercase">
-            {{ user.first_name|default:user.username }}
-            {% if user.is_authenticated %}
-            {% endif %}
-            <small class="text-muted">{{ user.profile.get_role_display }}</small>
-        </span>
+        <div class="d-flex align-items-center">
+            <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo" width="40" height="40" class="rounded-3 me-2">
+            <span class="fw-bold text-warning text-uppercase">
+                {{ user.first_name|default:user.username }}
+                {% if user.is_authenticated %}
+                {% endif %}
+                <small class="">{{ user.profile.get_role_display }}</small>
+            </span>
+        </div>
         <div class="d-flex gap-1">
             {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
                 <a href="{% url 'admin:index' %}" class="btn btn-sm btn-dark py-0 px-2 d-flex align-items-center">
@@ -60,10 +63,15 @@
     </div>
 </div>
 
-<!-- Logo de la aplicación -->
-<div class="text-center my-3">
-    <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo" width="80" height="80" class="rounded-3 shadow-sm">
-</div>
+<!-- Eliminar el div del logo que estaba separado -->
+<!-- <div class="mb-5 pt-5">
+    <div class="text-center my-3">
+        <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo" width="80" height="80" class="rounded-3 shadow-sm">
+    </div>
+</div> -->
+
+<!-- Espacio para compensar la barra fija superior -->
+<div class="mb-3 pt-5"></div>
 
 <!-- Contenido principal -->
 <div class="container-fluid px-3 pb-5">

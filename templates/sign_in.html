@@ -89,7 +89,7 @@
             <p>Tu email es {{ request.session.user_data.email }}</p>
             <img src="{{ request.session.user_data.picture }}" alt="Foto de perfil"/>
             <p><a href="{% url 'index' %}">Inicio</a></p>
-            <p><a href="/sign-out/">Cerrar sesión</a></p>
+            <p><a href="{% url 'sign_out' %}">Cerrar sesión</a></p>
         </div>
     {% else %}
         <div>
