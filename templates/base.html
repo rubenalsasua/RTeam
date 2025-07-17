@@ -53,7 +53,7 @@
                 <span class="fw-bold text-warning text-uppercase">
                     {{ user.first_name|default:user.username }}
                 </span>
-                <small class="">{{ user.profile.get_role_display }}</small>
+                <small class="fw-bold">{{ user.profile.get_role_display }}</small> <!-- boldddd -->
             {% endif %}
         </div>
 
