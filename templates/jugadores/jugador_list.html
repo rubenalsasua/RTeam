@@ -1,29 +1,48 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <h1>Jugadores</h1>
-    <a href="{% url 'jugador_create' %}" class="btn btn-primary">Crear nuevo jugador</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="text-center mb-3">Jugadores</h1>
+            <a href="{% url 'jugador_create' %}" class="btn btn-warning w-100 mb-3">Crear nuevo jugador</a>
+        </div>
+    </div>
+
     <div class="list-group">
         {% for jugador in jugadores %}
-            <div class="list-item clickable">
-                <a href="{% url 'jugador_detail' jugador.id %}">
-                    <h2>{{ jugador.nombre }}</h2>
-                    {% if jugador.foto %}
-                        <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}" class="img-thumbnail">
-                    {% else %}
-                        <p>No hay foto disponible</p>
-                    {% endif %}
-                    <p>Posición: {{ jugador.posicion }}</p>
-                    <div class="item-actions">
-                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+            <div class="card mb-3 shadow-sm">
+                <a href="{% url 'jugador_detail' jugador.id %}" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ jugador.nombre }}</h5>
+
+                        <div class="card-img-top text-center pt-3">
+                            {% if jugador.foto %}
+                                <img src="{{ jugador.foto.url }}" alt="{{ jugador.nombre }}" class="rounded-circle"
+                                     style="width: 80px; height: 80px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'icons/default_player.png' %}" alt="Imagen predeterminada"
+                                     class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+
+                        <p class="card-text small"><strong>Posición:</strong> {{ jugador.posicion }}</p>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <span class="btn btn-sm btn-secondary">Ver detalles</span>
+                        </div>
                     </div>
                 </a>
-                <div class="item-controls">
-                    <a href="{% url 'jugador_update' jugador.id %}" class="btn btn-light">Editar</a>
-                    <a href="{% url 'jugador_delete' jugador.id %}" class="btn btn-light">Borrar</a>
+                <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                    <a href="{% url 'jugador_update' jugador.id %}" class="btn btn-sm btn-light">Editar</a>
+                    <a href="{% url 'jugador_delete' jugador.id %}" class="btn btn-sm btn-light">Borrar</a>
                 </div>
             </div>
         {% empty %}
-            <div class="list-item">No hay jugadores disponibles.</div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body text-center text-muted">
+                    No hay jugadores disponibles.
+                </div>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

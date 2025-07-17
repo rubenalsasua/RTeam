@@ -1,36 +1,46 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <div class="page-header">
-        <h1>Temporada {{ temporada.periodo }}</h1>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center py-3">
+            <h2 class="mb-3">Temporada {{ temporada.periodo }}</h2>
+        </div>
     </div>
 
-    <section class="section-container">
-        <div class="section-header">
-            <h2>Ligas</h2>
-            <a href="{% url 'liga_create' %}" class="btn btn-primary">Añadir liga</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h5 class="mb-0">Ligas</h5>
+            <a href="{% url 'liga_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Añadir liga
+            </a>
         </div>
-
-        {% if ligas %}
-            <div class="data-cards">
-                {% for liga in ligas %}
-                    <div class="data-card">
-                        <div class="card-info">
-                            <h3>{{ liga.nombre }}</h3>
-                            <p><strong>Equipos:</strong> {{ liga.equipos.count }}</p>
+        <div class="card-body">
+            {% if ligas %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for liga in ligas %}
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ liga.nombre }}</h5>
+                                    <p class="card-text"><strong>Equipos:</strong> {{ liga.equipos.count }}</p>
+                                    <div class="d-flex justify-content-end gap-2 mt-2">
+                                        <a href="{% url 'liga_detail' liga.id %}" class="btn btn-sm btn-secondary">Detalles</a>
+                                        <a href="{% url 'liga_update' liga.id %}"
+                                           class="btn btn-sm btn-light">Editar</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-actions">
-                            <a href="{% url 'liga_detail' liga.id %}" class="btn btn-secondary btn-small">Detalles</a>
-                            <a href="{% url 'liga_update' liga.id %}" class="btn btn-light btn-small">Editar</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-message">Esta temporada no tiene ligas agregadas.</p>
-        {% endif %}
-    </section>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-muted my-4">Esta temporada no tiene ligas agregadas.</p>
+            {% endif %}
+        </div>
+    </div>
 
-    <div class="page-actions">
-        <a href="{% url 'temporada_list' %}" class="btn btn-secondary">Volver a la lista de temporadas</a>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'temporada_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Volver a la lista de temporadas
+        </a>
     </div>
 {% endblock %}

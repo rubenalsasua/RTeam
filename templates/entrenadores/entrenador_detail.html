@@ -1,45 +1,61 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <div class="page-header">
-        <h1>{{ entrenador.nombre }}</h1>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center py-3">
+            <h2 class="mb-3">{{ entrenador.nombre }}</h2>
 
-        {% if entrenador.foto %}
-            <div class="profile-photo">
-                <img src="{{ entrenador.foto.url }}" alt="Foto de {{ entrenador.nombre }}">
-            </div>
-        {% endif %}
+            {% if entrenador.foto %}
+                <div class="profile-photo mb-3">
+                    <img src="{{ entrenador.foto.url }}" alt="Foto de {{ entrenador.nombre }}">
+                </div>
+            {% else %}
+                <div class="profile-photo mb-3">
+                    <img src="{% static 'icons/default_player.png' %}" alt="Imagen predeterminada">
+                </div>
+            {% endif %}
+        </div>
     </div>
 
-    <section class="section-container">
-        <div class="section-header">
-            <h2>Historial por temporadas</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h5 class="mb-0">Historial por temporadas</h5>
         </div>
-
-        {% if temporadas_info %}
-            <div class="data-cards">
-                {% for info in temporadas_info %}
-                    <div class="data-card">
-                        <div class="card-main">
-                            {% if info.equipo.foto %}
-                                <div class="card-thumb">
-                                    <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}">
+        <div class="card-body">
+            {% if temporadas_info %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for info in temporadas_info %}
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="row g-0">
+                                    {% if info.equipo.foto %}
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
+                                            <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}"
+                                                 class="img-fluid rounded-start" style="max-height: 100px;">
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-md-{% if info.equipo.foto %}8{% else %}12{% endif %}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ info.temporada }}</h5>
+                                            <p class="card-text mb-1"><strong>Equipo:</strong> {{ info.equipo.nombre }}
+                                            </p>
+                                            <p class="card-text mb-0"><strong>Tipo:</strong> {{ info.tipo }}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            {% endif %}
-                            <div class="card-info">
-                                <h3>{{ info.temporada }}</h3>
-                                <p><strong>Equipo:</strong> {{ info.equipo.nombre }}</p>
-                                <p><strong>Tipo:</strong> {{ info.tipo }}</p>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-message">Este entrenador no ha participado en ninguna temporada.</p>
-        {% endif %}
-    </section>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-muted my-4">Este entrenador no ha participado en ninguna temporada.</p>
+            {% endif %}
+        </div>
+    </div>
 
-    <div class="page-actions">
-        <a href="{% url 'entrenador_list' %}" class="btn btn-secondary">Volver a la lista de entrenadores</a>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'entrenador_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Volver a la lista de entrenadores
+        </a>
     </div>
 {% endblock %}

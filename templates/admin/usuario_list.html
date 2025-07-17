@@ -1,29 +1,39 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1 class="mb-4">Usuarios de RTeam</h1>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="text-center mb-3">Usuarios de RTeam</h1>
+        </div>
+    </div>
+
     <div class="list-group">
         {% for usuario in usuarios %}
-            <div class="list-group-item list-group-item-action p-3">
+            <div class="card mb-3 shadow-sm">
                 <a href="{% url 'usuario_update' usuario.profile.id %}" class="text-decoration-none text-dark">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0 text-primary">{{ usuario.first_name|default:usuario.username|upper }}</h5>
-                        <span class="badge bg-secondary">{{ usuario.profile.get_role_display }}</span>
-                    </div>
-                    <p class="mb-1"><strong>Email:</strong> {{ usuario.email }}</p>
-                    <p class="mb-1"><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-0">
-                            <strong>Último login:</strong> {{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}
-                        </p>
-                        <p class="mb-0 text-success">
-                            <strong>Último
-                                acceso:</strong> {{ usuario.profile.last_visit|date:"d/m/Y H:i"|default:"Nunca" }}
-                        </p>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0 text-primary">{{ usuario.first_name|default:usuario.username|upper }}</h5>
+                            <span class="badge bg-secondary">{{ usuario.profile.get_role_display }}</span>
+                        </div>
+                        <p class="mb-1 small"><strong>Email:</strong> {{ usuario.email }}</p>
+                        <p class="mb-1 small"><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-0 small">
+                                <strong>Último login:</strong> {{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}
+                            </p>
+                            <p class="mb-0 small text-success">
+                                <strong>Último acceso:</strong> {{ usuario.profile.last_visit|date:"d/m/Y H:i"|default:"Nunca" }}
+                            </p>
+                        </div>
                     </div>
                 </a>
             </div>
         {% empty %}
-            <div class="list-group-item text-center py-3">No hay usuarios todavía.</div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body text-center text-muted">
+                    No hay usuarios todavía.
+                </div>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

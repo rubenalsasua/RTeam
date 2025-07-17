@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Ligas</h1>
-    <a href="{% url 'liga_create' %}" class="btn btn-primary">Crear nueva liga</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="text-center mb-3">Ligas</h1>
+            <a href="{% url 'liga_create' %}" class="btn btn-warning w-100 mb-3">Crear nueva liga</a>
+        </div>
+    </div>
+
     <div class="list-group">
         {% for liga in ligas %}
-            <div class="list-item clickable">
-                <a href="{% url 'liga_detail' liga.id %}">
-                    <h2>{{ liga.nombre }}</h2>
-                    <p>Temporada: {{ liga.temporada.periodo }}</p>
-                    <p>Equipos: {{ liga.equipos.count }}</p>
-                    <div class="item-actions">
-                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+            <div class="card mb-3 shadow-sm">
+                <a href="{% url 'liga_detail' liga.id %}" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ liga.nombre }}</h5>
+                        <p class="card-text mb-1 small">Temporada: {{ liga.temporada.periodo }}</p>
+                        <p class="card-text small">Equipos: {{ liga.equipos.count }}</p>
+                        <div class="d-flex justify-content-end mt-3">
+                            <span class="btn btn-sm btn-secondary">Ver detalles</span>
+                        </div>
                     </div>
                 </a>
-                <div class="item-controls">
-                    <a href="{% url 'liga_update' liga.id %}" class="btn btn-light">Editar</a>
-                    <a href="{% url 'liga_delete' liga.id %}" class="btn btn-light">Borrar</a>
+                <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                    <a href="{% url 'liga_update' liga.id %}" class="btn btn-sm btn-light">Editar</a>
+                    <a href="{% url 'liga_delete' liga.id %}" class="btn btn-sm btn-light">Borrar</a>
                 </div>
             </div>
         {% empty %}
-            <div class="list-item">No hay ligas disponibles.</div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body text-center text-muted">
+                    No hay ligas disponibles.
+                </div>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

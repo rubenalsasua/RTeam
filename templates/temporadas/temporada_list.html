@@ -1,23 +1,34 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Temporadas</h1>
-    <a href="{% url 'temporada_create' %}" class="btn btn-primary">Crear nueva temporada</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="text-center mb-3">Temporadas</h1>
+            <a href="{% url 'temporada_create' %}" class="btn btn-warning w-100 mb-3">Crear nueva temporada</a>
+        </div>
+    </div>
+
     <div class="list-group">
         {% for temporada in temporadas %}
-            <div class="list-item clickable">
-                <a href="{% url 'temporada_detail' temporada.id %}">
-                    <h2>{{ temporada.periodo }}</h2>
-                    <div class="item-actions">
-                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+            <div class="card mb-3 shadow-sm">
+                <a href="{% url 'temporada_detail' temporada.id %}" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ temporada.periodo }}</h5>
+                        <div class="d-flex justify-content-end mt-3">
+                            <span class="btn btn-sm btn-secondary">Ver detalles</span>
+                        </div>
                     </div>
                 </a>
-                <div class="item-controls">
-                    <a href="{% url 'temporada_update' temporada.id %}" class="btn btn-light">Editar</a>
-                    <a href="{% url 'temporada_delete' temporada.id %}" class="btn btn-light">Borrar</a>
+                <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                    <a href="{% url 'temporada_update' temporada.id %}" class="btn btn-sm btn-light">Editar</a>
+                    <a href="{% url 'temporada_delete' temporada.id %}" class="btn btn-sm btn-light">Borrar</a>
                 </div>
             </div>
         {% empty %}
-            <div class="list-item">No hay temporadas disponibles.</div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body text-center text-muted">
+                    No hay temporadas disponibles.
+                </div>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

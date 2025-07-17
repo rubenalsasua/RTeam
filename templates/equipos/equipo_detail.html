@@ -1,102 +1,140 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <div class="page-header">
-        <h1>{{ equipo.nombre }}</h1>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center py-3">
+            <h2 class="mb-3">{{ equipo.nombre }}</h2>
+
+            {% if equipo.logo %}
+                <div class="text-center mb-3">
+                    <img src="{{ equipo.logo.url }}" alt="Logo de {{ equipo.nombre }}" class="img-fluid"
+                         style="max-height: 120px;">
+                </div>
+            {% else %}
+                <div class="text-center mb-3">
+                    <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada" class="img-fluid"
+                         style="max-height: 120px;">
+                </div>
+            {% endif %}
+        </div>
     </div>
 
-    <section class="section-container">
-        <div class="section-header">
-            <h2>Jugadores</h2>
-            <a href="{% url 'jugador_equipo_create' equipo.id %}" class="btn btn-primary">Añadir jugador</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h5 class="mb-0">Jugadores</h5>
+            <a href="{% url 'jugador_equipo_create' equipo.id %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Añadir jugador
+            </a>
         </div>
-
-        {% if jugadores %}
-            <div class="data-cards">
-                {% for jugador in jugadores %}
-                    <div class="data-card">
-                        <div class="card-main">
-                            {% if jugador.foto %}
-                                <div class="card-thumb">
-                                    <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}">
+        <div class="card-body">
+            {% if jugadores %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for jugador in jugadores %}
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="row g-0">
+                                    {% if jugador.foto %}
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
+                                            <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}"
+                                                 class="img-fluid rounded-circle"
+                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-md-{% if jugador.foto %}8{% else %}12{% endif %}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ jugador.nombre }}</h5>
+                                            <p class="card-text"><strong>Posición:</strong> {{ jugador.posicion }}</p>
+                                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                                <a href="{% url 'jugador_detail' jugador.id %}"
+                                                   class="btn btn-sm btn-secondary">Detalles</a>
+                                                <a href="{% url 'jugador_en_equipo_delete' equipo.id jugador.id %}"
+                                                   class="btn btn-sm btn-light">Eliminar</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            {% endif %}
-                            <div class="card-info">
-                                <h3>{{ jugador.nombre }}</h3>
-                                <p><strong>Posición:</strong> {{ jugador.posicion }}</p>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <a href="{% url 'jugador_detail' jugador.id %}"
-                               class="btn btn-secondary btn-small">Detalles</a>
-                            <a href="{% url 'jugador_en_equipo_delete' equipo.id jugador.id %}"
-                               class="btn btn-light btn-small">Eliminar</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-message">Este equipo no tiene jugadores todavía.</p>
-        {% endif %}
-    </section>
-
-    <section class="section-container">
-        <div class="section-header">
-            <h2>Entrenadores</h2>
-            <a href="{% url 'entrenador_equipo_create' equipo.id %}" class="btn btn-primary">Añadir entrenador</a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-muted my-4">Este equipo no tiene jugadores todavía.</p>
+            {% endif %}
         </div>
+    </div>
 
-        {% if entrenadores_info %}
-            <div class="data-cards">
-                {% for item in entrenadores_info %}
-                    <div class="data-card">
-                        <div class="card-main">
-                            {% if item.entrenador.foto %}
-                                <div class="card-thumb">
-                                    <img src="{{ item.entrenador.foto.url }}"
-                                         alt="Foto de {{ item.entrenador.nombre }}">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h5 class="mb-0">Entrenadores</h5>
+            <a href="{% url 'entrenador_equipo_create' equipo.id %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Añadir entrenador
+            </a>
+        </div>
+        <div class="card-body">
+            {% if entrenadores_info %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for item in entrenadores_info %}
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="row g-0">
+                                    {% if item.entrenador.foto %}
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
+                                            <img src="{{ item.entrenador.foto.url }}"
+                                                 alt="Foto de {{ item.entrenador.nombre }}"
+                                                 class="img-fluid rounded-circle"
+                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-md-{% if item.entrenador.foto %}8{% else %}12{% endif %}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ item.entrenador.nombre }}</h5>
+                                            <p class="card-text"><strong>Tipo:</strong> {{ item.get_tipo_display }}</p>
+                                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                                <a href="{% url 'entrenador_detail' item.entrenador.id %}"
+                                                   class="btn btn-sm btn-secondary">Detalles</a>
+                                                <a href="{% url 'entrenador_en_equipo_delete' equipo.id item.entrenador.id %}"
+                                                   class="btn btn-sm btn-light">Eliminar</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            {% endif %}
-                            <div class="card-info">
-                                <h3>{{ item.entrenador.nombre }}</h3>
-                                <p><strong>Tipo:</strong> {{ item.get_tipo_display }}</p>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <a href="{% url 'entrenador_detail' item.entrenador.id %}"
-                               class="btn btn-secondary btn-small">Detalles</a>
-                            <a href="{% url 'entrenador_en_equipo_delete' equipo.id item.entrenador.id %}"
-                               class="btn btn-light btn-small">Eliminar</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-message">Este equipo no tiene entrenadores todavía.</p>
-        {% endif %}
-    </section>
-
-    <section class="section-container">
-        <div class="section-header">
-            <h2>Temporadas</h2>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-muted my-4">Este equipo no tiene entrenadores todavía.</p>
+            {% endif %}
         </div>
+    </div>
 
-        {% if temporadas_ligas %}
-            <div class="data-cards">
-                {% for item in temporadas_ligas %}
-                    <div class="data-card">
-                        <div class="card-info">
-                            <h3>{{ item.liga.temporada.periodo }}</h3>
-                            <p><strong>Liga:</strong> {{ item.liga.nombre }}</p>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h5 class="mb-0">Temporadas</h5>
+        </div>
+        <div class="card-body">
+            {% if temporadas_ligas %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for item in temporadas_ligas %}
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.liga.temporada.periodo }}</h5>
+                                    <p class="card-text"><strong>Liga:</strong> {{ item.liga.nombre }}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-message">Este equipo no ha participado en ninguna liga todavía.</p>
-        {% endif %}
-    </section>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-muted my-4">Este equipo no ha participado en ninguna liga todavía.</p>
+            {% endif %}
+        </div>
+    </div>
 
-    <div class="page-actions">
-        <a href="{% url 'liga_list' %}" class="btn btn-secondary">Volver a la lista de ligas</a>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'liga_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Volver a la lista de ligas
+        </a>
     </div>
 {% endblock %}

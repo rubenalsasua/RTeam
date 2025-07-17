@@ -1,10 +1,36 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Nueva liga</h1>
-    <form action="{% url 'liga_create' %}" method="post">
-        {% csrf_token %}
-        {{ formulario.errors }}
-        {{ formulario.as_p }}
-        <input type="submit" value="Nueva liga">
-    </form>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Nueva liga</h4>
+        </div>
+        <div class="card-body">
+            <form action="{% url 'liga_create' %}" method="post">
+                {% csrf_token %}
+                {% if formulario.errors %}
+                    <div class="alert alert-danger">
+                        Por favor, corrige los errores del formulario.
+                    </div>
+                {% endif %}
+
+                {% for field in formulario %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field.errors }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted">{{ field.help_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'liga_list' %}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

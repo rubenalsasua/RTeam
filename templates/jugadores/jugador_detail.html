@@ -1,75 +1,109 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <div class="page-header">
-        <h1>{{ jugador.nombre }}</h1>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center py-3">
+            <h2 class="mb-3">{{ jugador.nombre }}</h2>
 
-        {% if jugador.foto %}
-            <div class="profile-photo">
-                <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}">
-            </div>
-        {% else %}
-            <p class="empty-message">Sin foto</p>
-        {% endif %}
+            {% if jugador.foto %}
+                <div class="profile-photo mb-3">
+                    <img src="{{ jugador.foto.url }}" alt="Foto de {{ jugador.nombre }}">
+                </div>
+            {% else %}
+                <div class="profile-photo mb-3">
+                    <img src="{% static 'icons/default_player.png' %}" alt="Imagen predeterminada">
+                </div>
+            {% endif %}
 
-        <p><strong>Posición:</strong> {{ jugador.get_posicion_display }}</p>
+            <p class="mb-0"><span class="badge bg-secondary">{{ jugador.get_posicion_display }}</span></p>
+        </div>
     </div>
 
-    <section class="section-container">
-        <div class="section-header">
-            <h2>Historial por temporadas</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h5 class="mb-0">Historial por temporadas</h5>
         </div>
-
-        {% if temporadas_info %}
-            <div class="data-cards">
-                {% for info in temporadas_info %}
-                    <div class="data-card">
-                        <div class="card-main">
-                            {% if info.equipo.foto %}
-                                <div class="card-thumb">
-                                    <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}">
+        <div class="card-body">
+            {% if temporadas_info %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for info in temporadas_info %}
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="row g-0">
+                                    {% if info.equipo.foto %}
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
+                                            <img src="{{ info.equipo.foto.url }}" alt="Logo de {{ info.equipo.nombre }}"
+                                                 class="img-fluid rounded-start" style="max-height: 100px;">
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-md-{% if info.equipo.foto %}8{% else %}12{% endif %}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ info.temporada }}</h5>
+                                            <p class="card-text mb-1"><strong>Equipo:</strong> {{ info.equipo.nombre }}
+                                            </p>
+                                            <p class="card-text mb-1"><strong>Dorsal:</strong> {{ info.dorsal }}</p>
+                                            <p class="card-text mb-1"><strong>Goles:</strong> {{ info.goles }}</p>
+                                            <p class="card-text mb-1">
+                                                <strong>Asistencias:</strong> {{ info.asistencias }}</p>
+                                            <p class="card-text mb-0">
+                                                <strong>Tarjetas:</strong> {{ info.tarjetas_amarillas }}
+                                                🟨 {{ info.tarjetas_rojas }} 🟥</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            {% endif %}
-                            <div class="card-info">
-                                <h3>{{ info.temporada }}</h3>
-                                <p><strong>Equipo:</strong> {{ info.equipo.nombre }}</p>
-                                <p><strong>Dorsal:</strong> {{ info.dorsal }}</p>
-                                <p><strong>Goles:</strong> {{ info.goles }}</p>
-                                <p><strong>Asistencias:</strong> {{ info.asistencias }}</p>
-                                <p><strong>Tarjetas:</strong> {{ info.tarjetas_amarillas }} 🟨 {{ info.tarjetas_rojas }}
-                                    🟥</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card mt-4 border-0 bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title text-center mb-3">Estadísticas totales</h5>
+                        <div class="row row-cols-2 row-cols-md-4 g-3 text-center">
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body py-3">
+                                        <h2 class="card-title text-warning mb-1">{{ total_goles }}</h2>
+                                        <p class="card-text text-muted small">Goles</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body py-3">
+                                        <h2 class="card-title text-warning mb-1">{{ total_asistencias }}</h2>
+                                        <p class="card-text text-muted small">Asistencias</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body py-3">
+                                        <h2 class="card-title text-warning mb-1">{{ total_amarillas }}</h2>
+                                        <p class="card-text text-muted small">T. Amarillas</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body py-3">
+                                        <h2 class="card-title text-warning mb-1">{{ total_rojas }}</h2>
+                                        <p class="card-text text-muted small">T. Rojas</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-
-            <div class="stats-summary">
-                <h3>Estadísticas totales</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-value">{{ total_goles }}</span>
-                        <span class="stat-label">Goles</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ total_asistencias }}</span>
-                        <span class="stat-label">Asistencias</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ total_amarillas }}</span>
-                        <span class="stat-label">T. Amarillas</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ total_rojas }}</span>
-                        <span class="stat-label">T. Rojas</span>
-                    </div>
                 </div>
-            </div>
-        {% else %}
-            <p class="empty-message">Este jugador no ha participado en ninguna temporada.</p>
-        {% endif %}
-    </section>
+            {% else %}
+                <p class="text-center text-muted my-4">Este jugador no ha participado en ninguna temporada.</p>
+            {% endif %}
+        </div>
+    </div>
 
-    <div class="page-actions">
-        <a href="{% url 'jugador_list' %}" class="btn btn-secondary">Volver a la lista de jugadores</a>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'jugador_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Volver a la lista de jugadores
+        </a>
     </div>
 {% endblock %}

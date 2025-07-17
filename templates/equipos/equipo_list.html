@@ -1,44 +1,65 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <h1>Equipos</h1>
-    <a href="{% url 'equipo_create' %}" class="btn btn-primary">Crear nuevo equipo</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="text-center mb-3">Equipos</h1>
+            <a href="{% url 'equipo_create' %}" class="btn btn-warning w-100 mb-3">Crear nuevo equipo</a>
+        </div>
+    </div>
+
     <div class="list-group">
         {% for equipo in equipos %}
-            <div class="list-item clickable">
-                <a href="{% url 'equipo_detail' equipo.id %}">
-                    <h2>{{ equipo.nombre }}</h2>
-                    {% if equipo.foto %}
-                        <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}" class="img-thumbnail">
-                    {% else %}
-                        <p>No hay logo disponible</p>
-                    {% endif %}
-                    <p>Temporadas:
-                        {% for temporada in equipo.temporadas_lista %}
-                            {{ temporada }}{% if not forloop.last %}, {% endif %}
-                        {% empty %}
-                            No asignado
-                        {% endfor %}
-                    </p>
-                    <p>Ligas:
-                        {% for liga in equipo.ligas_lista %}
-                            {{ liga.nombre }} ({{ liga.temporada }}){% if not forloop.last %}, {% endif %}
-                        {% empty %}
-                            No asignado
-                        {% endfor %}
-                    </p>
-                    <p>Jugadores: {{ equipo.jugadores.count }}</p>
-                    <p>Entrenadores: {{ equipo.entrenadores.count }}</p>
-                    <div class="item-actions">
-                        <span class="btn btn-secondary btn-small">Ver detalles</span>
+            <div class="card mb-3 shadow-sm">
+                <a href="{% url 'equipo_detail' equipo.id %}" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ equipo.nombre }}</h5>
+
+                        <div class="card-img-top text-center pt-3">
+                            {% if equipo.logo %}
+                                <img src="{{ equipo.logo.url }}" alt="{{ equipo.nombre }}"
+                                     style="height: 60px; width: auto;">
+                            {% else %}
+                                <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada"
+                                     style="height: 60px; width: auto;">
+                            {% endif %}
+                        </div>
+
+                        <p class="card-text mb-1 small">
+                            <strong>Temporadas:</strong>
+                            {% for temporada in equipo.temporadas_lista %}
+                                {{ temporada }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                No asignado
+                            {% endfor %}
+                        </p>
+                        <p class="card-text mb-1 small">
+                            <strong>Ligas:</strong>
+                            {% for liga in equipo.ligas_lista %}
+                                {{ liga.nombre }} ({{ liga.temporada }}){% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                No asignado
+                            {% endfor %}
+                        </p>
+                        <p class="card-text mb-1 small"><strong>Jugadores:</strong> {{ equipo.jugadores.count }}</p>
+                        <p class="card-text small"><strong>Entrenadores:</strong> {{ equipo.entrenadores.count }}</p>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <span class="btn btn-sm btn-secondary">Ver detalles</span>
+                        </div>
                     </div>
                 </a>
-                <div class="item-controls">
-                    <a href="{% url 'equipo_update' equipo.id %}" class="btn btn-light">Editar</a>
-                    <a href="{% url 'equipo_delete' equipo.id %}" class="btn btn-light">Borrar</a>
+                <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                    <a href="{% url 'equipo_update' equipo.id %}" class="btn btn-sm btn-light">Editar</a>
+                    <a href="{% url 'equipo_delete' equipo.id %}" class="btn btn-sm btn-light">Borrar</a>
                 </div>
             </div>
         {% empty %}
-            <div class="list-item">No hay equipos disponibles.</div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body text-center text-muted">
+                    No hay equipos disponibles.
+                </div>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

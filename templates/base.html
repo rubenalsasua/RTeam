@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -40,35 +41,36 @@
 
 <!-- Barra de usuario -->
 <div class="bg-dark text-white shadow-sm w-100 px-3 py-2 position-fixed top-0 start-0" style="z-index: 1030;">
-    <div class="d-flex align-items-center justify-content-between gap-2 small">
+    <div class="d-flex align-items-center justify-content-between">
+        <!-- Parte 1: Logo -->
         <div class="d-flex align-items-center">
-            <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo" width="40" height="40" class="rounded-3 me-2">
-            <span class="fw-bold text-warning text-uppercase">
-                {{ user.first_name|default:user.username }}
-                {% if user.is_authenticated %}
-                {% endif %}
-                <small class="">{{ user.profile.get_role_display }}</small>
-            </span>
+            <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo" width="40" height="40" class="rounded-3">
         </div>
+
+        <!-- Parte 2: Información del usuario -->
+        <div class="text-center small">
+            {% if user.is_authenticated %}
+                <span class="fw-bold text-warning text-uppercase">
+                    {{ user.first_name|default:user.username }}
+                </span>
+                <small class="">{{ user.profile.get_role_display }}</small>
+            {% endif %}
+        </div>
+
+        <!-- Parte 3: Botones de acción -->
         <div class="d-flex gap-1">
             {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
-                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-dark py-0 px-2 d-flex align-items-center">
-                    <i class="fas fa-cog"></i><span class="ms-1 d-none d-sm-inline">Admin</span>
+                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-outline-secondary py-0 px-1"
+                   title="Administración">
+                    <i class="fas fa-cog small"></i>
                 </a>
             {% endif %}
             <a href="{% url 'sign_out' %}" class="btn btn-sm btn-danger py-0 px-2 d-flex align-items-center">
-                <i class="fas fa-sign-out-alt"></i><span class="ms-1 d-none d-sm-inline">Cerrar sesión</span>
+                <i class="fas fa-sign-out-alt"></i>
             </a>
         </div>
     </div>
 </div>
-
-<!-- Eliminar el div del logo que estaba separado -->
-<!-- <div class="mb-5 pt-5">
-    <div class="text-center my-3">
-        <img src="{% static 'icons/RTeam.png' %}" alt="RTeam Logo" width="80" height="80" class="rounded-3 shadow-sm">
-    </div>
-</div> -->
 
 <!-- Espacio para compensar la barra fija superior -->
 <div class="mb-3 pt-5"></div>

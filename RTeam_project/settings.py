@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'RTeam_app',
     'pwa',  # Aplicación PWA
     'django.contrib.sites',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

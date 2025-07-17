@@ -1,12 +1,36 @@
 {% extends 'base.html' %}
 {% block contenido %}
-    <h1>Editar rol de {{ usuario.user.first_name|default:usuario.user.username|upper }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ formulario.as_p }}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Editar rol de {{ usuario.user.first_name|default:usuario.user.username|upper }}</h4>
         </div>
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <a href="{% url 'usuario_list' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {% if formulario.errors %}
+                    <div class="alert alert-danger">
+                        Por favor, corrige los errores del formulario.
+                    </div>
+                {% endif %}
+
+                {% for field in formulario %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field.errors }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted">{{ field.help_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
