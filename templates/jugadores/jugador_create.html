@@ -2,10 +2,10 @@
 {% block contenido %}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
-            <h4 class="mb-0">Nuevo equipo</h4>
+            <h4 class="mb-0">Nuevo jugador</h4>
         </div>
         <div class="card-body">
-            <form action="{% url 'equipo_create' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'jugador_create' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% if formulario.errors %}
                     <div class="alert alert-danger">
@@ -25,7 +25,7 @@
                 {% endfor %}
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="{% url 'equipo_list' %}" class="btn btn-secondary">Cancelar</a>
+                    <a href="{% url 'jugador_list' %}" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-2"></i>Guardar
                     </button>
