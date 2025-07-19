@@ -4,7 +4,7 @@
 
 ## Aplicación de Gestión para Equipos de Fútbol Sala
 
-RTeam es una aplicación web desarrollada con Django para la gestión integral de equipos de fútbol sala.
+RTeam es una aplicación web desarrollada con Django para la gestión de equipos de fútbol sala.
 
 ### Características Principales
 - Gestión de equipos y jugadores con historial por temporadas
