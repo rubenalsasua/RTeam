@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from RTeam_app.forms import EntrenadorForm
-from RTeam_app.models import Entrenador
+from RTeam_app.models import Entrenador, EntrenadorEquipoTemporada
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin

@@ -5,9 +5,9 @@
         <div class="card-body text-center py-3">
             <h2 class="mb-3">{{ equipo.nombre }}</h2>
 
-            {% if equipo.logo %}
+            {% if equipo.foto %}
                 <div class="text-center mb-3">
-                    <img src="{{ equipo.logo.url }}" alt="Logo de {{ equipo.nombre }}" class="img-fluid"
+                    <img src="{{ equipo.foto.url }}" alt="Logo de {{ equipo.nombre }}" class="img-fluid"
                          style="max-height: 120px;">
                 </div>
             {% else %}

@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'pwa',  # Aplicación PWA
     'django.contrib.sites',
     'widget_tweaks',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -187,7 +189,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 SOCIALACCOUNT_STORE_TOKENS = False
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+#CLOUDINARY_URL = f"cloudinary://<your_api_key>:<your_api_secret>@dn9jrtyvr"
 
 # Configuración para Render
 PORT = int(os.environ.get('PORT', 8000))
@@ -207,3 +210,19 @@ if not GOOGLE_OAUTH_CLIENT_ID:
         'GOOGLE_OAUTH_CLIENT_ID is missing.'
         'Have you put it in a file at core/.env ?'
     )
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
+
+# Configuración de Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+    'SECURE': True
+}

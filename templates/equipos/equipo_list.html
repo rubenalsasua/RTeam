@@ -16,8 +16,8 @@
                         <h5 class="card-title">{{ equipo.nombre }}</h5>
 
                         <div class="card-img-top text-center pt-3">
-                            {% if equipo.logo %}
-                                <img src="{{ equipo.logo.url }}" alt="{{ equipo.nombre }}"
+                            {% if equipo.foto %}
+                                <img src="{{ equipo.foto }}" alt="{{ equipo.nombre }}"
                                      style="height: 60px; width: auto;">
                             {% else %}
                                 <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada"

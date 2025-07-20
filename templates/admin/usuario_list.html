@@ -16,15 +16,18 @@
                             <span class="badge bg-secondary">{{ usuario.profile.get_role_display }}</span>
                         </div>
                         <p class="mb-1 small"><strong>Email:</strong> {{ usuario.email }}</p>
-                        <p class="mb-1 small"><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+                        <p class="mb-1 small"><strong>Fecha de
+                            registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="mb-0 small">
                                 <strong>Último login:</strong> {{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}
                             </p>
                             <p class="mb-0 small text-success">
-                                <strong>Último acceso:</strong> {{ usuario.profile.last_visit|date:"d/m/Y H:i"|default:"Nunca" }}
+                                <strong>Último
+                                    acceso:</strong> {{ usuario.profile.last_visit|date:"d/m/Y H:i"|default:"Nunca" }}
                             </p>
                         </div>
+                        <a href="{% url 'usuario_delete' usuario.id %}" class="btn btn-sm btn-light">Borrar</a>
                     </div>
                 </a>
             </div>

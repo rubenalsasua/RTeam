@@ -1,9 +1,10 @@
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DeleteView
 from RTeam_app.forms import UsuarioForm
 from RTeam_app.models import User, Profile
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import AdminRequiredMixin
+from django.urls import reverse_lazy
 
 
 class UsuarioListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
@@ -43,3 +44,10 @@ class UsuarioUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
 
         return render(request, "admin/usuario_update.html",
                       {"formulario": formulario, 'usuario': usuario})
+
+
+class UsuarioDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = User
+    template_name = "admin/usuario_confirm_delete.html"
+    context_object_name = 'usuario'
+    success_url = reverse_lazy('usuario_list')

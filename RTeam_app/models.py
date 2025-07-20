@@ -2,6 +2,10 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 import re
+from django.db.models.signals import pre_delete, pre_save
+from django.dispatch import receiver
+from cloudinary import uploader
+from cloudinary.models import CloudinaryField
 
 
 class Profile(models.Model):
@@ -48,7 +52,7 @@ class Temporada(models.Model):
 
 class Equipo(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
-    foto = models.ImageField(upload_to='equipos/', null=True, blank=True)
+    foto = CloudinaryField('imagen', null=True, blank=True, folder='equipos')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     jugadores = models.ManyToManyField('Jugador', through='JugadorEquipoTemporada', related_name='equipos')
@@ -63,7 +67,7 @@ class Equipo(models.Model):
 
 class Jugador(models.Model):
     nombre = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='jugadores/', null=True, blank=True)
+    foto = CloudinaryField('imagen', null=True, blank=True, folder='jugadores')
     POSICIONES = [
         ('PORTERO', 'Portero'),
         ('CIERRE', 'Cierre'),
@@ -103,7 +107,7 @@ class JugadorEquipoTemporada(models.Model):
 
 class Entrenador(models.Model):
     nombre = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='entrenadores/', null=True, blank=True)
+    foto = CloudinaryField('imagen', null=True, blank=True, folder='entrenadores')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
@@ -162,3 +166,102 @@ class EquipoLigaTemporada(models.Model):
 
     def __str__(self):
         return f"{self.equipo} - {self.liga}"
+
+
+@receiver(pre_delete, sender=Equipo)
+def equipo_delete_handler(sender, instance, **kwargs):
+    # Eliminar la imagen de Cloudinary si existe
+    if instance.foto:
+        # Extrae el public_id de la URL de Cloudinary
+        try:
+            # El public_id suele ser la parte final de la URL sin la extensión
+            from urllib.parse import urlparse
+            path = urlparse(instance.foto.url).path
+            public_id = path.split('/')[-1].split('.')[0]
+            uploader.destroy(public_id)
+        except Exception as e:
+            print(f"Error al eliminar imagen de Cloudinary: {e}")
+
+
+@receiver(pre_delete, sender=Jugador)
+def jugador_delete_handler(sender, instance, **kwargs):
+    if instance.foto:
+        try:
+            from urllib.parse import urlparse
+            path = urlparse(instance.foto.url).path
+            public_id = path.split('/')[-1].split('.')[0]
+            uploader.destroy(public_id)
+        except Exception as e:
+            print(f"Error al eliminar imagen de Cloudinary: {e}")
+
+
+@receiver(pre_delete, sender=Entrenador)
+def entrenador_delete_handler(sender, instance, **kwargs):
+    if instance.foto:
+        try:
+            from urllib.parse import urlparse
+            path = urlparse(instance.foto.url).path
+            public_id = path.split('/')[-1].split('.')[0]
+            uploader.destroy(public_id)
+        except Exception as e:
+            print(f"Error al eliminar imagen de Cloudinary: {e}")
+
+
+@receiver(pre_save, sender=Equipo)
+def equipo_update_handler(sender, instance, **kwargs):
+    # Verificar si ya existe en la base de datos
+    if instance.pk:
+        try:
+            # Obtener el objeto anterior
+            anterior = Equipo.objects.get(pk=instance.pk)
+            # Si la foto ha cambiado, eliminar la anterior
+            if anterior.foto and anterior.foto != instance.foto:
+                try:
+                    from urllib.parse import urlparse
+                    path = urlparse(anterior.foto.url).path
+                    public_id = path.split('/')[-1].split('.')[0]
+                    uploader.destroy(public_id)
+                except Exception as e:
+                    print(f"Error al eliminar imagen anterior: {e}")
+        except Equipo.DoesNotExist:
+            pass
+
+
+@receiver(pre_save, sender=Jugador)
+def jugador_update_handler(sender, instance, **kwargs):
+    # Verificar si ya existe en la base de datos
+    if instance.pk:
+        try:
+            # Obtener el objeto anterior
+            anterior = Jugador.objects.get(pk=instance.pk)
+            # Si la foto ha cambiado, eliminar la anterior
+            if anterior.foto and anterior.foto != instance.foto:
+                try:
+                    from urllib.parse import urlparse
+                    path = urlparse(anterior.foto.url).path
+                    public_id = path.split('/')[-1].split('.')[0]
+                    uploader.destroy(public_id)
+                except Exception as e:
+                    print(f"Error al eliminar imagen anterior: {e}")
+        except Jugador.DoesNotExist:
+            pass
+
+
+@receiver(pre_save, sender=Entrenador)
+def entrenador_update_handler(sender, instance, **kwargs):
+    # Verificar si ya existe en la base de datos
+    if instance.pk:
+        try:
+            # Obtener el objeto anterior
+            anterior = Entrenador.objects.get(pk=instance.pk)
+            # Si la foto ha cambiado, eliminar la anterior
+            if anterior.foto and anterior.foto != instance.foto:
+                try:
+                    from urllib.parse import urlparse
+                    path = urlparse(anterior.foto.url).path
+                    public_id = path.split('/')[-1].split('.')[0]
+                    uploader.destroy(public_id)
+                except Exception as e:
+                    print(f"Error al eliminar imagen anterior: {e}")
+        except Entrenador.DoesNotExist:
+            pass
