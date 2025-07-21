@@ -15,6 +15,9 @@ import os
 
 import cloudinary
 from decouple import config, Csv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # URL a la que se redirige si se requiere login
 LOGIN_URL = 'sign_in'
