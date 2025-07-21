@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 
 class UsuarioListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     model = User
-    template_name = 'admin/usuario_list.html'
+    template_name = 'usuarios/usuario_list.html'
     context_object_name = 'usuarios'
 
     def get_queryset(self):
@@ -21,7 +21,7 @@ class UsuarioUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
         usuario = Profile.objects.get(id=pk)
         formulario = UsuarioForm(instance=usuario)
         context = {'formulario': formulario, 'usuario': usuario}
-        return render(request, "admin/usuario_update.html", context)
+        return render(request, "usuarios/usuario_update.html", context)
 
     def post(self, request, pk):
         # Guarda el usuario actual para mantener la sesión
@@ -32,22 +32,33 @@ class UsuarioUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
         formulario = UsuarioForm(instance=usuario, data=request.POST)
 
         if formulario.is_valid():
-            # Guarda sin activar signals que puedan afectar la autenticación
-            profile = formulario.save(commit=False)
-            profile.save(update_fields=['role'])
+            # Guarda el perfil con todos sus campos
+            profile = formulario.save()
 
             # Asegúrate de que el usuario actual sigue autenticado
             from django.contrib.auth import login
             login(request, current_user)
 
+            # Añade mensaje de éxito
+            from django.contrib import messages
+            messages.success(request, "El perfil se actualizó correctamente")
+
             return redirect("usuario_list")
 
-        return render(request, "admin/usuario_update.html",
+        return render(request, "usuarios/usuario_update.html",
                       {"formulario": formulario, 'usuario': usuario})
 
 
 class UsuarioDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = User
-    template_name = "admin/usuario_confirm_delete.html"
+    template_name = "usuarios/usuario_confirm_delete.html"
     context_object_name = 'usuario'
     success_url = reverse_lazy('usuario_list')
+
+
+def perfil_view(request):
+    if request.user.is_authenticated:
+        usuario = Profile.objects.get(user=request.user)
+        return render(request, "usuarios/usuario_detail.html", {'usuario': usuario})
+    else:
+        return redirect('login')

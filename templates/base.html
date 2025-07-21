@@ -60,9 +60,9 @@
         <!-- Parte 3: Botones de acción -->
         <div class="d-flex gap-1">
             {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
-                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-outline-secondary py-0 px-1"
-                   title="Administración">
-                    <i class="fas fa-cog small"></i>
+                <a href="{% url 'usuario_list' %}" class="btn btn-sm btn-outline-secondary py-0 px-1"
+                   title="Usuarios">
+                    <i class="fas fa-users small"></i>
                 </a>
             {% endif %}
             <a href="{% url 'sign_out' %}" class="btn btn-sm btn-danger py-0 px-2 d-flex align-items-center">
@@ -95,7 +95,7 @@
             <a href="{% url 'index' %}"
                class="d-flex flex-column align-items-center text-decoration-none {% if 'entrenamiento' in request.path %}text-warning{% else %}text-secondary{% endif %}">
                 <i class="fas fa-running fs-5 mb-1"></i>
-                <span class="small">Entrenamientos</span>
+                <span class="small">Entrenos</span>
             </a>
         </div>
         <div class="text-center {% if 'partido' in request.path %}text-warning{% else %}text-secondary{% endif %}">
@@ -110,6 +110,13 @@
                class="d-flex flex-column align-items-center text-decoration-none {% if 'equipo' in request.path %}text-warning{% else %}text-secondary{% endif %}">
                 <i class="fas fa-users fs-5 mb-1"></i>
                 <span class="small">Equipos</span>
+            </a>
+        </div>
+        <div class="text-center {% if 'perfil' in request.path %}text-warning{% else %}text-secondary{% endif %}">
+            <a href="{% url 'perfil_view' %}"
+               class="d-flex flex-column align-items-center text-decoration-none {% if 'perfil' in request.path %}text-warning{% else %}text-secondary{% endif %}">
+                <i class="fas fa-user fs-5 mb-1"></i>
+                <span class="small">Perfil</span>
             </a>
         </div>
 

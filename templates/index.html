@@ -1,23 +1,27 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <h1 class="mb-4">Inicio</h1>
-    {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
-        <div class="mb-4">
-            <div class="d-flex flex-wrap gap-2 mb-3">
-                <a href="{% url 'admin:index' %}"
-                   class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
-                   style="min-width: 200px;">
-                    <i class="fas fa-cog me-2"></i> Panel de Administración
-                </a>
-                <a href="{% url 'usuario_list' %}"
-                   class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
-                   style="min-width: 200px;">
-                    <i class="fas fa-users me-2"></i> Usuarios
-                </a>
-            </div>
-            <hr class="my-3">
+    <!-- Cabecera de la aplicación -->
+    <div class="d-flex flex-column align-items-center mb-4 bg-light rounded-3 p-3 shadow-sm">
+        <h1 class="fw-bold mb-0">RTeam</h1>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-success">BETA</span>
+            <span class="badge bg-warning">v0.5</span>
+            <small class="text-muted">por Rubén Alsasua</small>
         </div>
-    {% endif %}
-    <h3>Próximos eventos...</h3>
+    </div>
+
+    <!-- Sección de eventos próximos -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-warning ">
+            <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Próximos eventos</h5>
+        </div>
+        <div class="card-body py-4 text-center">
+            <p class="text-muted mb-0">
+                <i class="fas fa-hourglass-half me-2"></i>Eventos próximamente
+            </p>
+        </div>
+    </div>
+
 
 {% endblock %}

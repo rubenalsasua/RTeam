@@ -17,9 +17,13 @@ class Profile(models.Model):
     ROLES = [
         ('ADMIN', 'Administrador'),
         ('JUGADOR', 'Jugador'),
+        ('ENTRENADOR', 'Entrenador'),
         ('INVITADO', 'Invitado'),
     ]
     role = models.CharField(max_length=20, choices=ROLES, default='INVITADO')
+    jugador = models.OneToOneField('Jugador', on_delete=models.SET_NULL, null=True, blank=True, related_name='profile')
+    entrenador = models.OneToOneField('Entrenador', on_delete=models.SET_NULL, null=True, blank=True,
+                                      related_name='profile')
 
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
@@ -127,7 +131,7 @@ class EntrenadorEquipoTemporada(models.Model):
         ('DELEGADO', 'Delegado'),
         ('ENTRENADOR_PRACTICAS', 'Entrenador en Prácticas'),
     ]
-    tipo = models.CharField(max_length=20, choices=TIPO, default='PRINCIPAL')
+    tipo = models.CharField(max_length=20, choices=TIPO, default='ENTRENADOR')
     fecha_incorporacion = models.DateField(auto_now_add=True)
 
     class Meta:

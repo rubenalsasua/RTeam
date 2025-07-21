@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center py-3">
+            <h2 class="mb-3">Mi perfil</h2>
+            <h4 class="text-muted">{{ usuario.full_name }}</h4>
+            <p class="mb-1">
+                <span class="badge bg-warning">{{ usuario.get_role_display }}</span>
+            </p>
+            <p class="text-muted small">{{ usuario.user.email }}</p>
+            <p class="text-muted small"> En RTeam desde {{ usuario.user.date_joined|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+
+    {% if usuario.jugador %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                <h5 class="mb-0">Mi ficha de jugador</h5>
+                <a href="{% url 'jugador_update' usuario.jugador.id %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-edit me-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3 mb-md-0">
+                        {% if usuario.jugador.foto %}
+                            <div class="profile-photo mb-3">
+                                <img src="{{ usuario.jugador.foto.url }}" alt="Foto de {{ usuario.jugador.nombre }}"
+                                     class="img-fluid rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            </div>
+                        {% else %}
+                            <div class="profile-photo mb-3">
+                                <img src="{% static 'icons/default_player.png' %}" alt="Imagen predeterminada"
+                                     class="img-fluid rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            </div>
+                        {% endif %}
+                        <p class="mb-0"><span
+                                class="badge bg-secondary">{{ usuario.jugador.get_posicion_display }}</span></p>
+                    </div>
+                    <div class="col-md-8">
+                        <h4>{{ usuario.jugador.nombre }}</h4>
+                        <hr>
+                        <div class="mt-3 text-end">
+                            <a href="{% url 'jugador_detail' usuario.jugador.id %}" class="btn btn-secondary btn-sm">
+                                Ver ficha completa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if usuario.entrenador %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                <h5 class="mb-0">Mi ficha de entrenador</h5>
+                <a href="{% url 'entrenador_update' usuario.entrenador.id %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-edit me-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3 mb-md-0">
+                        {% if usuario.entrenador.foto %}
+                            <div class="profile-photo mb-3">
+                                <img src="{{ usuario.entrenador.foto.url }}"
+                                     alt="Foto de {{ usuario.entrenador.nombre }}"
+                                     class="img-fluid rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            </div>
+                        {% else %}
+                            <div class="profile-photo mb-3">
+                                <img src="{% static 'icons/default_player.png' %}" alt="Imagen predeterminada"
+                                     class="img-fluid rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h4>{{ usuario.entrenador.nombre }}</h4>
+                        <hr>
+                        <div class="mt-3 text-end">
+                            <a href="{% url 'entrenador_detail' usuario.entrenador.id %}"
+                               class="btn btn-secondary btn-sm">
+                                Ver ficha completa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if not usuario.jugador and not usuario.entrenador %}
+        <div class="alert alert-info mb-4">
+            <i class="fas fa-info-circle me-2"></i>No tienes ninguna ficha de jugador o entrenador asociada a tu perfil.
+        </div>
+    {% endif %}
+
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-envelope me-2"></i>Para cualquier problema, contacta con Rubén Alsasua.
+    </div>
+{% endblock %}

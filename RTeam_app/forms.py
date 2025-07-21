@@ -120,7 +120,18 @@ class EntrenadorEquipoTemporadaForm(forms.ModelForm):
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['role']
+        fields = ['role', 'jugador', 'entrenador']
         widgets = {
-            'role': forms.Select(attrs={'class': 'form-control'})
+            'role': forms.Select(attrs={'class': 'form-control'}),
+            'jugador': forms.Select(attrs={'class': 'form-control'}),
+            'entrenador': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'role': 'Rol',
+            'jugador': 'Jugador asociado',
+            'entrenador': 'Entrenador asociado'
+        }
+        help_texts = {
+            'jugador': 'Selecciona un jugador para asociar a este perfil (opcional)',
+            'entrenador': 'Selecciona un entrenador para asociar a este perfil (opcional)'
         }

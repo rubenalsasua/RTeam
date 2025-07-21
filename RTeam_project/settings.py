@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+
+import cloudinary
 from decouple import config, Csv
 
 # URL a la que se redirige si se requiere login
@@ -190,7 +192,7 @@ SOCIALACCOUNT_STORE_TOKENS = False
 
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-#CLOUDINARY_URL = f"cloudinary://<your_api_key>:<your_api_secret>@dn9jrtyvr"
+# CLOUDINARY_URL = f"cloudinary://<your_api_key>:<your_api_secret>@dn9jrtyvr"
 
 # Configuración para Render
 PORT = int(os.environ.get('PORT', 8000))
@@ -219,10 +221,16 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
-# Configuración de Cloudinary
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET'),
+    secure=True
+)
+
+# También mantén esto para django-cloudinary-storage
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': config('CLOUDINARY_API_KEY'),
     'API_SECRET': config('CLOUDINARY_API_SECRET'),
-    'SECURE': True
 }
