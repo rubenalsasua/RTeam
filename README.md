@@ -15,7 +15,7 @@ RTeam es una aplicación web desarrollada con Django para la gestión de equipos
 - Autenticación mediante Google OAuth 2.0
 - Funciona como PWA (Progressive Web App)
 - Optimizada para dispositivos móviles
-- Tres roles de usuario (Administrador, Jugador, Invitado)
+- Cuatro roles de usuario (Administrador, Jugador, Entrenador e Invitado)
 
 ## Tecnologías Utilizadas
 
