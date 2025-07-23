@@ -19,7 +19,7 @@ RTeam es una aplicación web desarrollada con Django para la gestión de equipos
 
 ## Tecnologías Utilizadas
 
-- **Backend**: Python, Django
+- **Backend**: Django (Python)
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap
 - **Autenticación**: Google OAuth 2.0
 - **Base de Datos**: SQLite (desarrollo), MySQL (producción)
