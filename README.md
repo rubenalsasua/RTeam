@@ -2,7 +2,7 @@
 
 <div align="center"><img src="https://github.com/rubenalsasua/RTeam/blob/main/static/icons/RTeam.png"></div>
 
-## Aplicación de Gestión para Equipos de Fútbol Sala
+## Gestión de Equipos de Fútbol Sala
 
 RTeam es una aplicación web desarrollada con Django para la gestión de equipos de fútbol sala.
 
