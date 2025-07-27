@@ -269,3 +269,50 @@ def entrenador_update_handler(sender, instance, **kwargs):
                     print(f"Error al eliminar imagen anterior: {e}")
         except Entrenador.DoesNotExist:
             pass
+
+
+class Campo(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    ubicacion = models.CharField(max_length=255, blank=True, null=True)
+    foto = CloudinaryField('imagen', null=True, blank=True, folder='campos')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Campos"
+
+    def __str__(self):
+        return self.nombre
+
+
+@receiver(pre_delete, sender=Campo)
+def campo_delete_handler(sender, instance, **kwargs):
+    # Eliminar la imagen de Cloudinary si existe
+    if instance.foto:
+        try:
+            from urllib.parse import urlparse
+            path = urlparse(instance.foto.url).path
+            public_id = path.split('/')[-1].split('.')[0]
+            uploader.destroy(public_id)
+        except Exception as e:
+            print(f"Error al eliminar imagen de Cloudinary: {e}")
+
+
+@receiver(pre_save, sender=Campo)
+def campo_update_handler(sender, instance, **kwargs):
+    # Verificar si ya existe en la base de datos
+    if instance.pk:
+        try:
+            # Obtener el objeto anterior
+            anterior = Campo.objects.get(pk=instance.pk)
+            # Si la foto ha cambiado, eliminar la anterior
+            if anterior.foto and anterior.foto != instance.foto:
+                try:
+                    from urllib.parse import urlparse
+                    path = urlparse(anterior.foto.url).path
+                    public_id = path.split('/')[-1].split('.')[0]
+                    uploader.destroy(public_id)
+                except Exception as e:
+                    print(f"Error al eliminar imagen anterior: {e}")
+        except Campo.DoesNotExist:
+            pass
