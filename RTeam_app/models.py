@@ -316,3 +316,91 @@ def campo_update_handler(sender, instance, **kwargs):
                     print(f"Error al eliminar imagen anterior: {e}")
         except Campo.DoesNotExist:
             pass
+
+
+class Partido(models.Model):
+    fecha = models.DateTimeField()
+    jornada = models.PositiveIntegerField()
+    liga = models.ForeignKey(Liga, on_delete=models.CASCADE)
+    campo = models.ForeignKey(Campo, on_delete=models.CASCADE)
+    equipo_local = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name='partidos_locales')
+    equipo_visitante = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name='partidos_visitantes')
+    goles_local = models.PositiveIntegerField(default=0)
+    goles_visitante = models.PositiveIntegerField(default=0)
+    ESTADO = [
+        ('PROGRAMADO', 'Programado'),
+        ('FINALIZADO', 'Finalizado'),
+        ('SUSPENDIDO', 'Suspendido'),
+    ]
+    estado = models.CharField(max_length=20, choices=ESTADO, default='PENDIENTE')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Partidos"
+
+    def __str__(self):
+        return f"{self.equipo_local} vs {self.equipo_visitante} - {self.fecha.strftime('%Y-%m-%d %H:%M')}"
+
+
+class EventoPartido(models.Model):
+    TIPO = [
+        ('GOL', 'Gol'),
+        ('ASISTENCIA', 'Asistencia'),
+        ('TARJETA_AMARILLA', 'Tarjeta Amarilla'),
+        ('TARJETA_ROJA', 'Tarjeta Roja'),
+    ]
+
+    partido = models.ForeignKey(Partido, on_delete=models.CASCADE)
+    jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE, related_name='eventos_partido')
+    asistidor = models.ForeignKey(Jugador, on_delete=models.SET_NULL, null=True, blank=True,
+                                  related_name='asistencias_partido')
+    tipo_evento = models.CharField(max_length=20, choices=TIPO)
+    descripcion = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Eventos de Partido"
+
+    def __str__(self):
+        return f"{self.jugador} - {self.tipo_evento}"
+
+
+class ConvocatoriaPartido(models.Model):
+    partido = models.ForeignKey(Partido, on_delete=models.CASCADE)
+    jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
+
+    ESTADOS = [
+        ('CONVOCADO', 'Convocado'),
+        ('NO_CONVOCADO', 'No Convocado'),
+        ('LESIONADO', 'Lesionado'),
+        ('SANCIONADO', 'Sancionado'),
+    ]
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='CONVOCADO')
+    dorsal = models.PositiveIntegerField(null=True, blank=True)
+
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Convocatoria a Partido"
+        verbose_name_plural = "Convocatorias a Partido"
+        unique_together = ('partido', 'jugador')
+
+    def __str__(self):
+        return f"{self.jugador} - {self.partido} ({self.get_estado_display()})"
+
+    def save(self, *args, **kwargs):
+        # Si no se especifica el dorsal, intentar obtenerlo de la relación JugadorEquipoTemporada
+        if not self.dorsal:
+            try:
+                temporada = self.partido.liga.temporada
+                jet = JugadorEquipoTemporada.objects.get(
+                    jugador=self.jugador,
+                    equipo=self.equipo,
+                    temporada=temporada
+                )
+                self.dorsal = jet.dorsal
+            except JugadorEquipoTemporada.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)

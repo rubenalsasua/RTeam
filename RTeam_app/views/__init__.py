@@ -12,6 +12,7 @@ from .entrenadores import *
 from .temporadas import *
 from .usuarios import *
 from .ligas import *
+from .partidos import *
 
 
 @login_required

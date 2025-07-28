@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from .models import (
-    Profile, Temporada, Equipo, Jugador, JugadorEquipoTemporada,
-    Entrenador, EntrenadorEquipoTemporada, Liga, EquipoLigaTemporada
+    Profile, Temporada, Equipo, Jugador, JugadorEquipoTemporada, Campo,
+    Entrenador, EntrenadorEquipoTemporada, Liga, EquipoLigaTemporada, Partido, EventoPartido, ConvocatoriaPartido
 )
 
 
@@ -38,3 +38,7 @@ admin.site.register(Entrenador)
 admin.site.register(EntrenadorEquipoTemporada)
 admin.site.register(Liga)
 admin.site.register(EquipoLigaTemporada)
+admin.site.register(Partido)
+admin.site.register(EventoPartido)
+admin.site.register(ConvocatoriaPartido)
+admin.site.register(Campo)
