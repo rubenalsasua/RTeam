@@ -23,4 +23,4 @@ RTeam es una aplicación web desarrollada con Django (Python) para la gestión d
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap
 - **Autenticación**: Google OAuth 2.0
 - **Base de Datos**: SQLite (desarrollo), MySQL (producción)
-- **Despliegue**: PythonAnywhere
+- **Despliegue**: PythonAnywhere (temporal)
