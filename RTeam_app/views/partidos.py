@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from RTeam_app.forms import TemporadaForm
-from RTeam_app.models import Liga, Partido, Temporada
+from RTeam_app.forms import PartidoForm
+from RTeam_app.models import Liga, Partido, Temporada, Equipo
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -69,3 +69,34 @@ class PartidoListView(LoginRequiredMixin, ListView):
         context['jornadas_ordenadas'] = jornadas_ordenadas
 
         return context
+
+
+# RTeam_app/views/partidos.py
+class PartidoCreateView(LoginRequiredMixin, CreateView):
+    model = Partido
+    form_class = PartidoForm
+    template_name = 'partidos/partido_create.html'
+
+    def get_success_url(self):
+        return reverse_lazy('partido_list') + f'?liga={self.kwargs["liga_id"]}'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        liga = get_object_or_404(Liga, id=self.kwargs['liga_id'])
+        context['liga'] = liga
+        context['accion'] = 'Crear'
+        return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        liga = get_object_or_404(Liga, id=self.kwargs['liga_id'])
+        equipos_liga = Equipo.objects.filter(ligas=liga)
+        form.fields['equipo_local'].queryset = equipos_liga
+        form.fields['equipo_visitante'].queryset = equipos_liga
+        form.initial['estado'] = 'PROGRAMADO'
+        return form
+
+    def form_valid(self, form):
+        liga = get_object_or_404(Liga, id=self.kwargs['liga_id'])
+        form.instance.liga = liga
+        return super().form_valid(form)

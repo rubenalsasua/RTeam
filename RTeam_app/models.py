@@ -57,6 +57,7 @@ class Temporada(models.Model):
 class Equipo(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     foto = CloudinaryField('imagen', null=True, blank=True, folder='equipos')
+    color = models.CharField(max_length=20, blank=True, null=True, help_text='Color principal del equipo')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     jugadores = models.ManyToManyField('Jugador', through='JugadorEquipoTemporada', related_name='equipos')

@@ -1,114 +1,78 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load app_filters %}
 {% block contenido %}
-<div class="container-fluid px-0">
-    <h1 class="mb-3 fs-4">Partidos</h1>
+    <div class="container-fluid px-0">
+        <h1 class="mb-3 fs-5 fw-bold">Partidos</h1>
 
-    <!-- Selector de ligas -->
-    <div class="card mb-3 shadow-sm">
-        <div class="card-body py-2">
-            <h5 class="card-title mb-2 fs-5">Seleccionar Liga</h5>
-            <div class="row">
-                <div class="col-12">
-                    <form method="get" id="ligaForm">
-                        <select class="form-select" name="liga" id="ligaSelector">
-                            {% for liga in ligas %}
-                                <option value="{{ liga.id }}" {% if liga.id == liga_actual.id %}selected{% endif %}>
-                                    {{ liga.nombre }} ({{ liga.temporada }})
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </form>
-                </div>
+        <!-- Selector de ligas - Optimizado para móviles -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body p-2">
+                <form method="get" id="ligaForm" class="mb-0">
+                    <label for="ligaSelector" class="form-label mb-1 small fw-bold">Seleccionar Liga</label>
+                    <select class="form-select form-select-sm" name="liga" id="ligaSelector">
+                        {% for liga in ligas %}
+                            <option value="{{ liga.id }}" {% if liga.id == liga_actual.id %}selected{% endif %}>
+                                {{ liga.nombre }} ({{ liga.temporada }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
             </div>
         </div>
-    </div>
 
-    {% if not liga_actual %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>No hay ligas disponibles para mostrar partidos.
-        </div>
-    {% else %}
-        <h2 class="mb-3 fs-5 fw-bold">{{ liga_actual.nombre }} <small class="text-muted">({{ liga_actual.temporada }})</small></h2>
-
-        {% if not partidos_por_jornada %}
-            <div class="alert alert-warning">
-                <i class="fas fa-exclamation-triangle me-2"></i>No hay partidos programados para esta liga.
+        {% if not liga_actual %}
+            <div class="alert alert-info py-2 small">
+                <i class="fas fa-info-circle me-1"></i>No hay ligas disponibles.
             </div>
         {% else %}
-            {% for jornada in jornadas_ordenadas %}
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-header bg-primary text-white py-2">
-                        <h3 class="mb-0 fs-6 fw-bold">Jornada {{ jornada }}</h3>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="py-2">Fecha</th>
-                                        <th class="py-2">Local</th>
-                                        <th class="py-2 text-center">Resultado</th>
-                                        <th class="py-2">Visitante</th>
-                                        <th class="py-2">Campo</th>
-                                        <th class="py-2">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for partido in partidos_por_jornada|get_item:jornada %}
-                                        <tr>
-                                            <td class="py-2">{{ partido.fecha|date:"d/m/Y H:i" }}</td>
-                                            <td class="py-2">
-                                                <div class="d-flex align-items-center">
-                                                    {% if partido.equipo_local.foto %}
-                                                        <img src="{{ partido.equipo_local.foto.url }}" class="me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-                                                    {% endif %}
-                                                    <span class="small">{{ partido.equipo_local.nombre }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="text-center py-2">
-                                                {% if partido.estado == 'FINALIZADO' %}
-                                                    <span class="fw-bold">{{ partido.goles_local }} - {{ partido.goles_visitante }}</span>
-                                                {% else %}
-                                                    <span class="text-muted">vs</span>
-                                                {% endif %}
-                                            </td>
-                                            <td class="py-2">
-                                                <div class="d-flex align-items-center">
-                                                    {% if partido.equipo_visitante.foto %}
-                                                        <img src="{{ partido.equipo_visitante.foto.url }}" class="me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-                                                    {% endif %}
-                                                    <span class="small">{{ partido.equipo_visitante.nombre }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="py-2 small">{{ partido.campo.nombre }}</td>
-                                            <td class="py-2">
-                                                {% if partido.estado == 'PROGRAMADO' %}
-                                                    <span class="badge bg-info">Programado</span>
-                                                {% elif partido.estado == 'FINALIZADO' %}
-                                                    <span class="badge bg-success">Finalizado</span>
-                                                {% elif partido.estado == 'SUSPENDIDO' %}
-                                                    <span class="badge bg-danger">Suspendido</span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary">{{ partido.get_estado_display }}</span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+            <a href="{% url 'partido_create' liga_actual.id %}" class="btn btn-warning w-100 mb-3">Nuevo partido</a>
+            {% if not partidos_por_jornada %}
+                <div class="alert alert-warning py-2 small">
+                    <i class="fas fa-exclamation-triangle me-1"></i>No hay partidos programados.
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endif %}
-</div>
+            {% else %}
+                {% for jornada in jornadas_ordenadas %}
 
-<script>
-    // Cambiar de liga automáticamente al seleccionar una opción
-    document.getElementById('ligaSelector').addEventListener('change', function() {
-        document.getElementById('ligaForm').submit();
-    });
-</script>
+
+
+                    {% for partido in partidos_por_jornada|get_item:jornada %}
+
+                        <h3 class="mb-0 fs-6">{{ partido.fecha|date:"d/m/Y" }}</h3>
+
+                        <div class="marcador">
+                            <div class="marcador-logoHora">
+                                <div class="marcador-logo">J {{ jornada }}</div>
+                                <div class="marcador-hora">{{ partido.fecha|date:"H:i" }}</div>
+                            </div>
+                            <div class="marcador-equipos">
+                                <div class="marcador-nombresEquipo">
+                                    <div class="marcador-contenedorEquipo">
+                                        <span class="marcador-equipo">{{ partido.equipo_local.nombre }}</span>
+                                        <div class="marcador-colorEquipo" style="background-color:
+                                                {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ff00009f{% endif %};"></div>
+                                    </div>
+                                    <div class="marcador-contenedorEquipo">
+                                        <span class="marcador-equipo">{{ partido.equipo_visitante.nombre }}</span>
+                                        <div class="marcador-colorEquipo" style="background-color:
+                                                {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#005c17{% endif %};"></div>
+                                    </div>
+                                </div>
+                                <div class="marcador-puntuaciones">
+                                    <div class="marcador-puntuacion">{{ partido.goles_local }}</div>
+                                    <div class="marcador-divisor"></div>
+                                    <div class="marcador-puntuacion">{{ partido.goles_visitante }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+
+
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <script src="{% static 'js/partidos.js' %}"></script>
 {% endblock %}

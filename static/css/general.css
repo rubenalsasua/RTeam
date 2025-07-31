@@ -142,3 +142,106 @@ form textarea:focus {
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
 }
+
+.marcador {
+    display: flex;
+    width: 250px;
+    height: 100px;
+    border: 2px solid #000;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+/* Logo y hora */
+.marcador-logoHora {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 70px;
+    background: linear-gradient(to bottom, #f33, #f33 50%, #fff 50%);
+    color: white;
+    padding: 8px 5px;
+    text-align: center;
+}
+
+.marcador-logo {
+    height: 38px; /* Altura fija para el contenedor del logo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.marcador-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Mantiene las proporciones de la imagen */
+}
+
+.marcador-hora {
+    font-size: 18px;
+    background-color: white;
+    color: black;
+    padding: 2px;
+}
+
+/* Equipos y puntuación */
+.marcador-equipos {
+    display: flex;
+    width: 100%;
+    background-color: #000;
+    color: white;
+}
+
+.marcador-nombresEquipo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.marcador-contenedorEquipo {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.marcador-equipo {
+    font-size: 14px;
+    text-align: center;
+    z-index: 1;
+    margin-left: 10px;
+}
+
+.marcador-colorEquipo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    border-radius: 0;
+}
+
+.marcador-puntuaciones {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    color: black;
+    width: 40px;
+    font-size: 24px;
+    padding: 10px 0;
+}
+
+.marcador-divisor {
+    width: 100%;
+    height: 1px;
+    background-color: black;
+}

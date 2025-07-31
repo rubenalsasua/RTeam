@@ -1,6 +1,6 @@
 from django import forms
 from .models import Temporada, Liga, Equipo, Jugador, Entrenador, EquipoLigaTemporada, JugadorEquipoTemporada, \
-    EntrenadorEquipoTemporada, Profile
+    EntrenadorEquipoTemporada, Profile, Partido
 
 
 class TemporadaForm(forms.ModelForm):
@@ -35,14 +35,16 @@ class LigaForm(forms.ModelForm):
 class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
-        fields = ['nombre', 'foto']
+        fields = ['nombre', 'foto', 'color']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre del equipo', 'class': 'form-control'}),
             'foto': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control'}),
         }
         labels = {
             'nombre': 'Nombre del Equipo',
             'foto': 'Foto del Equipo',
+            'color': 'Color del Equipo',
         }
 
 
@@ -134,4 +136,24 @@ class UsuarioForm(forms.ModelForm):
         help_texts = {
             'jugador': 'Selecciona un jugador para asociar a este perfil (opcional)',
             'entrenador': 'Selecciona un entrenador para asociar a este perfil (opcional)'
+        }
+
+
+class PartidoForm(forms.ModelForm):
+    class Meta:
+        model = Partido
+        fields = ['fecha', 'jornada', 'campo', 'equipo_local', 'equipo_visitante']
+        widgets = {
+            'fecha': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control form-control-sm'}),
+            'jornada': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'min': 1}),
+            'campo': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'equipo_local': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'equipo_visitante': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+        }
+        labels = {
+            'fecha': 'Fecha y hora',
+            'jornada': 'Jornada',
+            'campo': 'Campo',
+            'equipo_local': 'Equipo Local',
+            'equipo_visitante': 'Equipo Visitante',
         }
