@@ -32,7 +32,7 @@ class LigaCreateView(LoginRequiredMixin, CreateView):
         return render(request, "ligas/liga_create.html", context)
 
     def post(self, request):
-        formulario = LigaForm(data=request.POST)
+        formulario = LigaForm(data=request.POST, files=request.FILES)
         if formulario.is_valid():
             formulario.save()
             return redirect("liga_list")
@@ -48,7 +48,7 @@ class LigaUpdateView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, pk):
         liga = Liga.objects.get(id=pk)
-        formulario = LigaForm(instance=liga, data=request.POST)
+        formulario = LigaForm(instance=liga, data=request.POST, files=request.FILES)
         if formulario.is_valid():
             formulario.save()
             return redirect("liga_list")

@@ -161,7 +161,6 @@ form textarea:focus {
     flex-direction: column;
     justify-content: space-between;
     width: 70px;
-    background: linear-gradient(to bottom, #f33, #f33 50%, #fff 50%);
     color: white;
     padding: 8px 5px;
     text-align: center;

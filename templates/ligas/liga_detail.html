@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block contenido %}
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-4 {% if liga.color %}border{% endif %}"
+         {% if liga.color %}style="border-color: {{ liga.color }} !important; border-width: 4px !important;"{% endif %}>
         <div class="card-body text-center py-3">
             <h2 class="mb-3">{{ liga.nombre }}</h2>
+            {% if liga.foto %}
+                <div class="text-center mb-3">
+                    <img src="{{ liga.foto.url }}" alt="Logo de {{ liga.nombre }}" class="img-fluid"
+                         style="max-height: 120px;">
+                </div>
+            {% else %}
+                <div class="text-center mb-3">
+                    <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada" class="img-fluid"
+                         style="max-height: 120px;">
+                </div>
+            {% endif %}
             <p class="text-muted mb-0"><strong>Temporada:</strong> {{ liga.temporada.periodo }}</p>
         </div>
     </div>

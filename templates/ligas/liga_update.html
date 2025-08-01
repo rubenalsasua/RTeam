@@ -5,7 +5,7 @@
             <h4 class="mb-0">Editar liga</h4>
         </div>
         <div class="card-body">
-            <form action="{% url 'liga_update' liga.id %}" method="post">
+            <form action="{% url 'liga_update' liga.id %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% if formulario.errors %}
                     <div class="alert alert-danger">

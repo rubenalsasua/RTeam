@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contenido %}
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-4 {% if equipo.color %}border{% endif %}"
+                 {% if equipo.color %}style="border-color: {{ equipo.color }} !important; border-width: 4px !important;"{% endif %}>
         <div class="card-body text-center py-3">
             <h2 class="mb-3">{{ equipo.nombre }}</h2>
 

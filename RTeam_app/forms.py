@@ -21,13 +21,17 @@ class TemporadaForm(forms.ModelForm):
 class LigaForm(forms.ModelForm):
     class Meta:
         model = Liga
-        fields = ['nombre', 'temporada']
+        fields = ['nombre', 'foto', 'color', 'temporada']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre de la liga', 'class': 'form-control'}),
+            'foto': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control'}),
             'temporada': forms.Select(attrs={'class': 'form-control'}),
         }
         labels = {
             'nombre': 'Nombre de la Liga',
+            'foto': 'Foto de la Liga',
+            'color': 'Color de la Liga',
             'temporada': 'Temporada',
         }
 

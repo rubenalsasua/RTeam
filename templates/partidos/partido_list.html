@@ -41,9 +41,20 @@
                         <h3 class="mb-0 fs-6">{{ partido.fecha|date:"d/m/Y" }}</h3>
 
                         <div class="marcador">
-                            <div class="marcador-logoHora">
-                                <div class="marcador-logo">J {{ jornada }}</div>
-                                <div class="marcador-hora">{{ partido.fecha|date:"H:i" }}</div>
+                            <div class="marcador-logoHora" style="background-color:
+                                    {% if liga_actual.color %}{{ liga_actual.color }}{% else %}#f33{% endif %}; padding: 0;">
+                                <div class="marcador-logo"
+                                     style="height: 50px; display: flex; justify-content: center; align-items: center;">
+                                    {% if liga_actual.foto %}
+                                        <img src="{{ liga_actual.foto.url }}" alt="Logo liga" class="img-fluid">
+                                    {% else %}
+                                        <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada"
+                                             class="img-fluid"
+                                             style="max-height: 120px;">
+                                    {% endif %}
+                                </div>
+                                <div class="marcador-hora"
+                                     style="height: 50px;display: flex; justify-content: center; align-items: center;">{{ partido.fecha|date:"H:i" }}</div>
                             </div>
                             <div class="marcador-equipos">
                                 <div class="marcador-nombresEquipo">

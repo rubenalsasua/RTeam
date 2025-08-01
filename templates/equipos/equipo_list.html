@@ -10,7 +10,8 @@
 
     <div class="list-group">
         {% for equipo in equipos %}
-            <div class="card mb-3 shadow-sm">
+            <div class="card mb-3 shadow-sm {% if equipo.color %}border{% endif %}"
+                 {% if equipo.color %}style="border-color: {{ equipo.color }} !important; border-width: 4px !important;"{% endif %}>
                 <a href="{% url 'equipo_detail' equipo.id %}" class="text-decoration-none text-dark">
                     <div class="card-body">
                         <h5 class="card-title">{{ equipo.nombre }}</h5>

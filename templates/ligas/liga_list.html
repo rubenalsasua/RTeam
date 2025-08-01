@@ -9,7 +9,8 @@
 
     <div class="list-group">
         {% for liga in ligas %}
-            <div class="card mb-3 shadow-sm">
+            <div class="card mb-3 shadow-sm {% if liga.color %}border{% endif %}"
+                 {% if liga.color %}style="border-color: {{ liga.color }} !important; border-width: 4px !important;"{% endif %}>
                 <a href="{% url 'liga_detail' liga.id %}" class="text-decoration-none text-dark">
                     <div class="card-body">
                         <h5 class="card-title">{{ liga.nombre }}</h5>
