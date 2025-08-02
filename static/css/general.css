@@ -153,6 +153,7 @@ form textarea:focus {
     font-weight: bold;
     overflow: hidden;
     border-radius: 4px;
+    margin: 0 auto;
 }
 
 /* Logo y hora */
@@ -243,4 +244,29 @@ form textarea:focus {
     width: 100%;
     height: 1px;
     background-color: black;
+}
+
+.partido-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.partido-cabecera {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.badge {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.fecha-partido {
+    font-size: 0.9rem;
+    font-weight: 500;
 }

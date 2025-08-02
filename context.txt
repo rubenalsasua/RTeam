@@ -1,5 +1,6 @@
 Esta app solamente se usará en dispositivos móviles.
 Todas las pantallas tienen que estar pensadas para ser usadas en dispositivos móviles.
+Se desea evitar el zoom que hacen los iphone al clicar un input.
 Se usa el framework bootstrap para el diseño de las pantallas.
 Todas las funcionalidades javascript se implementan en un fichero javascript separado, dentro de la carpeta js.
 Para las vistas siempre uso los ListViews, DetailViews, CreateViews, UpdateViews y DeleteViews predeterminados de Django.

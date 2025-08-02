@@ -100,3 +100,14 @@ class PartidoCreateView(LoginRequiredMixin, CreateView):
         liga = get_object_or_404(Liga, id=self.kwargs['liga_id'])
         form.instance.liga = liga
         return super().form_valid(form)
+
+
+class PartidoDetailView(LoginRequiredMixin, DetailView):
+    model = Partido
+    template_name = 'partidos/partido_detail.html'
+    context_object_name = 'partido'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['liga'] = self.object.liga
+        return context

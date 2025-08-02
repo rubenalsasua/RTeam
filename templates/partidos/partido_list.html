@@ -33,50 +33,54 @@
                 </div>
             {% else %}
                 {% for jornada in jornadas_ordenadas %}
-
-
-
                     {% for partido in partidos_por_jornada|get_item:jornada %}
-
-                        <h3 class="mb-0 fs-6">{{ partido.fecha|date:"d/m/Y" }}</h3>
-
-                        <div class="marcador">
-                            <div class="marcador-logoHora" style="background-color:
-                                    {% if liga_actual.color %}{{ liga_actual.color }}{% else %}#f33{% endif %}; padding: 0;">
-                                <div class="marcador-logo"
-                                     style="height: 50px; display: flex; justify-content: center; align-items: center;">
-                                    {% if liga_actual.foto %}
-                                        <img src="{{ liga_actual.foto.url }}" alt="Logo liga" class="img-fluid">
-                                    {% else %}
-                                        <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada"
-                                             class="img-fluid"
-                                             style="max-height: 120px;">
-                                    {% endif %}
+                        <a href="{% url 'partido_detail' partido.id %}" class="text-decoration-none text-dark">
+                            <div class="partido-container mb-3 text-center">
+                                <div class="partido-cabecera px-3 py-1 rounded-top mb-0"
+                                     style="width: 250px;">
+                                <span class="badge me-1" style="background-color:
+                                        {% if liga_actual.color %}{{ liga_actual.color }}{% else %}#f33{% endif %};">J{{ jornada }}</span>
+                                    <span class="fecha-partido">{{ partido.fecha|date:"d/m/Y" }}</span>
                                 </div>
-                                <div class="marcador-hora"
-                                     style="height: 50px;display: flex; justify-content: center; align-items: center;">{{ partido.fecha|date:"H:i" }}</div>
-                            </div>
-                            <div class="marcador-equipos">
-                                <div class="marcador-nombresEquipo">
-                                    <div class="marcador-contenedorEquipo">
-                                        <span class="marcador-equipo">{{ partido.equipo_local.nombre }}</span>
-                                        <div class="marcador-colorEquipo" style="background-color:
-                                                {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ff00009f{% endif %};"></div>
+                                <div class="marcador">
+                                    <div class="marcador-logoHora" style="background-color:
+                                            {% if liga_actual.color %}{{ liga_actual.color }}{% else %}#f33{% endif %}; padding: 0;">
+                                        <div class="marcador-logo"
+                                             style="height: 50px; display: flex; justify-content: center; align-items: center;">
+                                            {% if liga_actual.foto %}
+                                                <img src="{{ liga_actual.foto.url }}" alt="Logo liga" class="img-fluid">
+                                            {% else %}
+                                                <img src="{% static 'icons/default_team.png' %}"
+                                                     alt="Imagen predeterminada"
+                                                     class="img-fluid"
+                                                     style="max-height: 120px;">
+                                            {% endif %}
+                                        </div>
+                                        <div class="marcador-hora"
+                                             style="height: 50px;display: flex; justify-content: center; align-items: center;">{{ partido.fecha|date:"H:i" }}</div>
                                     </div>
-                                    <div class="marcador-contenedorEquipo">
-                                        <span class="marcador-equipo">{{ partido.equipo_visitante.nombre }}</span>
-                                        <div class="marcador-colorEquipo" style="background-color:
-                                                {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#005c17{% endif %};"></div>
+                                    <div class="marcador-equipos">
+                                        <div class="marcador-nombresEquipo">
+                                            <div class="marcador-contenedorEquipo">
+                                                <span class="marcador-equipo">{{ partido.equipo_local.nombre }}</span>
+                                                <div class="marcador-colorEquipo" style="background-color:
+                                                        {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ff00009f{% endif %};"></div>
+                                            </div>
+                                            <div class="marcador-contenedorEquipo">
+                                                <span class="marcador-equipo">{{ partido.equipo_visitante.nombre }}</span>
+                                                <div class="marcador-colorEquipo" style="background-color:
+                                                        {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#005c17{% endif %};"></div>
+                                            </div>
+                                        </div>
+                                        <div class="marcador-puntuaciones">
+                                            <div class="marcador-puntuacion">{{ partido.goles_local }}</div>
+                                            <div class="marcador-divisor"></div>
+                                            <div class="marcador-puntuacion">{{ partido.goles_visitante }}</div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="marcador-puntuaciones">
-                                    <div class="marcador-puntuacion">{{ partido.goles_local }}</div>
-                                    <div class="marcador-divisor"></div>
-                                    <div class="marcador-puntuacion">{{ partido.goles_visitante }}</div>
-                                </div>
                             </div>
-                        </div>
-
+                        </a>
                     {% endfor %}
 
 

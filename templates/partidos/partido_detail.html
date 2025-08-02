@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido %}
+    <div class="container-fluid px-0">
+
+
+        <!-- Tarjeta principal con los equipos y resultado -->
+        <div class="card shadow mb-4"
+             style="border: none; border-radius: 10px; overflow: hidden; background: linear-gradient(90deg,
+                     {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ff00009f{% endif %} 0%,
+                     {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#005c17{% endif %} 100%);">
+
+            <div class="card-body p-0">
+                <div class="row mx-0" style="background-color: rgba(255, 255, 255, 0.85);">
+                    <!-- Equipo Local -->
+                    <div class="col-4 p-2 text-center">
+                        {% if partido.equipo_local.foto %}
+                            <img src="{{ partido.equipo_local.foto.url }}" alt="{{ partido.equipo_local.nombre }}"
+                                 class="img-fluid mb-2" style="max-height: 60px;">
+                        {% else %}
+                            <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen" class="img-fluid mb-2"
+                                 style="max-height: 60px;">
+                        {% endif %}
+                        <h5 class="fw-bold mb-0 small text-truncate">{{ partido.equipo_local.nombre }}</h5>
+                    </div>
+
+                    <!-- Marcador -->
+                    <div class="col-4 d-flex flex-column justify-content-center align-items-center p-2">
+                        <div class="bg-dark text-white py-2 w-100 text-center rounded-3 fw-bold fs-4">
+                            {{ partido.goles_local }} - {{ partido.goles_visitante }}
+                        </div>
+                    </div>
+
+                    <!-- Equipo Visitante -->
+                    <div class="col-4 p-2 text-center">
+                        {% if partido.equipo_visitante.foto %}
+                            <img src="{{ partido.equipo_visitante.foto.url }}"
+                                 alt="{{ partido.equipo_visitante.nombre }}" class="img-fluid mb-2"
+                                 style="max-height: 60px;">
+                        {% else %}
+                            <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen" class="img-fluid mb-2"
+                                 style="max-height: 60px;">
+                        {% endif %}
+                        <h5 class="fw-bold mb-0 small text-truncate">{{ partido.equipo_visitante.nombre }}</h5>
+                    </div>
+                </div>
+
+                <!-- Información de la liga -->
+                <div class="d-flex align-items-center justify-content-center p-2 text-white">
+                    {% if partido.liga.foto %}
+                        <img src="{{ partido.liga.foto.url }}" alt="{{ partido.liga.nombre }}" class="img-fluid me-2"
+                             style="max-height: 30px;">
+                    {% endif %}
+                    <span class="small">{{ partido.liga.nombre }} - Jornada {{ partido.jornada }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles del partido -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0 fs-6">Información del partido</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="d-flex flex-column">
+                            <small class="text-muted">Fecha</small>
+                            <span>{{ partido.fecha|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex flex-column">
+                            <small class="text-muted">Hora</small>
+                            <span>{{ partido.fecha|date:"H:i" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex flex-column">
+                            <small class="text-muted">Campo</small>
+                            <span>{{ partido.campo.nombre }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex flex-column">
+                            <small class="text-muted">Estado</small>
+                            <span class="badge {% if partido.estado == 'FINALIZADO' %}bg-success{% elif partido.estado == 'PROGRAMADO' %}bg-primary{% else %}bg-danger{% endif %}">
+                                {{ partido.get_estado_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="{% static 'js/partidos.js' %}"></script>
+{% endblock %}
