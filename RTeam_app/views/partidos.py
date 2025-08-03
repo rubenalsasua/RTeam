@@ -281,6 +281,7 @@ def generar_imagen_convocatoria(partido, equipo, convocatoria, formato='jpeg'):
     """Genera una imagen con la convocatoria del equipo"""
     # [resto del código permanece igual]
     # Configuración básica de la imagen
+    from io import BytesIO
     width, height = 1080, 1920  # Tamaño para móvil
     bg_color = (25, 25, 25)  # Fondo oscuro
 
