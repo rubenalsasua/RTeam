@@ -4,3 +4,9 @@ Se desea evitar el zoom que hacen los iphone al clicar un input.
 Se usa el framework bootstrap para el diseño de las pantallas.
 Todas las funcionalidades javascript se implementan en un fichero javascript separado, dentro de la carpeta js.
 Para las vistas siempre uso los ListViews, DetailViews, CreateViews, UpdateViews y DeleteViews predeterminados de Django.
+Los colores de la app son amarillo warning y gris oscuro (bg-dark).
+No quiero que se use el color azul en ningún sitio.
+No quiero ningún botón de 'atrás' en las pantallas.
+No quiero que la foto de las ligas tengan un fondo oscuro, sino que sea el color propio de la liga.
+Todas las fotos, salvo las de las ligas, no tienen ningún fondo.
+No quiero utilizar ningún dropdown, salvo en el caso de los filtros de las listas.

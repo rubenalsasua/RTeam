@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <h1>¿Seguro que quieres borrar esta convocatoria?</h1>
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Confirmar"/>
+    </form>
+    <a href="{% url 'index'%}">Cancelar</a>
+{% endblock %}

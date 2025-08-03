@@ -1,37 +1,62 @@
 {% extends 'base.html' %}
-{% block contenido %}
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h1 class="text-center mb-3">Ligas</h1>
-            <a href="{% url 'liga_create' %}" class="btn btn-warning w-100 mb-3">Crear nueva liga</a>
-        </div>
-    </div>
+{% load static %}
 
-    <div class="list-group">
-        {% for liga in ligas %}
-            <div class="card mb-3 shadow-sm {% if liga.color %}border{% endif %}"
-                 {% if liga.color %}style="border-color: {{ liga.color }} !important; border-width: 4px !important;"{% endif %}>
-                <a href="{% url 'liga_detail' liga.id %}" class="text-decoration-none text-dark">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ liga.nombre }}</h5>
-                        <p class="card-text mb-1 small">Temporada: {{ liga.temporada.periodo }}</p>
-                        <p class="card-text small">Equipos: {{ liga.equipos.count }}</p>
-                        <div class="d-flex justify-content-end mt-3">
-                            <span class="btn btn-sm btn-secondary">Ver detalles</span>
+{% block contenido %}
+    <div class="container-fluid px-0">
+        <h1 class="mb-3 fs-5 fw-bold">Ligas</h1>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'liga_create' %}" class="btn btn-warning">
+                <i class="fas me-1"></i>Nueva liga
+            </a>
+        </div>
+
+        {% if ligas %}
+            <div class="row row-cols-1 g-3">
+                {% for liga in ligas %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body p-0">
+                                <a href="{% url 'liga_detail' liga.id %}" class="text-decoration-none">
+                                    <div class="d-flex align-items-center">
+                                        <!-- Fondo oscuro para la imagen -->
+                                        <div class="d-flex justify-content-center align-items-center"
+                                             style="width: 60px; height: 60px; overflow: hidden;background-color:
+                                                     {% if liga.color %}{{ liga.color }}{% else %}#f33{% endif %};">
+                                            {% if liga.foto %}
+                                                <img src="{{ liga.foto.url }}" alt="{{ liga.nombre }}"
+                                                     class="img-fluid p-1" style="max-height: 50px; max-width: 50px;">
+                                            {% else %}
+                                                <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen"
+                                                     class="img-fluid p-1" style="max-height: 50px; max-width: 50px;">
+                                            {% endif %}
+                                        </div>
+                                        <div class="ms-3 flex-grow-1">
+                                            <h5 class="card-title mb-1">{{ liga.nombre }}</h5>
+                                            <p class="card-text text-muted small mb-0">{{ liga.temporada }}</p>
+                                        </div>
+                                        <!-- Indicador de liga destacada -->
+                                        {% if liga.destacada %}
+                                            <div class="me-2">
+                                                <span class="badge bg-warning" title="Liga destacada">
+                                                    <i class="fas fa-star"></i>
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                        <div class="text-end me-2">
+                                            <i class="fas fa-chevron-right text-muted"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </a>
-                <div class="card-footer bg-white d-flex justify-content-end gap-2">
-                    <a href="{% url 'liga_update' liga.id %}" class="btn btn-sm btn-light">Editar</a>
-                    <a href="{% url 'liga_delete' liga.id %}" class="btn btn-sm btn-light">Borrar</a>
-                </div>
+                {% endfor %}
             </div>
-        {% empty %}
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body text-center text-muted">
-                    No hay ligas disponibles.
-                </div>
+        {% else %}
+            <div class="alert alert-info">
+                No hay ligas disponibles. <a href="{% url 'liga_create' %}" class="alert-link">Crear una liga</a>.
             </div>
-        {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

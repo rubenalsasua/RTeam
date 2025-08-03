@@ -2,8 +2,7 @@
 {% load static %}
 {% block contenido %}
     <div class="container-fluid px-0">
-
-
+        <!-- Contenido existente -->
         <!-- Tarjeta principal con los equipos y resultado -->
         <div class="card shadow mb-4"
              style="border: none; border-radius: 10px; overflow: hidden; background: linear-gradient(90deg,
@@ -92,9 +91,193 @@
                 </div>
             </div>
         </div>
+        <!-- Añadir sección de convocatorias -->
+        {% if user.profile.role == 'ADMIN' or user.profile.role == 'ENTRENADOR' %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fs-6">Convocatorias</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <!-- Convocatoria equipo local -->
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    {% if partido.equipo_local.foto %}
+                                        <img src="{{ partido.equipo_local.foto.url }}"
+                                             alt="{{ partido.equipo_local.nombre }}"
+                                             class="img-fluid me-2" style="max-height: 30px;">
+                                    {% endif %}
+                                    <span>{{ partido.equipo_local.nombre }}</span>
+                                </div>
+                                <a href="{% url 'convocatoria_list' partido.id partido.equipo_local.id %}"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="fas fa-users me-1"></i>Gestionar
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Convocatoria equipo visitante -->
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    {% if partido.equipo_visitante.foto %}
+                                        <img src="{{ partido.equipo_visitante.foto.url }}"
+                                             alt="{{ partido.equipo_visitante.nombre }}"
+                                             class="img-fluid me-2" style="max-height: 30px;">
+                                    {% endif %}
+                                    <span>{{ partido.equipo_visitante.nombre }}</span>
+                                </div>
+                                <a href="{% url 'convocatoria_list' partido.id partido.equipo_visitante.id %}"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="fas fa-users me-1"></i>Gestionar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        {% endif %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0 fs-6">Convocatorias</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="nav nav-tabs nav-fill" id="convocatoriaTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if convocatoria_local|length >= convocatoria_visitante|length %}active{% endif %}"
+                                id="local-tab" data-bs-toggle="tab" data-bs-target="#local"
+                                type="button" role="tab" aria-controls="local"
+                                aria-selected="{% if convocatoria_local|length >= convocatoria_visitante|length %}true{% else %}false{% endif %}">
+                            {{ partido.equipo_local.nombre }}
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if convocatoria_local|length < convocatoria_visitante|length %}active{% endif %}"
+                                id="visitante-tab" data-bs-toggle="tab" data-bs-target="#visitante"
+                                type="button" role="tab" aria-controls="visitante"
+                                aria-selected="{% if convocatoria_local|length < convocatoria_visitante|length %}true{% else %}false{% endif %}">
+                            {{ partido.equipo_visitante.nombre }}
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="convocatoriaTabsContent">
+                    <!-- Convocatoria Equipo Local -->
+                    <div class="tab-pane fade {% if convocatoria_local|length >= convocatoria_visitante|length %}show active{% endif %}"
+                         id="local" role="tabpanel" aria-labelledby="local-tab">
+                        {% if convocatoria_local %}
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 70px">Dorsal</th>
+                                        <th>Jugador</th>
+                                        <th class="text-end">Estado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for convocado in convocatoria_local %}
+                                        <tr>
+                                            <td class="text-center">
+                                                <span class="badge rounded-pill"
+                                                      style="background-color:
+                                                              {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ffc107{% endif %};
+                                                              color: #ffffff; min-width: 30px;">
+                                                    {{ convocado.dorsal|default:"—" }}
+                                                </span>
+                                            </td>
+                                            <td class="d-flex align-items-center">
+                                                {% if convocado.jugador.foto %}
+                                                    <img src="{{ convocado.jugador.foto.url }}"
+                                                         alt="{{ convocado.jugador.nombre }}"
+                                                         class="rounded-circle me-2"
+                                                         style="width: 30px; height: 30px; object-fit: cover;">
+                                                {% endif %}
+                                                {{ convocado.jugador.nombre }}
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="badge {% if convocado.estado == 'CONVOCADO' %}bg-success{% elif convocado.estado == 'LESIONADO' %}bg-danger{% elif convocado.estado == 'SANCIONADO' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                                    {{ convocado.get_estado_display }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="p-3 text-center text-muted">
+                                No hay convocados para este equipo
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Convocatoria Equipo Visitante -->
+                    <div class="tab-pane fade {% if convocatoria_local|length < convocatoria_visitante|length %}show active{% endif %}"
+                         id="visitante" role="tabpanel" aria-labelledby="visitante-tab">
+                        {% if convocatoria_visitante %}
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 70px">Dorsal</th>
+                                        <th>Jugador</th>
+                                        <th class="text-end">Estado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for convocado in convocatoria_visitante %}
+                                        <tr>
+                                            <td class="text-center">
+                                                <span class="badge rounded-pill"
+                                                      style="background-color:
+                                                              {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#ffc107{% endif %};
+                                                              color: #ffffff; min-width: 30px;">
+                                                    {{ convocado.dorsal|default:"—" }}
+                                                </span>
+                                            </td>
+                                            <td class="d-flex align-items-center">
+                                                {% if convocado.jugador.foto %}
+                                                    <img src="{{ convocado.jugador.foto.url }}"
+                                                         alt="{{ convocado.jugador.nombre }}"
+                                                         class="rounded-circle me-2"
+                                                         style="width: 30px; height: 30px; object-fit: cover;">
+                                                {% endif %}
+                                                {{ convocado.jugador.nombre }}
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="badge {% if convocado.estado == 'CONVOCADO' %}bg-success{% elif convocado.estado == 'LESIONADO' %}bg-danger{% elif convocado.estado == 'SANCIONADO' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                                    {{ convocado.get_estado_display }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="p-3 text-center text-muted">
+                                No hay convocados para este equipo
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Si no hay convocados en ningún equipo, no hacemos nada
+            if ({{ convocatoria_local|length }} === 0 && {{ convocatoria_visitante|length }} === 0) {
+                return;
+            }
 
+            // Activar el tab que tenga más convocados
+            const tabToActivate = {{ convocatoria_local|length }} >= {{ convocatoria_visitante|length }} ?
+                'local-tab' : 'visitante-tab';
 
-    <script src="{% static 'js/partidos.js' %}"></script>
+            // Bootstrap ya maneja la activación de los tabs por nosotros basándose en las clases activas
+        });
+    </script>
 {% endblock %}

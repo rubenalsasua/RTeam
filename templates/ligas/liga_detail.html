@@ -1,73 +1,110 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block contenido %}
-    <div class="card shadow-sm mb-4 {% if liga.color %}border{% endif %}"
-         {% if liga.color %}style="border-color: {{ liga.color }} !important; border-width: 4px !important;"{% endif %}>
-        <div class="card-body text-center py-3">
-            <h2 class="mb-3">{{ liga.nombre }}</h2>
-            {% if liga.foto %}
-                <div class="text-center mb-3">
-                    <img src="{{ liga.foto.url }}" alt="Logo de {{ liga.nombre }}" class="img-fluid"
-                         style="max-height: 120px;">
-                </div>
-            {% else %}
-                <div class="text-center mb-3">
-                    <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada" class="img-fluid"
-                         style="max-height: 120px;">
-                </div>
-            {% endif %}
-            <p class="text-muted mb-0"><strong>Temporada:</strong> {{ liga.temporada.periodo }}</p>
-        </div>
-    </div>
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center bg-light">
-            <h5 class="mb-0">Equipos</h5>
-            <a href="{% url 'equipo_liga_create' liga.id %}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus me-1"></i>Añadir equipo
-            </a>
+{% block contenido %}
+    <div class="container-fluid px-0">
+        <h1 class="mb-3 fs-5 fw-bold">Detalle de liga</h1>
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-body p-0">
+                <div class="d-flex align-items-center p-3">
+                    <!-- Fondo con el color de la liga para la imagen -->
+                    <div class="d-flex justify-content-center align-items-center me-3 rounded"
+                         style="width: 60px; height: 60px; overflow: hidden;
+                                 background-color: {% if liga.color %}{{ liga.color }}{% else %}#f8f9fa{% endif %}">
+                        {% if liga.foto %}
+                            <img src="{{ liga.foto.url }}" alt="{{ liga.nombre }}"
+                                 class="img-fluid" style="max-height: 50px; max-width: 50px;">
+                        {% else %}
+                            <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen"
+                                 class="img-fluid" style="max-height: 50px; max-width: 50px;">
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-1">{{ liga.nombre }}</h5>
+                        <p class="card-text text-muted small mb-0">{{ liga.temporada }}</p>
+                        {% if liga.destacada %}
+                            <span class="badge bg-warning mt-1" title="Liga destacada">
+                                <i class="fas fa-star"></i> Destacada
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="border-top p-2 d-flex justify-content-end">
+                    <a href="{% url 'liga_update' liga.id %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Modificar liga
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            {% if equipos_liga %}
-                <div class="row row-cols-1 row-cols-md-2 g-4">
-                    {% for equipo_liga in equipos_liga %}
-                        <div class="col">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="row g-0">
-                                    {% if equipo_liga.equipo.foto %}
-                                        <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
-                                            <img src="{{ equipo_liga.equipo.foto.url }}"
-                                                 alt="Logo de {{ equipo_liga.equipo.nombre }}"
-                                                 class="img-fluid" style="max-height: 80px;">
-                                        </div>
-                                    {% endif %}
-                                    <div class="col-md-{% if equipo_liga.equipo.foto %}8{% else %}12{% endif %}">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ equipo_liga.equipo.nombre }}</h5>
-                                            <p class="card-text">
-                                                <strong>Jugadores:</strong> {{ equipo_liga.equipo.jugadores.count }}</p>
-                                            <div class="d-flex justify-content-end gap-2 mt-2">
-                                                <a href="{% url 'equipo_detail' equipo_liga.equipo.id %}"
-                                                   class="btn btn-sm btn-secondary">Detalles</a>
-                                                <a href="{% url 'equipo_en_liga_delete' equipo_liga.id %}"
-                                                   class="btn btn-sm btn-light">Eliminar</a>
+
+        <!-- Sección de equipos -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light py-2">
+                <h5 class="mb-0 fs-6">Equipos</h5>
+                <a href="{% url 'equipo_liga_create' liga.id %}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-plus me-1"></i>Añadir equipo
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if equipos_liga %}
+                    <div class="list-group list-group-flush">
+                        {% for equipo_liga in equipos_liga %}
+                            <div class="list-group-item p-0">
+                                <div class="card h-100 border-0">
+                                    <div class="card-body p-0">
+                                        <a href="{% url 'equipo_detail' equipo_liga.equipo.id %}"
+                                           class="text-decoration-none text-dark">
+                                            <div class="d-flex align-items-center p-2">
+                                                <div class="d-flex justify-content-center align-items-center"
+                                                     style="width: 50px; height: 50px; overflow: hidden;">
+                                                    {% if equipo_liga.equipo.foto %}
+                                                        <img src="{{ equipo_liga.equipo.foto.url }}"
+                                                             alt="{{ equipo_liga.equipo.nombre }}"
+                                                             class="img-fluid"
+                                                             style="max-height: 40px; max-width: 40px;">
+                                                    {% else %}
+                                                        <img src="{% static 'icons/default_team.png' %}"
+                                                             alt="Sin imagen"
+                                                             class="img-fluid"
+                                                             style="max-height: 40px; max-width: 40px;">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="ms-2 flex-grow-1">
+                                                    <h5 class="card-title mb-1 small fw-bold">{{ equipo_liga.equipo.nombre }}</h5>
+                                                    <p class="card-text text-muted small mb-0">
+                                                        {{ equipo_liga.equipo.jugadores.count }} jugadores
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <a href="{% url 'equipo_en_liga_delete' equipo_liga.id %}"
+                                                       class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-center text-muted my-4">Esta liga no tiene equipos todavía.</p>
-            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning py-2 small m-3">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Esta liga no tiene equipos todavía.
+                    </div>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <div class="d-flex justify-content-end mb-4">
-        <a href="{% url 'liga_list' %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Volver a la lista de ligas
-        </a>
+        <div class="d-flex justify-content-between mb-3">
+            <a href="{% url 'liga_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-list me-1"></i>Ligas
+            </a>
+            <a href="{% url 'partido_list' %}?liga={{ liga.id }}" class="btn btn-warning btn-sm">
+                <i class="fas fa-futbol me-1"></i>Ver partidos
+            </a>
+        </div>
+
     </div>
 {% endblock %}

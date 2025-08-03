@@ -152,6 +152,7 @@ class Liga(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     equipos = models.ManyToManyField('Equipo', through='EquipoLigaTemporada', related_name='ligas')
+    destacada = models.BooleanField(default=False, help_text='Si se marca, esta liga aparecerá por defecto')
 
     class Meta:
         unique_together = ('nombre', 'temporada')
@@ -159,6 +160,12 @@ class Liga(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.temporada})"
+
+    def save(self, *args, **kwargs):
+        # Si esta liga se marca como destacada, desmarca las demás
+        if self.destacada:
+            Liga.objects.filter(destacada=True).update(destacada=False)
+        super().save(*args, **kwargs)
 
 
 class EquipoLigaTemporada(models.Model):

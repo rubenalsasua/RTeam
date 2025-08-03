@@ -1,6 +1,6 @@
 from django import forms
 from .models import Temporada, Liga, Equipo, Jugador, Entrenador, EquipoLigaTemporada, JugadorEquipoTemporada, \
-    EntrenadorEquipoTemporada, Profile, Partido
+    EntrenadorEquipoTemporada, Profile, Partido, ConvocatoriaPartido
 
 
 class TemporadaForm(forms.ModelForm):
@@ -21,18 +21,23 @@ class TemporadaForm(forms.ModelForm):
 class LigaForm(forms.ModelForm):
     class Meta:
         model = Liga
-        fields = ['nombre', 'foto', 'color', 'temporada']
+        fields = ['nombre', 'foto', 'color', 'temporada', 'destacada']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre de la liga', 'class': 'form-control'}),
             'foto': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control'}),
             'temporada': forms.Select(attrs={'class': 'form-control'}),
+            'destacada': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
         labels = {
             'nombre': 'Nombre de la Liga',
             'foto': 'Foto de la Liga',
             'color': 'Color de la Liga',
             'temporada': 'Temporada',
+            'destacada': 'Liga destacada',
+        }
+        help_texts = {
+            'destacada': 'Si se marca, esta liga aparecerá seleccionada por defecto en el listado de partidos',
         }
 
 
@@ -160,4 +165,20 @@ class PartidoForm(forms.ModelForm):
             'campo': 'Campo',
             'equipo_local': 'Equipo Local',
             'equipo_visitante': 'Equipo Visitante',
+        }
+
+
+class ConvocatoriaForm(forms.ModelForm):
+    class Meta:
+        model = ConvocatoriaPartido
+        fields = ['jugador', 'estado', 'dorsal']
+        widgets = {
+            'jugador': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'estado': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'dorsal': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'min': 1}),
+        }
+        labels = {
+            'jugador': 'Jugador',
+            'estado': 'Estado',
+            'dorsal': 'Dorsal',
         }
