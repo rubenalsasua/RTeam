@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('RTeam_app.urls.partidos_urls')),
     path('', include('RTeam_app.urls.temporadas_urls')),
     path('', include('RTeam_app.urls.usuarios_urls')),
+    path('', include('RTeam_app.urls.campos_urls')),
     path('serviceworker.js', views.service_worker, name='serviceworker'),
 
 ]

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Temporada, Liga, Equipo, Jugador, Entrenador, EquipoLigaTemporada, JugadorEquipoTemporada, \
-    EntrenadorEquipoTemporada, Profile, Partido, ConvocatoriaPartido
+    EntrenadorEquipoTemporada, Profile, Partido, ConvocatoriaPartido, Campo
 
 
 class TemporadaForm(forms.ModelForm):
@@ -181,4 +181,20 @@ class ConvocatoriaForm(forms.ModelForm):
             'jugador': 'Jugador',
             'estado': 'Estado',
             'dorsal': 'Dorsal',
+        }
+
+
+class CampoForm(forms.ModelForm):
+    class Meta:
+        model = Campo
+        fields = ['nombre', 'ubicacion', 'foto']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Nombre del campo', 'class': 'form-control'}),
+            'ubicacion': forms.TextInput(attrs={'placeholder': 'Ubicación del campo', 'class': 'form-control'}),
+            'foto': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+        }
+        labels = {
+            'nombre': 'Nombre del Campo',
+            'ubicacion': 'Ubicación del Campo',
+            'foto': 'Foto del Campo',
         }

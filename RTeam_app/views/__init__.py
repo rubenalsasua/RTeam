@@ -13,6 +13,7 @@ from .temporadas import *
 from .usuarios import *
 from .ligas import *
 from .partidos import *
+from .campos import *
 
 
 @login_required

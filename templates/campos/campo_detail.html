@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+    <div class="container-fluid px-0">
+        <h1 class="mb-3 fs-5 fw-bold">Detalle de campo</h1>
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-body p-0">
+                <div class="d-flex align-items-center p-3">
+                    <!-- Fondo con el color del campo para la imagen -->
+                    <div class="d-flex justify-content-center align-items-center me-3 rounded"
+                         style="width: 60px; height: 60px; overflow: hidden;">
+                        {% if campo.foto %}
+                            <img src="{{ campo.foto.url }}" alt="{{ campo.nombre }}"
+                                 class="img-fluid" style="max-height: 50px; max-width: 50px;">
+                        {% else %}
+                            <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen"
+                                 class="img-fluid" style="max-height: 50px; max-width: 50px;">
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-1">{{ campo.nombre }}</h5>
+                    </div>
+                </div>
+                <div class="border-top p-2 d-flex justify-content-end">
+                    <a href="{{ campo.ubicacion }}" class="btn btn-warning btn-sm" style="margin-right: 10px">
+                        <i class="fas fa-map-marker me-1"></i>Ubicación campo
+                    </a>
+                    <a href="{% url 'campo_update' campo.id %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Modificar campo
+                    </a>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'campo_delete' campo.id %}" class="btn btn-outline-danger btn-sm">
+            <i class="fas fa-trash-alt me-1"></i>Eliminar
+        </a>
+    </div>
+{% endblock %}

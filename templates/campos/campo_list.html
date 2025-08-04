@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+    <div class="container-fluid px-0">
+        <h1 class="mb-3 fs-5 fw-bold">Campos</h1>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'campo_create' %}" class="btn btn-warning">
+                <i class="fas me-1"></i>Nuevo campo
+            </a>
+        </div>
+
+        {% if campos %}
+            <div class="row row-cols-1 g-3">
+                {% for campo in campos %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body p-0">
+                                <a href="{% url 'campo_detail' campo.id %}" class="text-decoration-none">
+                                    <div class="d-flex align-items-center">
+                                        <!-- Fondo oscuro para la imagen -->
+                                        <div class="d-flex justify-content-center align-items-center"
+                                             style="width: 60px; height: 60px; overflow: hidden;">
+                                            {% if campo.foto %}
+                                                <img src="{{ campo.foto.url }}" alt="{{ campo.nombre }}"
+                                                     class="img-fluid p-1" style="max-height: 50px; max-width: 50px;">
+                                            {% else %}
+                                                <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen"
+                                                     class="img-fluid p-1" style="max-height: 50px; max-width: 50px;">
+                                            {% endif %}
+                                        </div>
+                                        <div class="ms-3 flex-grow-1">
+                                            <h5 class="card-title mb-1">{{ campo.nombre }}</h5>
+                                        </div>
+
+                                        <div class="text-end me-2">
+                                            <i class="fas fa-chevron-right text-muted"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                No hay campos disponibles. <a href="{% url 'campo_create' %}" class="alert-link">Crear un campo</a>.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

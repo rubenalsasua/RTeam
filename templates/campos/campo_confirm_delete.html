@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Confirmar eliminación</h4>
+        </div>
+        <div class="card-body text-center py-4">
+            <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+            <h5 class="mb-3">¿Estás seguro que deseas eliminar el campo "{{ campo.nombre }}"?</h5>
+            <p class="text-muted mb-4">Esta acción no se puede deshacer.</p>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'campo_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
