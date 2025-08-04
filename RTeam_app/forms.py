@@ -110,7 +110,7 @@ class JugadorEquipoTemporadaForm(forms.ModelForm):
 
     class Meta:
         model = JugadorEquipoTemporada
-        fields = ['jugador', 'temporada']
+        fields = ['jugador', 'temporada', 'dorsal']
 
 
 class EntrenadorEquipoTemporadaForm(forms.ModelForm):

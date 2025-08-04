@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Convocatoria {{ equipo.nombre }}</title>
+    <style>
+        body {
+            background-color: #191919;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 1080px;
+            height: 1920px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            height: 400px;
+            background: linear-gradient(to bottom, {{ equipo_color_rgba }} 0%, rgba(25, 25, 25, 1) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .titulo {
+            font-size: 60px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .subtitulo {
+            font-size: 40px;
+            color: {{ equipo_color }};
+            margin: 10px 0;
+        }
+
+        .partido-info {
+            font-size: 30px;
+            margin: 10px 0;
+        }
+
+        .fecha {
+            font-size: 30px;
+            color: #c8c8c8;
+            margin: 10px 0;
+        }
+
+        .logo {
+            max-width: 200px;
+            margin: 20px 0;
+        }
+
+        .section-title {
+            font-size: 50px;
+            text-align: center;
+            color: {{ equipo_color }};
+            margin: 50px 0 40px;
+            font-weight: bold;
+        }
+
+        .jugadores {
+            padding: 0 60px;
+            text-align: center;
+        }
+
+        .jugador {
+            margin-bottom: 35px;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .no-convocados {
+            margin-top: 70px;
+            padding: 0 60px;
+            text-align: center;
+        }
+
+        .no-convocado {
+            font-size: 32px;
+            color: #969696;
+            margin-bottom: 25px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 100px;
+            width: 100%;
+            text-align: center;
+            color: #787878;
+            font-size: 30px;
+        }
+
+        .no-disponible {
+            text-align: center;
+            padding: 50px;
+            color: #969696;
+            font-size: 35px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1 class="titulo">CONVOCATORIA</h1>
+    <h2 class="subtitulo">{{ equipo.nombre }}</h2>
+    <div class="partido-info">{{ partido.equipo_local.nombre }} vs {{ partido.equipo_visitante.nombre }}</div>
+    <div class="fecha">{{ partido.fecha|date:"d/m/Y H:i" }}</div>
+    {% if equipo.foto %}
+        <img src="{{ equipo.foto.url }}" alt="{{ equipo.nombre }}" class="logo">
+    {% endif %}
+</div>
+
+{% if convocados %}
+    <h3 class="section-title">JUGADORES CONVOCADOS</h3>
+    <div class="jugadores">
+        {% for convocado in convocados %}
+            <div class="jugador">
+                {{ convocado.dorsal|default:"0" }}. {{ convocado.jugador.nombre }}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-disponible">No hay jugadores convocados</div>
+{% endif %}
+
+{% if no_convocados %}
+    <h3 class="section-title">NO CONVOCADOS</h3>
+    <div class="no-convocados">
+        {% for no_convocado in no_convocados %}
+            <div class="no-convocado">
+                {{ no_convocado.jugador.nombre }} ({{ no_convocado.get_estado_display }})
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="footer">
+    RTeam
+</div>
+</body>
+</html>

@@ -11,6 +11,9 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import base64
 import json
+import imgkit
+import os
+from django.template.loader import render_to_string
 
 
 class PartidoListView(LoginRequiredMixin, ListView):
@@ -259,167 +262,60 @@ def exportar_convocatoria(request, partido_id, equipo_id):
         equipo=equipo
     ).select_related('jugador').order_by('estado', 'dorsal')
 
-    # Generar imagen
-    formato = request.GET.get('formato', 'jpeg')  # Cambiado de 'jpg' a 'jpeg'
+    # Separar convocados y no convocados
+    convocados = [c for c in convocatoria if c.estado == 'CONVOCADO']
+    no_convocados = [c for c in convocatoria if c.estado != 'CONVOCADO']
 
-    # Asegurar que el formato es correcto para PIL
+    # Color del equipo
+    equipo_color = equipo.color or "#ffaa00"
+    # Crear una versión rgba para el gradiente
+    r = int(equipo_color.lstrip('#')[0:2], 16)
+    g = int(equipo_color.lstrip('#')[2:4], 16)
+    b = int(equipo_color.lstrip('#')[4:6], 16)
+    equipo_color_rgba = f"rgba({r},{g},{b},0.8)"
+
+    # Generar el HTML
+    html_content = render_to_string('partidos/convocatoria_export.html', {
+        'partido': partido,
+        'equipo': equipo,
+        'convocados': convocados,
+        'no_convocados': no_convocados,
+        'equipo_color': equipo_color,
+        'equipo_color_rgba': equipo_color_rgba
+    })
+
+    # Determinar el formato
+    formato = request.GET.get('formato', 'jpeg')
     if formato.lower() == 'jpg':
         formato = 'jpeg'
 
-    img_io = generar_imagen_convocatoria(partido, equipo, convocatoria, formato)
+    # Convertir HTML a imagen
+    img_data = html_to_image(html_content, formato)
 
     # Determinar la extensión correcta para el nombre de archivo
     extension = 'jpg' if formato.lower() == 'jpeg' else formato.lower()
 
     # Devolver como descarga
-    response = HttpResponse(img_io.getvalue(), content_type=f'image/{formato.lower()}')
+    response = HttpResponse(img_data, content_type=f'image/{formato.lower()}')
     response['Content-Disposition'] = f'attachment; filename="convocatoria_{partido.id}_{equipo.id}.{extension}"'
     return response
 
 
-def generar_imagen_convocatoria(partido, equipo, convocatoria, formato='jpeg'):
-    """Genera una imagen con la convocatoria del equipo"""
-    # [resto del código permanece igual]
-    # Configuración básica de la imagen
-    from io import BytesIO
-    width, height = 1080, 1920  # Tamaño para móvil
-    bg_color = (25, 25, 25)  # Fondo oscuro
+def html_to_image(html_content, formato='jpeg'):
+    options = {
+        'format': formato,
+        'width': 1080,
+        'height': 1920,
+        'quality': 90,
+        'enable-local-file-access': None
+    }
 
-    # Crear imagen y contexto de dibujo
-    img = Image.new('RGB', (width, height), bg_color)
-    draw = ImageDraw.Draw(img)
+    # Especifica la ruta completa a wkhtmltoimage según tu sistema
+    wkhtmltoimage_path = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe'  # Ajusta esta ruta
 
-    # Cargar fuentes
-    try:
-        titulo_font = ImageFont.truetype("arial.ttf", 60)
-        subtitulo_font = ImageFont.truetype("arial.ttf", 40)
-        nombre_font = ImageFont.truetype("arial.ttf", 30)
-    except IOError:
-        # Usar fuente por defecto si no encuentra arial
-        titulo_font = ImageFont.load_default()
-        subtitulo_font = ImageFont.load_default()
-        nombre_font = ImageFont.load_default()
+    if 'PYTHONANYWHERE_DOMAIN' in os.environ:
+        wkhtmltoimage_path = '/usr/bin/wkhtmltoimage'
 
-    # Color del equipo
-    equipo_color = equipo.color or "#ffaa00"
-    equipo_rgb = tuple(int(equipo_color.lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
-
-    # Cabecera con degradado
-    for y in range(200):
-        # Degradado desde el color del equipo hasta transparente
-        alpha = 255 - int(y * 1.2)
-        if alpha < 0:
-            alpha = 0
-        color = equipo_rgb + (alpha,)
-        draw.rectangle([(0, y), (width, y)], fill=color)
-
-    # Título y subtítulo
-    draw.text((width // 2, 100), "CONVOCATORIA", fill=(255, 255, 255), font=titulo_font, anchor="mm")
-    draw.text((width // 2, 170), f"{equipo.nombre}", fill=equipo_rgb, font=subtitulo_font, anchor="mm")
-
-    # Información del partido
-    partido_text = f"{partido.equipo_local.nombre} vs {partido.equipo_visitante.nombre}"
-    fecha_text = partido.fecha.strftime("%d/%m/%Y %H:%M")
-    draw.text((width // 2, 250), partido_text, fill=(255, 255, 255), font=subtitulo_font, anchor="mm")
-    draw.text((width // 2, 300), fecha_text, fill=(200, 200, 200), font=nombre_font, anchor="mm")
-
-    # Logo del equipo (si existe)
-    if equipo.foto:
-        try:
-            # Cargar logo del equipo
-            from django.core.files.storage import default_storage
-            from django.core.files.base import ContentFile
-            from io import BytesIO
-            import requests
-
-            # Obtener la imagen
-            response = requests.get(equipo.foto.url)
-            logo = Image.open(BytesIO(response.content))
-
-            # Redimensionar logo
-            logo_width = 200
-            logo_height = int(logo.height * logo_width / logo.width)
-            logo = logo.resize((logo_width, logo_height), Image.LANCZOS)
-
-            # Calcular posición para centrar
-            logo_x = (width - logo_width) // 2
-            logo_y = 350
-
-            # Crear máscara para transparencia
-            mask = Image.new('L', logo.size, 0)
-            mask_draw = ImageDraw.Draw(mask)
-            mask_draw.rectangle((0, 0, logo_width, logo_height), fill=255)
-
-            # Pegar logo con transparencia
-            img.paste(logo, (logo_x, logo_y), mask=mask)
-
-        except Exception as e:
-            print(f"Error al cargar logo: {e}")
-
-    # Dibujar jugadores convocados
-    y_pos = 500
-
-    # Jugadores convocados
-    draw.text((width // 2, y_pos), "JUGADORES CONVOCADOS", fill=equipo_rgb, font=subtitulo_font, anchor="mm")
-    y_pos += 70
-
-    convocados = [c for c in convocatoria if c.estado == 'CONVOCADO']
-    no_convocados = [c for c in convocatoria if c.estado != 'CONVOCADO']
-
-    for convocado in convocados:
-        # Dorsal en círculo
-        dorsal_x = 100
-        dorsal_y = y_pos + 15
-        dorsal_radius = 30
-
-        draw.ellipse(
-            [(dorsal_x - dorsal_radius, dorsal_y - dorsal_radius),
-             (dorsal_x + dorsal_radius, dorsal_y + dorsal_radius)],
-            fill=equipo_rgb
-        )
-
-        # Número del dorsal
-        dorsal_texto = str(convocado.dorsal or "")
-        draw.text((dorsal_x, dorsal_y), dorsal_texto, fill=(255, 255, 255),
-                  font=nombre_font, anchor="mm")
-
-        # Nombre del jugador
-        nombre_x = dorsal_x + dorsal_radius + 30
-        draw.text((nombre_x, dorsal_y), convocado.jugador.nombre,
-                  fill=(255, 255, 255), font=nombre_font, anchor="lm")
-
-        # Posición del jugador
-        posicion_x = width - 100
-        draw.text((posicion_x, dorsal_y), convocado.jugador.get_posicion_display(),
-                  fill=(200, 200, 200), font=nombre_font, anchor="rm")
-
-        y_pos += 70
-
-    # Si hay no convocados, mostrarlos separados
-    if no_convocados:
-        y_pos += 30
-        draw.text((width // 2, y_pos), "NO CONVOCADOS", fill=(180, 180, 180),
-                  font=subtitulo_font, anchor="mm")
-        y_pos += 70
-
-        for no_convocado in no_convocados:
-            estado = no_convocado.get_estado_display()
-            draw.text((100, y_pos), f"{no_convocado.jugador.nombre} ({estado})",
-                      fill=(150, 150, 150), font=nombre_font, anchor="lm")
-            y_pos += 50
-
-    # Pie de imagen
-    draw.text((width // 2, height - 100), "RTeam", fill=(120, 120, 120),
-              font=nombre_font, anchor="mm")
-
-    # Guardar la imagen en memoria
-    img_io = BytesIO()
-    # Asegurarse de que el formato es correcto para PIL
-    format_pil = formato.upper()
-    if format_pil == 'JPG':
-        format_pil = 'JPEG'
-
-    img.save(img_io, format=format_pil, quality=90)
-    img_io.seek(0)
-
-    return img_io
+    config = imgkit.config(wkhtmltoimage=wkhtmltoimage_path)
+    img_data = imgkit.from_string(html_content, False, options=options, config=config)
+    return img_data
