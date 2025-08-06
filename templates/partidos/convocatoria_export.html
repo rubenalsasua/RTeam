@@ -1,13 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Convocatoria {{ equipo.nombre }}</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
         body {
-            background-color: #191919;
+            background-color: {{ equipo_color }};
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Architects Daughter', cursive;
             margin: 0;
             padding: 0;
             width: 1080px;
@@ -17,8 +20,7 @@
         }
 
         .header {
-            height: 400px;
-            background: linear-gradient(to bottom, {{ equipo_color_rgba }} 0%, rgba(25, 25, 25, 1) 100%);
+            height: 450px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -27,96 +29,206 @@
             padding: 20px;
         }
 
+        .equipo-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 200px;
+            max-height: 200px;
+            margin-right: 30px;
+            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.6));
+            border-radius: 50%;
+        }
+
+        .titulo-container {
+            text-align: center;
+        }
+
         .titulo {
+            font-size: 65px;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 3px;
+        }
+
+        .partido-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0 10px;
+            width: 100%;
+            padding: 0 60px;
+        }
+
+        .equipo-local, .equipo-visitante {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            font-weight: bold;
+        }
+
+        .versus {
             font-size: 60px;
             font-weight: bold;
             margin: 0;
         }
 
-        .subtitulo {
-            font-size: 40px;
-            color: {{ equipo_color }};
-            margin: 10px 0;
+        .equipo-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.6));
         }
 
-        .partido-info {
-            font-size: 30px;
-            margin: 10px 0;
+        .equipo-nombre {
+            font-size: 40px;
+            text-align: center;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
         }
 
         .fecha {
-            font-size: 30px;
-            color: #c8c8c8;
-            margin: 10px 0;
-        }
-
-        .logo {
-            max-width: 200px;
+            font-size: 45px;
+            color: #f0f0f0;
             margin: 20px 0;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
         }
 
-        .section-title {
-            font-size: 50px;
-            text-align: center;
-            color: {{ equipo_color }};
-            margin: 50px 0 40px;
-            font-weight: bold;
+        .liga-logo {
+            max-width: 150px;
+            max-height: 150px;
+            filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.6));
+            margin-top: 20px;
         }
 
         .jugadores {
             padding: 0 60px;
             text-align: center;
+            margin: 60px auto 0;
+            max-width: 90%;
         }
 
         .jugador {
-            margin-bottom: 35px;
-            font-size: 40px;
+            margin-bottom: 10px;
+            font-size: 60px;
             font-weight: bold;
+            text-align: right;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
         }
 
+        .entrenadores {
+            text-align: center;
+            margin: 60px auto 0;
+            max-width: 90%;
+        }
+
+        .entrenador {
+            margin-bottom: 10px;
+            font-size: 60px;
+            font-weight: bold;
+            text-align: right;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+        }
+
+
         .no-convocados {
-            margin-top: 70px;
+            margin-top: 80px;
             padding: 0 60px;
             text-align: center;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .no-convocado {
-            font-size: 32px;
-            color: #969696;
-            margin-bottom: 25px;
+            font-size: 50px;
+            color: #d0d0d0;
+            margin-bottom: 40px;
+            text-align: left;
+            padding: 15px 25px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
         }
 
         .footer {
             position: absolute;
-            bottom: 100px;
+            bottom: 120px;
             width: 100%;
             text-align: center;
-            color: #787878;
-            font-size: 30px;
+            color: white;
+            font-size: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .footer img {
+            margin-right: 20px;
+            width: 80px;
+            height: 80px;
         }
 
         .no-disponible {
             text-align: center;
-            padding: 50px;
-            color: #969696;
-            font-size: 35px;
+            padding: 90px 60px;
+            color: #d0d0d0;
+            font-size: 55px;
             font-style: italic;
+            max-width: 85%;
+            margin: 70px auto;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 <body>
 <div class="header">
-    <h1 class="titulo">CONVOCATORIA</h1>
-    <h2 class="subtitulo">{{ equipo.nombre }}</h2>
-    <div class="partido-info">{{ partido.equipo_local.nombre }} vs {{ partido.equipo_visitante.nombre }}</div>
+    <div class="equipo-info">
+        {% if equipo.foto %}
+            <img src="{{ equipo.foto.url }}" alt="{{ equipo.nombre }}" class="logo">
+        {% endif %}
+        {% if partido.liga.foto %}
+            <img src="{{ partido.liga.foto.url }}" alt="{{ partido.liga.nombre }}" class="liga-logo">
+        {% endif %}
+        <div class="titulo-container">
+            <h1 class="titulo">CONVOCATORIA {{ equipo.nombre }}</h1>
+        </div>
+    </div>
+
+    <div class="partido-container">
+        <div class="equipo-local">
+            {% if partido.equipo_local.foto %}
+                <img src="{{ partido.equipo_local.foto.url }}" alt="{{ partido.equipo_local.nombre }}"
+                     class="equipo-logo">
+            {% endif %}
+            <div class="equipo-nombre">{{ partido.equipo_local.nombre }}</div>
+        </div>
+        <div class="versus">VS</div>
+        <div class="equipo-visitante">
+            {% if partido.equipo_visitante.foto %}
+                <img src="{{ partido.equipo_visitante.foto.url }}" alt="{{ partido.equipo_visitante.nombre }}"
+                     class="equipo-logo">
+            {% endif %}
+            <div class="equipo-nombre">{{ partido.equipo_visitante.nombre }}</div>
+        </div>
+    </div>
+
     <div class="fecha">{{ partido.fecha|date:"d/m/Y H:i" }}</div>
-    {% if equipo.foto %}
-        <img src="{{ equipo.foto.url }}" alt="{{ equipo.nombre }}" class="logo">
-    {% endif %}
+
+
 </div>
 
 {% if convocados %}
-    <h3 class="section-title">JUGADORES CONVOCADOS</h3>
     <div class="jugadores">
         {% for convocado in convocados %}
             <div class="jugador">
@@ -124,23 +236,21 @@
             </div>
         {% endfor %}
     </div>
+    {% if entrenadores %}
+        {% for entrenador in entrenadores %}
+            <div class="entrenadores">
+                <div class="entrenador">{{ entrenador.nombre }}</div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-disponible">No hay entrenadores</div>
+    {% endif %}
 {% else %}
     <div class="no-disponible">No hay jugadores convocados</div>
 {% endif %}
 
-{% if no_convocados %}
-    <h3 class="section-title">NO CONVOCADOS</h3>
-    <div class="no-convocados">
-        {% for no_convocado in no_convocados %}
-            <div class="no-convocado">
-                {{ no_convocado.jugador.nombre }} ({{ no_convocado.get_estado_display }})
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
 <div class="footer">
-    RTeam
+    <span>RTeam</span>
 </div>
 </body>
 </html>

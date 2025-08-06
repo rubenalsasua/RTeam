@@ -261,6 +261,7 @@ def exportar_convocatoria(request, partido_id, equipo_id):
         partido=partido,
         equipo=equipo
     ).select_related('jugador').order_by('estado', 'dorsal')
+    entrenadores = equipo.entrenadores.all()
 
     # Separar convocados y no convocados
     convocados = [c for c in convocatoria if c.estado == 'CONVOCADO']
@@ -281,7 +282,8 @@ def exportar_convocatoria(request, partido_id, equipo_id):
         'convocados': convocados,
         'no_convocados': no_convocados,
         'equipo_color': equipo_color,
-        'equipo_color_rgba': equipo_color_rgba
+        'equipo_color_rgba': equipo_color_rgba,
+        'entrenadores': entrenadores,
     })
 
     # Determinar el formato
@@ -297,7 +299,8 @@ def exportar_convocatoria(request, partido_id, equipo_id):
 
     # Devolver como descarga
     response = HttpResponse(img_data, content_type=f'image/{formato.lower()}')
-    response['Content-Disposition'] = f'attachment; filename="convocatoria_{partido.id}_{equipo.id}.{extension}"'
+    response[
+        'Content-Disposition'] = f'attachment; filename="Convocatoria_{partido.equipo_local}_{partido.equipo_visitante}_{partido.fecha}.{extension}"'
     return response
 
 
