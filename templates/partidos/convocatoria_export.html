@@ -58,7 +58,7 @@
 
         .partido-container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: space-between;
             margin: 30px 0 10px;
@@ -67,18 +67,14 @@
         }
 
         .equipo-local, .equipo-visitante {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            border-width: 5px;
+            border-style: solid;
+            border-color: white;
             width: 300px;
             font-weight: bold;
+            align-content: center;
         }
 
-        .versus {
-            font-size: 60px;
-            font-weight: bold;
-            margin: 0;
-        }
 
         .equipo-logo {
             width: 120px;
@@ -90,17 +86,20 @@
         }
 
         .equipo-nombre {
-            font-size: 40px;
+            font-size: 55px;
             text-align: center;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
         }
 
-        .fecha {
-            font-size: 45px;
+
+        .campo, .fecha {
+            font-size: 65px;
             color: #f0f0f0;
             margin: 20px 0;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
             font-weight: bold;
+            text-align: center;
         }
 
         .liga-logo {
@@ -110,61 +109,27 @@
             margin-top: 20px;
         }
 
-        .jugadores {
-            padding: 0 60px;
+        .jugadores, .entrenadores {
+            padding: 35px 0;
             text-align: center;
-            margin: 60px auto 0;
-            max-width: 90%;
+            margin: 50px;
         }
 
-        .jugador {
+        .jugador, .entrenador {
             margin-bottom: 10px;
             font-size: 60px;
             font-weight: bold;
-            text-align: right;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
-            letter-spacing: 1px;
-        }
-
-        .entrenadores {
-            text-align: center;
-            margin: 60px auto 0;
-            max-width: 90%;
-        }
-
-        .entrenador {
-            margin-bottom: 10px;
-            font-size: 60px;
-            font-weight: bold;
-            text-align: right;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
-            letter-spacing: 1px;
-        }
-
-
-        .no-convocados {
-            margin-top: 80px;
-            padding: 0 60px;
-            text-align: center;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .no-convocado {
-            font-size: 50px;
-            color: #d0d0d0;
-            margin-bottom: 40px;
             text-align: left;
-            padding: 15px 25px;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
         }
+
 
         .footer {
             position: absolute;
             bottom: 120px;
             width: 100%;
-            text-align: center;
+            text-align: left;
             color: white;
             font-size: 40px;
             display: flex;
@@ -206,48 +171,70 @@
     </div>
 
     <div class="partido-container">
-        <div class="equipo-local">
-            {% if partido.equipo_local.foto %}
-                <img src="{{ partido.equipo_local.foto.url }}" alt="{{ partido.equipo_local.nombre }}"
-                     class="equipo-logo">
-            {% endif %}
-            <div class="equipo-nombre">{{ partido.equipo_local.nombre }}</div>
-        </div>
-        <div class="versus">VS</div>
-        <div class="equipo-visitante">
-            {% if partido.equipo_visitante.foto %}
-                <img src="{{ partido.equipo_visitante.foto.url }}" alt="{{ partido.equipo_visitante.nombre }}"
-                     class="equipo-logo">
-            {% endif %}
-            <div class="equipo-nombre">{{ partido.equipo_visitante.nombre }}</div>
-        </div>
-    </div>
 
-    <div class="fecha">{{ partido.fecha|date:"d/m/Y H:i" }}</div>
+    </div>
+    <table class="partido-info">
+        <thead>
+        <tr>
+            <th>
+                <div class="equipo-local">
+                    {% if partido.equipo_local.foto %}
+                        <img src="{{ partido.equipo_local.foto.url }}" alt="{{ partido.equipo_local.nombre }}"
+                             class="equipo-logo">
+                    {% endif %}
+                    <div class="equipo-nombre">{{ partido.equipo_local.nombre }}</div>
+                </div>
+            </th>
+            <th rowspan="8">
+                {% if convocados %}
+                    <div class="jugadores">
+                        {% for convocado in convocados %}
+                            <div class="jugador">
+                                {{ convocado.dorsal|default:"0" }}. {{ convocado.jugador.nombre }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if entrenadores %}
+                        {% for entrenador in entrenadores %}
+                            <div class="entrenadores">
+                                <div class="entrenador">{{ entrenador.nombre }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-disponible">No hay entrenadores</div>
+                    {% endif %}
+                {% else %}
+                    <div class="no-disponible">No hay jugadores convocados</div>
+                {% endif %}
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <div class="equipo-visitante">
+                    {% if partido.equipo_visitante.foto %}
+                        <img src="{{ partido.equipo_visitante.foto.url }}" alt="{{ partido.equipo_visitante.nombre }}"
+                             class="equipo-logo">
+                    {% endif %}
+                    <div class="equipo-nombre">{{ partido.equipo_visitante.nombre }}</div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th class="fecha">
+                {{ partido.fecha|date:"d/m/Y H:i" }}
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <div class="campo">{{ campo.nombre }}</div>
+            </th>
+        </tr>
+        </thead>
+    </table>
 
 
 </div>
 
-{% if convocados %}
-    <div class="jugadores">
-        {% for convocado in convocados %}
-            <div class="jugador">
-                {{ convocado.dorsal|default:"0" }}. {{ convocado.jugador.nombre }}
-            </div>
-        {% endfor %}
-    </div>
-    {% if entrenadores %}
-        {% for entrenador in entrenadores %}
-            <div class="entrenadores">
-                <div class="entrenador">{{ entrenador.nombre }}</div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="no-disponible">No hay entrenadores</div>
-    {% endif %}
-{% else %}
-    <div class="no-disponible">No hay jugadores convocados</div>
-{% endif %}
 
 <div class="footer">
     <span>RTeam</span>

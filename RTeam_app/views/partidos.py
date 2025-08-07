@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from RTeam_app.forms import PartidoForm, ConvocatoriaForm
 from RTeam_app.models import Liga, Partido, Temporada, Equipo, ConvocatoriaPartido, Jugador, \
-    JugadorEquipoTemporada
+    JugadorEquipoTemporada, Campo
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -257,6 +257,7 @@ def exportar_convocatoria(request, partido_id, equipo_id):
     """Exportar la convocatoria a una imagen (JPEG/PNG)"""
     partido = get_object_or_404(Partido, pk=partido_id)
     equipo = get_object_or_404(Equipo, pk=equipo_id)
+    campo = get_object_or_404(Campo, pk=partido.campo_id)
     convocatoria = ConvocatoriaPartido.objects.filter(
         partido=partido,
         equipo=equipo
@@ -284,6 +285,7 @@ def exportar_convocatoria(request, partido_id, equipo_id):
         'equipo_color': equipo_color,
         'equipo_color_rgba': equipo_color_rgba,
         'entrenadores': entrenadores,
+        'campo': campo,
     })
 
     # Determinar el formato
