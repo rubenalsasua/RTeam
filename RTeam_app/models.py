@@ -367,12 +367,106 @@ class EventoPartido(models.Model):
                                   related_name='asistencias_partido')
     tipo_evento = models.CharField(max_length=20, choices=TIPO)
     descripcion = models.TextField(blank=True, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Eventos de Partido"
+        ordering = ['fecha_creacion']
 
     def __str__(self):
         return f"{self.jugador} - {self.tipo_evento}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.actualizar_estadisticas()
+        self.actualizar_resultado_partido()
+
+    def delete(self, *args, **kwargs):
+        # Revertir estadísticas antes de eliminar
+        self.revertir_estadisticas()
+        super().delete(*args, **kwargs)
+        # Actualizar resultado del partido después de eliminar
+        self.actualizar_resultado_partido()
+
+    def actualizar_estadisticas(self):
+        try:
+            jet = JugadorEquipoTemporada.objects.get(
+                jugador=self.jugador,
+                equipo__in=[self.partido.equipo_local, self.partido.equipo_visitante],
+                temporada=self.partido.liga.temporada
+            )
+
+            if self.tipo_evento == 'GOL':
+                jet.goles += 1
+            elif self.tipo_evento == 'TARJETA_AMARILLA':
+                jet.tarjetas_amarillas += 1
+            elif self.tipo_evento == 'TARJETA_ROJA':
+                jet.tarjetas_rojas += 1
+
+            jet.save()
+
+            if self.asistidor and self.tipo_evento == 'GOL':
+                jet_asistidor = JugadorEquipoTemporada.objects.get(
+                    jugador=self.asistidor,
+                    equipo__in=[self.partido.equipo_local, self.partido.equipo_visitante],
+                    temporada=self.partido.liga.temporada
+                )
+                jet_asistidor.asistencias += 1
+                jet_asistidor.save()
+
+        except JugadorEquipoTemporada.DoesNotExist:
+            pass
+
+    def revertir_estadisticas(self):
+        try:
+            jet = JugadorEquipoTemporada.objects.get(
+                jugador=self.jugador,
+                equipo__in=[self.partido.equipo_local, self.partido.equipo_visitante],
+                temporada=self.partido.liga.temporada
+            )
+
+            if self.tipo_evento == 'GOL':
+                jet.goles = max(0, jet.goles - 1)
+            elif self.tipo_evento == 'TARJETA_AMARILLA':
+                jet.tarjetas_amarillas = max(0, jet.tarjetas_amarillas - 1)
+            elif self.tipo_evento == 'TARJETA_ROJA':
+                jet.tarjetas_rojas = max(0, jet.tarjetas_rojas - 1)
+
+            jet.save()
+
+            if self.asistidor and self.tipo_evento == 'GOL':
+                jet_asistidor = JugadorEquipoTemporada.objects.get(
+                    jugador=self.asistidor,
+                    equipo__in=[self.partido.equipo_local, self.partido.equipo_visitante],
+                    temporada=self.partido.liga.temporada
+                )
+                jet_asistidor.asistencias = max(0, jet_asistidor.asistencias - 1)
+                jet_asistidor.save()
+
+        except JugadorEquipoTemporada.DoesNotExist:
+            pass
+
+    def actualizar_resultado_partido(self):
+        from RTeam_app.models import ConvocatoriaPartido
+        eventos = EventoPartido.objects.filter(partido=self.partido, tipo_evento='GOL')
+
+        goles_local = eventos.filter(
+            jugador__in=ConvocatoriaPartido.objects.filter(
+                partido=self.partido,
+                equipo=self.partido.equipo_local
+            ).values_list('jugador', flat=True)
+        ).count()
+
+        goles_visitante = eventos.filter(
+            jugador__in=ConvocatoriaPartido.objects.filter(
+                partido=self.partido,
+                equipo=self.partido.equipo_visitante
+            ).values_list('jugador', flat=True)
+        ).count()
+
+        self.partido.goles_local = goles_local
+        self.partido.goles_visitante = goles_visitante
+        self.partido.save()
 
 
 class ConvocatoriaPartido(models.Model):

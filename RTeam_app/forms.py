@@ -1,6 +1,6 @@
 from django import forms
 from .models import Temporada, Liga, Equipo, Jugador, Entrenador, EquipoLigaTemporada, JugadorEquipoTemporada, \
-    EntrenadorEquipoTemporada, Profile, Partido, ConvocatoriaPartido, Campo
+    EntrenadorEquipoTemporada, Profile, Partido, ConvocatoriaPartido, Campo, EventoPartido
 
 
 class TemporadaForm(forms.ModelForm):
@@ -146,6 +146,48 @@ class UsuarioForm(forms.ModelForm):
             'jugador': 'Selecciona un jugador para asociar a este perfil (opcional)',
             'entrenador': 'Selecciona un entrenador para asociar a este perfil (opcional)'
         }
+
+
+class EventoPartidoForm(forms.ModelForm):
+    class Meta:
+        model = EventoPartido
+        fields = ['jugador', 'tipo_evento', 'asistidor', 'descripcion']
+        widgets = {
+            'jugador': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'tipo_evento': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'asistidor': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'descripcion': forms.TextInput(
+                attrs={'class': 'form-control form-control-sm', 'placeholder': 'Descripción opcional'}),
+        }
+        labels = {
+            'jugador': 'Jugador',
+            'tipo_evento': 'Tipo de Evento',
+            'asistidor': 'Asistidor',
+            'descripcion': 'Descripción',
+        }
+
+    def __init__(self, *args, partido=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if partido:
+            # Obtener jugadores convocados de ambos equipos
+            convocados_local = ConvocatoriaPartido.objects.filter(
+                partido=partido,
+                equipo=partido.equipo_local,
+                estado='CONVOCADO'
+            ).select_related('jugador')
+
+            convocados_visitante = ConvocatoriaPartido.objects.filter(
+                partido=partido,
+                equipo=partido.equipo_visitante,
+                estado='CONVOCADO'
+            ).select_related('jugador')
+
+            jugadores_ids = list(convocados_local.values_list('jugador_id', flat=True)) + \
+                            list(convocados_visitante.values_list('jugador_id', flat=True))
+
+            self.fields['jugador'].queryset = Jugador.objects.filter(id__in=jugadores_ids)
+            self.fields['asistidor'].queryset = Jugador.objects.filter(id__in=jugadores_ids)
+            self.fields['asistidor'].required = False
 
 
 class PartidoForm(forms.ModelForm):

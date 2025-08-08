@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Evento{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid px-3">
+    <div class="card bg-dark text-warning">
+        <div class="card-header">
+            <h5 class="mb-0">Eliminar Evento</h5>
+        </div>
+        <div class="card-body">
+            <p>¿Estás seguro de que quieres eliminar este evento?</p>
+            <div class="alert alert-warning">
+                <strong>{{ object.jugador.nombre }}</strong> - {{ object.get_tipo_evento_display }} ({{ object.minuto }}')
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-grid gap-2 d-md-flex">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <a href="{% url 'partido_detail' pk=object.partido.id %}" class="btn btn-outline-warning">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

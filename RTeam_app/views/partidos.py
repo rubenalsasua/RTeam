@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from RTeam_app.forms import PartidoForm, ConvocatoriaForm
+from RTeam_app.forms import PartidoForm, ConvocatoriaForm, EventoPartidoForm
 from RTeam_app.models import Liga, Partido, Temporada, Equipo, ConvocatoriaPartido, Jugador, \
-    JugadorEquipoTemporada, Campo
+    JugadorEquipoTemporada, Campo, EventoPartido
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -131,6 +131,29 @@ class PartidoDetailView(LoginRequiredMixin, DetailView):
         context['convocatoria_visitante'] = ConvocatoriaPartido.objects.filter(
             partido=partido, equipo=partido.equipo_visitante
         ).select_related('jugador').order_by('dorsal')
+
+        # Agregar eventos y goles
+        eventos = EventoPartido.objects.filter(partido=partido).select_related('jugador', 'asistidor')
+        context['eventos'] = eventos
+
+        goles_local = eventos.filter(
+            tipo_evento='GOL',
+            jugador__in=ConvocatoriaPartido.objects.filter(
+                partido=partido,
+                equipo=partido.equipo_local
+            ).values_list('jugador', flat=True)
+        ).count()
+
+        goles_visitante = eventos.filter(
+            tipo_evento='GOL',
+            jugador__in=ConvocatoriaPartido.objects.filter(
+                partido=partido,
+                equipo=partido.equipo_visitante
+            ).values_list('jugador', flat=True)
+        ).count()
+
+        context['goles_local'] = goles_local
+        context['goles_visitante'] = goles_visitante
 
         return context
 
@@ -324,3 +347,41 @@ def html_to_image(html_content, formato='jpeg'):
     config = imgkit.config(wkhtmltoimage=wkhtmltoimage_path)
     img_data = imgkit.from_string(html_content, False, options=options, config=config)
     return img_data
+
+
+class EventoCreateView(LoginRequiredMixin, CreateView):
+    model = EventoPartido
+    form_class = EventoPartidoForm
+    template_name = 'partidos/evento_create.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        partido = get_object_or_404(Partido, pk=self.kwargs['partido_id'])
+        kwargs['partido'] = partido
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['partido'] = get_object_or_404(Partido, pk=self.kwargs['partido_id'])
+        return context
+
+    def form_valid(self, form):
+        partido = get_object_or_404(Partido, pk=self.kwargs['partido_id'])
+        form.instance.partido = partido
+        response = super().form_valid(form)
+
+        if partido.estado != 'FINALIZADO':
+            partido.estado = 'FINALIZADO'
+            partido.save()
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('partido_detail', kwargs={'pk': self.kwargs['partido_id']})
+
+
+class EventoDeleteView(LoginRequiredMixin, DeleteView):
+    model = EventoPartido
+    template_name = 'partidos/evento_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('partido_detail', kwargs={'pk': self.object.partido.id})

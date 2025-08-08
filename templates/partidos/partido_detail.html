@@ -1,105 +1,176 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block contenido %}
     <div class="container-fluid px-0">
-        <!-- Contenido existente -->
-        <!-- Tarjeta principal con los equipos y resultado -->
-        <div class="card shadow mb-4"
-             style="border: none; border-radius: 10px; overflow: hidden; background: linear-gradient(90deg,
-                     {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ff00009f{% endif %} 0%,
-                     {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#005c17{% endif %} 100%);">
+        <h1 class="mb-3 fs-5 fw-bold">Detalles del Partido</h1>
 
-            <div class="card-body p-0">
-                <div class="row mx-0" style="background-color: rgba(255, 255, 255, 0.85);">
-                    <!-- Equipo Local -->
-                    <div class="col-4 p-2 text-center">
-                        {% if partido.equipo_local.foto %}
-                            <img src="{{ partido.equipo_local.foto.url }}" alt="{{ partido.equipo_local.nombre }}"
-                                 class="img-fluid mb-2" style="max-height: 60px;">
+        <!-- Tarjeta principal del partido con estilo similar a partido_list -->
+        <div class="partido-container mb-4 d-flex flex-column align-items-center">
+            <div class="partido-cabecera px-4 py-2 rounded-top mb-0"
+                 style="width: 100%; max-width: 400px; text-align: center;">
+        <span class="badge me-2" style="background-color:
+                {% if partido.liga.color %}{{ partido.liga.color }}{% else %}#f33{% endif %}; font-size: 14px; padding: 6px 12px;">
+            J{{ partido.jornada }}
+        </span>
+                <span class="fecha-partido"
+                      style="font-size: 16px; font-weight: bold;">{{ partido.fecha|date:"d/m/Y H:i" }}</span>
+            </div>
+
+            <div class="marcador" style="width: 100%; max-width: 400px;">
+                <div class="marcador-logoHora" style="background-color:
+                        {% if partido.liga.color %}{{ partido.liga.color }}{% else %}#f33{% endif %}; padding: 0;">
+                    <div class="marcador-logo"
+                         style="height: 80px; display: flex; justify-content: center; align-items: center;">
+                        {% if partido.liga.foto %}
+                            <img src="{{ partido.liga.foto.url }}" alt="Logo liga" class="img-fluid"
+                                 style="max-height: 65px;">
                         {% else %}
-                            <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen" class="img-fluid mb-2"
-                                 style="max-height: 60px;">
+                            <img src="{% static 'icons/default_team.png' %}" alt="Imagen predeterminada"
+                                 class="img-fluid" style="max-height: 65px;">
                         {% endif %}
-                        <h5 class="fw-bold mb-0 small text-truncate">{{ partido.equipo_local.nombre }}</h5>
-                    </div>
-
-                    <!-- Marcador -->
-                    <div class="col-4 d-flex flex-column justify-content-center align-items-center p-2">
-                        <div class="bg-dark text-white py-2 w-100 text-center rounded-3 fw-bold fs-4">
-                            {{ partido.goles_local }} - {{ partido.goles_visitante }}
-                        </div>
-                    </div>
-
-                    <!-- Equipo Visitante -->
-                    <div class="col-4 p-2 text-center">
-                        {% if partido.equipo_visitante.foto %}
-                            <img src="{{ partido.equipo_visitante.foto.url }}"
-                                 alt="{{ partido.equipo_visitante.nombre }}" class="img-fluid mb-2"
-                                 style="max-height: 60px;">
-                        {% else %}
-                            <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen" class="img-fluid mb-2"
-                                 style="max-height: 60px;">
-                        {% endif %}
-                        <h5 class="fw-bold mb-0 small text-truncate">{{ partido.equipo_visitante.nombre }}</h5>
                     </div>
                 </div>
 
-                <!-- Información de la liga -->
-                <div class="d-flex align-items-center justify-content-center p-2 text-white">
-                    {% if partido.liga.foto %}
-                        <img src="{{ partido.liga.foto.url }}" alt="{{ partido.liga.nombre }}" class="img-fluid me-2"
-                             style="max-height: 30px;">
-                    {% endif %}
-                    <span class="small">{{ partido.liga.nombre }} - Jornada {{ partido.jornada }}</span>
+                <!-- Marcador horizontal -->
+                <div style="background-color: #000; color: white; display: flex; width: 100%;">
+                    <!-- Equipos en horizontal dividido en 4 partes -->
+                    <div style="width: 100%; display: flex; align-items: stretch; min-height: 80px;">
+                        <!-- 1. Equipo Local con su color de fondo -->
+                        <div style="flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; background-color:
+                                {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ff00009f{% endif %};">
+                            {% if partido.equipo_local.foto %}
+                                <img src="{{ partido.equipo_local.foto.url }}"
+                                     alt="{{ partido.equipo_local.nombre }}"
+                                     class="rounded-circle mb-2" style="max-height: 40px; max-width: 40px;">
+                            {% else %}
+                                <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen"
+                                     class="rounded-circle mb-2" style="max-height: 40px; max-width: 40px;">
+                            {% endif %}
+                            <span style="font-size: 12px; font-weight: bold; text-align: center; color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); line-height: 1.2;">{{ partido.equipo_local.nombre }}</span>
+                        </div>
+
+                        <!-- 2. Goles del equipo local -->
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; background-color: white; color: black;">
+                            <span style="font-size: 28px; font-weight: bold;">{{ partido.goles_local }}</span>
+                        </div>
+
+                        <!-- 3. Goles del equipo visitante -->
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; background-color: white; color: black;">
+                            <span style="font-size: 28px; font-weight: bold;">{{ partido.goles_visitante }}</span>
+                        </div>
+
+                        <!-- 4. Equipo Visitante con su color de fondo -->
+                        <div style="flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; background-color:
+                                {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#005c17{% endif %};">
+                            {% if partido.equipo_visitante.foto %}
+                                <img src="{{ partido.equipo_visitante.foto.url }}"
+                                     alt="{{ partido.equipo_visitante.nombre }}"
+                                     class="rounded-circle mb-2" style="max-height: 40px; max-width: 40px;">
+                            {% else %}
+                                <img src="{% static 'icons/default_team.png' %}" alt="Sin imagen"
+                                     class="rounded-circle mb-2" style="max-height: 40px; max-width: 40px;">
+                            {% endif %}
+                            <span style="font-size: 12px; font-weight: bold; text-align: center; color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); line-height: 1.2;">{{ partido.equipo_visitante.nombre }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Detalles del partido -->
+        <!-- Información del campo -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-light">
-                <h5 class="card-title mb-0 fs-6">Información del partido</h5>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-6">
-                        <div class="d-flex flex-column">
-                            <small class="text-muted">Fecha</small>
-                            <span>{{ partido.fecha|date:"d/m/Y" }}</span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex flex-column">
-                            <small class="text-muted">Hora</small>
-                            <span>{{ partido.fecha|date:"H:i" }}</span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex flex-column">
-                            <small class="text-muted">Campo</small>
-                            <span>{{ partido.campo.nombre }}</span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex flex-column">
-                            <small class="text-muted">Estado</small>
-                            <span class="badge {% if partido.estado == 'FINALIZADO' %}bg-success{% elif partido.estado == 'PROGRAMADO' %}bg-primary{% else %}bg-danger{% endif %}">
-                                {{ partido.get_estado_display }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body p-3 text-center">
+                <i class="fas fa-map-marker-alt text-warning me-2"></i>
+                <span class="fw-bold">{{ partido.campo.nombre }}</span>
             </div>
         </div>
-        <!-- Añadir sección de convocatorias -->
+
+        <!-- Eventos del partido -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-warning">
+                <h5 class="card-title mb-0 fs-6">
+                    <i class="fas fa-futbol me-2 text-warning"></i>Eventos del Partido
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if user.profile.role == 'ADMIN' or user.profile.role == 'ENTRENADOR' %}
+                    <div class="p-3 border-bottom">
+                        <div class="d-grid">
+                            <a href="{% url 'evento_create' partido_id=partido.id %}" class="btn btn-warning">
+                                <i class="fas fa-plus"></i> Añadir Evento
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if eventos %}
+                    <div class="list-group list-group-flush">
+                        {% for evento in eventos %}
+                            <div class="list-group-item border-secondary">
+                                <div class="row align-items-center">
+                                    <div class="col-2 text-center">
+                                        <span class="badge bg-warning text-dark small">{{ evento.fecha_creacion|date:"H:i" }}</span>
+                                    </div>
+                                    <div class="col-2 text-center">
+                                        {% if evento.tipo_evento == 'GOL' %}
+                                            <i class="fas fa-futbol text-warning"></i>
+                                        {% elif evento.tipo_evento == 'TARJETA_AMARILLA' %}
+                                            <i class="fas fa-square text-warning"></i>
+                                        {% elif evento.tipo_evento == 'TARJETA_ROJA' %}
+                                            <i class="fas fa-square text-danger"></i>
+                                        {% elif evento.tipo_evento == 'ASISTENCIA' %}
+                                            <i class="fas fa-hand-point-right text-warning"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            {% if evento.jugador.foto %}
+                                                <img src="{{ evento.jugador.foto.url }}"
+                                                     alt="{{ evento.jugador.nombre }}"
+                                                     class="rounded-circle me-2" width="25" height="25">
+                                            {% endif %}
+                                            <div>
+                                                <div class="fw-bold small">{{ evento.jugador.nombre }}</div>
+                                                <div class="text-muted small">{{ evento.get_tipo_evento_display }}</div>
+                                                {% if evento.asistidor %}
+                                                    <div class="text-muted small">
+                                                        Asist: {{ evento.asistidor.nombre }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if user.profile.role == 'ADMIN' or user.profile.role == 'ENTRENADOR' %}
+                                        <div class="col-2 text-end">
+                                            <a href="{% url 'evento_delete' pk=evento.id %}"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-4 text-center text-muted">
+                        <i class="fas fa-info-circle mb-2"></i>
+                        <p class="mb-0">No hay eventos registrados para este partido</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Convocatorias -->
         {% if user.profile.role == 'ADMIN' or user.profile.role == 'ENTRENADOR' %}
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0 fs-6">Convocatorias</h5>
+                <div class="card-header bg-dark text-warning">
+                    <h5 class="card-title mb-0 fs-6">
+                        <i class="fas fa-users me-2"></i>Gestión de Convocatorias
+                    </h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <!-- Convocatoria equipo local -->
                         <div class="list-group-item">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
@@ -116,7 +187,6 @@
                                 </a>
                             </div>
                         </div>
-                        <!-- Convocatoria equipo visitante -->
                         <div class="list-group-item">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
@@ -135,129 +205,74 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         {% endif %}
+
+        <!-- Convocatorias visualización -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
-                <h5 class="card-title mb-0 fs-6">Convocatorias</h5>
+            <div class="card-header bg-dark text-warning">
+                <h5 class="card-title mb-0 fs-6">
+                    <i class="fas fa-list me-2"></i>Convocatorias
+                </h5>
             </div>
             <div class="card-body p-0">
                 <ul class="nav nav-tabs nav-fill" id="convocatoriaTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link {% if convocatoria_local|length >= convocatoria_visitante|length %}active{% endif %}"
-                                id="local-tab" data-bs-toggle="tab" data-bs-target="#local"
-                                type="button" role="tab" aria-controls="local"
-                                aria-selected="{% if convocatoria_local|length >= convocatoria_visitante|length %}true{% else %}false{% endif %}">
-                            {{ partido.equipo_local.nombre }}
+                                id="local-tab" data-bs-toggle="tab" data-bs-target="#local" type="button" role="tab">
+                            {{ partido.equipo_local.nombre }} ({{ convocatoria_local|length }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link {% if convocatoria_local|length < convocatoria_visitante|length %}active{% endif %}"
-                                id="visitante-tab" data-bs-toggle="tab" data-bs-target="#visitante"
-                                type="button" role="tab" aria-controls="visitante"
-                                aria-selected="{% if convocatoria_local|length < convocatoria_visitante|length %}true{% else %}false{% endif %}">
-                            {{ partido.equipo_visitante.nombre }}
+                                id="visitante-tab" data-bs-toggle="tab" data-bs-target="#visitante" type="button"
+                                role="tab">
+                            {{ partido.equipo_visitante.nombre }} ({{ convocatoria_visitante|length }})
                         </button>
                     </li>
                 </ul>
                 <div class="tab-content" id="convocatoriaTabsContent">
-                    <!-- Convocatoria Equipo Local -->
                     <div class="tab-pane fade {% if convocatoria_local|length >= convocatoria_visitante|length %}show active{% endif %}"
-                         id="local" role="tabpanel" aria-labelledby="local-tab">
+                         id="local" role="tabpanel">
                         {% if convocatoria_local %}
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th class="text-center" style="width: 70px">Dorsal</th>
-                                        <th>Jugador</th>
-                                        <th class="text-end">Estado</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for convocado in convocatoria_local %}
-                                        <tr>
-                                            <td class="text-center">
-                                                <span class="badge rounded-pill"
-                                                      style="background-color:
-                                                              {% if partido.equipo_local.color %}{{ partido.equipo_local.color }}{% else %}#ffc107{% endif %};
-                                                              color: #ffffff; min-width: 30px;">
-                                                    {{ convocado.dorsal|default:"—" }}
-                                                </span>
-                                            </td>
-                                            <td class="d-flex align-items-center">
-                                                {% if convocado.jugador.foto %}
-                                                    <img src="{{ convocado.jugador.foto.url }}"
-                                                         alt="{{ convocado.jugador.nombre }}"
-                                                         class="rounded-circle me-2"
-                                                         style="width: 30px; height: 30px; object-fit: cover;">
-                                                {% endif %}
-                                                {{ convocado.jugador.nombre }}
-                                            </td>
-                                            <td class="text-end">
-                                                <span class="badge {% if convocado.estado == 'CONVOCADO' %}bg-success{% elif convocado.estado == 'LESIONADO' %}bg-danger{% elif convocado.estado == 'SANCIONADO' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
-                                                    {{ convocado.get_estado_display }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                            <div class="list-group list-group-flush">
+                                {% for convocado in convocatoria_local %}
+                                    <div class="list-group-item d-flex align-items-center">
+                                        <span class="badge bg-warning text-dark me-2">{{ convocado.dorsal }}</span>
+                                        {% if convocado.jugador.foto %}
+                                            <img src="{{ convocado.jugador.foto.url }}"
+                                                 alt="{{ convocado.jugador.nombre }}"
+                                                 class="rounded-circle me-2" width="25" height="25">
+                                        {% endif %}
+                                        <span>{{ convocado.jugador.nombre }}</span>
+                                    </div>
+                                {% endfor %}
                             </div>
                         {% else %}
-                            <div class="p-3 text-center text-muted">
-                                No hay convocados para este equipo
+                            <div class="p-4 text-center text-muted">
+                                <p class="mb-0">No hay jugadores convocados</p>
                             </div>
                         {% endif %}
                     </div>
-
-                    <!-- Convocatoria Equipo Visitante -->
                     <div class="tab-pane fade {% if convocatoria_local|length < convocatoria_visitante|length %}show active{% endif %}"
-                         id="visitante" role="tabpanel" aria-labelledby="visitante-tab">
+                         id="visitante" role="tabpanel">
                         {% if convocatoria_visitante %}
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th class="text-center" style="width: 70px">Dorsal</th>
-                                        <th>Jugador</th>
-                                        <th class="text-end">Estado</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for convocado in convocatoria_visitante %}
-                                        <tr>
-                                            <td class="text-center">
-                                                <span class="badge rounded-pill"
-                                                      style="background-color:
-                                                              {% if partido.equipo_visitante.color %}{{ partido.equipo_visitante.color }}{% else %}#ffc107{% endif %};
-                                                              color: #ffffff; min-width: 30px;">
-                                                    {{ convocado.dorsal|default:"—" }}
-                                                </span>
-                                            </td>
-                                            <td class="d-flex align-items-center">
-                                                {% if convocado.jugador.foto %}
-                                                    <img src="{{ convocado.jugador.foto.url }}"
-                                                         alt="{{ convocado.jugador.nombre }}"
-                                                         class="rounded-circle me-2"
-                                                         style="width: 30px; height: 30px; object-fit: cover;">
-                                                {% endif %}
-                                                {{ convocado.jugador.nombre }}
-                                            </td>
-                                            <td class="text-end">
-                                                <span class="badge {% if convocado.estado == 'CONVOCADO' %}bg-success{% elif convocado.estado == 'LESIONADO' %}bg-danger{% elif convocado.estado == 'SANCIONADO' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
-                                                    {{ convocado.get_estado_display }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                            <div class="list-group list-group-flush">
+                                {% for convocado in convocatoria_visitante %}
+                                    <div class="list-group-item d-flex align-items-center">
+                                        <span class="badge bg-warning text-dark me-2">{{ convocado.dorsal }}</span>
+                                        {% if convocado.jugador.foto %}
+                                            <img src="{{ convocado.jugador.foto.url }}"
+                                                 alt="{{ convocado.jugador.nombre }}"
+                                                 class="rounded-circle me-2" width="25" height="25">
+                                        {% endif %}
+                                        <span>{{ convocado.jugador.nombre }}</span>
+                                    </div>
+                                {% endfor %}
                             </div>
                         {% else %}
-                            <div class="p-3 text-center text-muted">
-                                No hay convocados para este equipo
+                            <div class="p-4 text-center text-muted">
+                                <p class="mb-0">No hay jugadores convocados</p>
                             </div>
                         {% endif %}
                     </div>
@@ -267,17 +282,10 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Si no hay convocados en ningún equipo, no hacemos nada
+        document.addEventListener('DOMContentLoaded', function () {
             if ({{ convocatoria_local|length }} === 0 && {{ convocatoria_visitante|length }} === 0) {
                 return;
             }
-
-            // Activar el tab que tenga más convocados
-            const tabToActivate = {{ convocatoria_local|length }} >= {{ convocatoria_visitante|length }} ?
-                'local-tab' : 'visitante-tab';
-
-            // Bootstrap ya maneja la activación de los tabs por nosotros basándose en las clases activas
         });
     </script>
 {% endblock %}

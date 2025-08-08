@@ -10,3 +10,4 @@ No quiero ningún botón de 'atrás' en las pantallas.
 No quiero que la foto de las ligas tengan un fondo oscuro, sino que sea el color propio de la liga.
 Todas las fotos, salvo las de las ligas, no tienen ningún fondo.
 No quiero utilizar ningún dropdown, salvo en el caso de los filtros de las listas.
+El bloque de los html es 'contenido'.

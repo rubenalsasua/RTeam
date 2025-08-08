@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Añadir Evento - {{ partido.equipo_local }} vs {{ partido.equipo_visitante }}{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid px-3">
+    <div class="card bg-dark text-warning">
+        <div class="card-header">
+            <h5 class="mb-0">Añadir Evento</h5>
+            <div class="small">{{ partido.equipo_local }} vs {{ partido.equipo_visitante }}</div>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.tipo_evento.id_for_label }}" class="form-label">{{ form.tipo_evento.label }}</label>
+                    {{ form.tipo_evento }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.jugador.id_for_label }}" class="form-label">{{ form.jugador.label }}</label>
+                    {{ form.jugador }}
+                </div>
+                <div class="mb-3" id="asistidor-field" style="display: none;">
+                    <label for="{{ form.asistidor.id_for_label }}" class="form-label">{{ form.asistidor.label }}</label>
+                    {{ form.asistidor }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.descripcion.id_for_label }}" class="form-label">{{ form.descripcion.label }}</label>
+                    {{ form.descripcion }}
+                </div>
+                <div class="d-grid gap-2 d-md-flex">
+                    <button type="submit" class="btn btn-warning">Guardar Evento</button>
+                    <a href="{% url 'partido_resultado' pk=partido.id %}" class="btn btn-outline-warning">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('{{ form.tipo_evento.id_for_label }}').addEventListener('change', function() {
+    const asistidorField = document.getElementById('asistidor-field');
+    if (this.value === 'GOL') {
+        asistidorField.style.display = 'block';
+    } else {
+        asistidorField.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}
